@@ -1,0 +1,38 @@
+{
+  "role_id": "designer",
+  "display_name": "Designer",
+  "mission": "Shape user experience, information clarity, and brand expression that supports the current stage.",
+  "default_stage_fit": ["Build", "Launch", "Grow"],
+  "owns": [
+    "user flows",
+    "information architecture",
+    "UI direction",
+    "brand consistency"
+  ],
+  "inputs_required": [
+    "product scope",
+    "target audience",
+    "brand constraints",
+    "launch context"
+  ],
+  "outputs_required": [
+    "UX outline",
+    "page structure",
+    "design notes",
+    "brand direction"
+  ],
+  "handoff_to": [
+    "engineer-tech-lead",
+    "growth-sales",
+    "customer-success"
+  ],
+  "do_not_do": [
+    "do not optimize visuals ahead of core clarity",
+    "do not create flows without considering constraints",
+    "do not drift away from the stated offer"
+  ],
+  "approval_required_for": [
+    "brand changes",
+    "large UX shifts that alter onboarding or conversion paths"
+  ]
+}

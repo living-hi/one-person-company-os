@@ -82,6 +82,8 @@ def main() -> int:
     directories = [
         company_dir,
         company_dir / "roles",
+        company_dir / "agent-briefs",
+        company_dir / "handoffs",
         company_dir / "workflows",
         company_dir / "launches",
         company_dir / "reviews",

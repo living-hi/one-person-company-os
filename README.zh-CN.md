@@ -63,18 +63,23 @@ Use $one-person-company-os to run my weekly review. Summarize wins, losses, metr
 ## 仓库包含什么
 
 - `SKILL.md`：技能行为和操作规则
+- `CLAUDE.md`：给 Claude Code 一类终端智能体看的运行入口
+- `AGENTS.md`：宿主无关的 role-agent 编排说明
 - `LICENSE`：MIT 许可证
 - `CHANGELOG.md`：版本变更记录
 - `RELEASE-NOTES.md`：首个公开版本说明
 - `PUBLISHING.md`：独立发布到 GitHub 的步骤
 - `SECURITY.md`：安全与责任边界说明
 - `references/`：角色卡、生命周期模式、市场说明、工作流和产物模板
+- `orchestration/`：给 role agent 用的阶段默认激活规则和 handoff schema
 - `assets/templates/`：可复用模板
 - `assets/examples/`：全球双语 SaaS 示例输出
 - `release/`：GitHub、ClawHub 和社媒发布材料
 - `scripts/init_company.py`：初始化公司工作区
+- `scripts/build_agent_brief.py`：生成可直接下发给角色 agent 的 brief
 - `scripts/weekly_review.py`：生成每周复盘
 - `agents/openai.yaml`：兼容 agent 界面的展示元信息
+- `agents/roles/`：给兼容 agent runtime 使用的机器可读角色定义
 
 ## 示例工作区
 
@@ -88,6 +93,8 @@ my-company/
   03-prd.md
   launches/
     00-launch-brief.md
+  agent-briefs/
+  handoffs/
   reviews/
     weekly-review-template.md
     2026-03-30-weekly-review.md
@@ -111,6 +118,18 @@ python3 scripts/init_company.py "My Company" --path ./workspace --mode saas
 
 ```bash
 python3 scripts/weekly_review.py ./workspace/my-company --week-of 2026-03-30
+```
+
+生成某个角色的 agent brief：
+
+```bash
+python3 scripts/build_agent_brief.py --stage Build --role engineer-tech-lead --language zh-CN --company-name "My Company" --objective "把 PRD 变成 implementation plan" --current-bottleneck "范围已经确定，但交付路径仍不清晰" --next-required-artifact "sprint-plan.md" --input 03-prd.md
+```
+
+批量生成某个阶段的默认角色 brief：
+
+```bash
+python3 scripts/build_agent_brief.py --stage Launch --all-stage-roles --language en --company-name "My Company" --objective "Prepare the launch pack" --current-bottleneck "Messaging is not synchronized with onboarding" --next-required-artifact "launch-brief.md" --output-dir ./workspace/my-company/agent-briefs
 ```
 
 ## 它为什么不一样
@@ -141,4 +160,6 @@ python3 scripts/weekly_review.py ./workspace/my-company --week-of 2026-03-30
 - `release/`：ClawHub 上架文案、社媒文案和发布视觉素材
 - `scripts/`：本地辅助脚本
 - `references/`：扩展技能时用的参考资料
+- `CLAUDE.md`：从 Claude Code 使用仓库时先看这里
+- `AGENTS.md`：适配其他 agent 宿主时先看这里
 - `PUBLISHING.md`：独立 GitHub 仓库发布流程

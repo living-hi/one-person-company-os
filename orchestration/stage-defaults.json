@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "stage_defaults": {
+    "Validate": [
+      "founder-ceo",
+      "chief-of-staff",
+      "product-strategist",
+      "growth-sales"
+    ],
+    "Build": [
+      "founder-ceo",
+      "chief-of-staff",
+      "product-strategist",
+      "engineer-tech-lead",
+      "qa-reliability",
+      "devops-sre"
+    ],
+    "Launch": [
+      "founder-ceo",
+      "chief-of-staff",
+      "product-strategist",
+      "designer",
+      "growth-sales",
+      "customer-success"
+    ],
+    "Operate": [
+      "founder-ceo",
+      "chief-of-staff",
+      "engineer-tech-lead",
+      "qa-reliability",
+      "devops-sre",
+      "customer-success",
+      "data-analyst"
+    ],
+    "Grow": [
+      "founder-ceo",
+      "chief-of-staff",
+      "product-strategist",
+      "growth-sales",
+      "data-analyst",
+      "finance"
+    ]
+  },
+  "stage_optional_roles": {
+    "Validate": [
+      "designer",
+      "finance",
+      "legal-compliance",
+      "community"
+    ],
+    "Build": [
+      "designer",
+      "data-analyst",
+      "legal-compliance"
+    ],
+    "Launch": [
+      "engineer-tech-lead",
+      "qa-reliability",
+      "content-seo",
+      "community",
+      "legal-compliance"
+    ],
+    "Operate": [
+      "product-strategist",
+      "growth-sales",
+      "finance",
+      "legal-compliance"
+    ],
+    "Grow": [
+      "designer",
+      "customer-success",
+      "content-seo",
+      "community",
+      "legal-compliance"
+    ]
+  }
+}

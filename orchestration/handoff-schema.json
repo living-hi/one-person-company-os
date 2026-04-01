@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "required_fields": [
+    "stage",
+    "working_language",
+    "role_id",
+    "role_display_name",
+    "objective",
+    "company_name",
+    "inputs",
+    "required_outputs",
+    "constraints",
+    "approval_gates",
+    "handoff_targets",
+    "continuation_context"
+  ],
+  "continuation_context_fields": [
+    "stage",
+    "current_bottleneck",
+    "next_required_artifact",
+    "pending_approvals",
+    "recommended_next_owner"
+  ],
+  "notes": [
+    "Use the same field names across agents so another model can continue without rebuilding context.",
+    "Keep continuation_context short enough to paste into the next role brief or status update."
+  ]
+}

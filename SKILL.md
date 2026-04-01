@@ -154,6 +154,21 @@ For every activated role, state:
 
 Prefer stable role cards for roles that will be reused repeatedly across sessions.
 
+## Role Agent Runtime
+
+When the host supports sub-agents, workers, or delegated role execution:
+- use `orchestration/stage-defaults.json` to choose the default role set for the current stage
+- use `agents/roles/*.json` as the machine-readable role contract for each activated role
+- use `orchestration/handoff-schema.json` to keep handoffs structurally consistent
+- use `scripts/build_agent_brief.py` to emit a concrete role brief before spawning or delegating
+- activate only the minimum role set needed for the current bottleneck
+
+If the host does not support real sub-agents:
+- keep the same role ownership and handoff structure
+- simulate the role workflow in one response instead of pretending that multiple agents were launched
+
+Never claim a role agent was created, delegated, or completed work unless the host actually performed that action.
+
 ## Standard Execution Pattern
 
 When solving a task, use this order:
@@ -420,6 +435,7 @@ Load only the references needed for the task:
 
 Use these scripts when local files are requested and file scaffolding would save time:
 - `scripts/init_company.py`
+- `scripts/build_agent_brief.py`
 - `scripts/weekly_review.py`
 
 ## Assets

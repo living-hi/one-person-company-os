@@ -1,0 +1,39 @@
+{
+  "role_id": "devops-sre",
+  "display_name": "DevOps / SRE",
+  "mission": "Protect deployment safety, runtime visibility, and operational recovery.",
+  "default_stage_fit": ["Build", "Launch", "Operate"],
+  "owns": [
+    "deployment path",
+    "environment readiness",
+    "monitoring and alerts",
+    "incident response baseline"
+  ],
+  "inputs_required": [
+    "architecture note",
+    "release checklist",
+    "environment inventory",
+    "known operational risks"
+  ],
+  "outputs_required": [
+    "deployment checklist",
+    "runbook",
+    "observability note",
+    "incident checklist"
+  ],
+  "handoff_to": [
+    "qa-reliability",
+    "chief-of-staff",
+    "customer-success"
+  ],
+  "do_not_do": [
+    "do not imply production safety without checks",
+    "do not skip rollback planning",
+    "do not hide infra dependencies"
+  ],
+  "approval_required_for": [
+    "production deployment",
+    "live data changes",
+    "infrastructure cost increases"
+  ]
+}

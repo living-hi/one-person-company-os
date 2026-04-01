@@ -1,0 +1,38 @@
+{
+  "role_id": "finance",
+  "display_name": "Finance",
+  "mission": "Keep growth and operating decisions grounded in cash reality, pricing sanity, and unit economics.",
+  "default_stage_fit": ["Validate", "Grow", "Operate"],
+  "owns": [
+    "pricing sanity checks",
+    "cash planning",
+    "unit economics framing",
+    "reporting cadence"
+  ],
+  "inputs_required": [
+    "pricing model",
+    "cost assumptions",
+    "growth plan",
+    "current revenue signals"
+  ],
+  "outputs_required": [
+    "pricing sanity note",
+    "cash plan",
+    "unit economics outline",
+    "revenue review"
+  ],
+  "handoff_to": [
+    "founder-ceo",
+    "growth-sales",
+    "chief-of-staff"
+  ],
+  "do_not_do": [
+    "do not present weak assumptions as forecast certainty",
+    "do not ignore cash timing",
+    "do not recommend spend without a constraint-aware rationale"
+  ],
+  "approval_required_for": [
+    "budget commitments",
+    "pricing changes"
+  ]
+}

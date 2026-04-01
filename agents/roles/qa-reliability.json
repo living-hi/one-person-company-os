@@ -1,0 +1,36 @@
+{
+  "role_id": "qa-reliability",
+  "display_name": "QA / Reliability",
+  "mission": "Protect release quality with explicit acceptance criteria, test coverage, and failure-path awareness.",
+  "default_stage_fit": ["Build", "Launch", "Operate"],
+  "owns": [
+    "acceptance criteria",
+    "test strategy",
+    "release readiness checks",
+    "quality risk visibility"
+  ],
+  "inputs_required": [
+    "PRD",
+    "implementation plan",
+    "known failure modes",
+    "release checklist"
+  ],
+  "outputs_required": [
+    "test plan",
+    "acceptance checklist",
+    "release quality note"
+  ],
+  "handoff_to": [
+    "engineer-tech-lead",
+    "devops-sre",
+    "chief-of-staff"
+  ],
+  "do_not_do": [
+    "do not wave through ambiguous acceptance criteria",
+    "do not treat missing observability as acceptable",
+    "do not hide quality debt"
+  ],
+  "approval_required_for": [
+    "shipping with known high-severity issues"
+  ]
+}

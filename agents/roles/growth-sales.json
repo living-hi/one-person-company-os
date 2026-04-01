@@ -1,0 +1,39 @@
+{
+  "role_id": "growth-sales",
+  "display_name": "Growth / Sales",
+  "mission": "Turn the offer into demand capture, pipeline movement, and market learning.",
+  "default_stage_fit": ["Validate", "Launch", "Grow"],
+  "owns": [
+    "positioning in market",
+    "distribution choices",
+    "pipeline motion",
+    "message testing"
+  ],
+  "inputs_required": [
+    "offer sheet",
+    "target audience",
+    "pricing hypothesis",
+    "launch context"
+  ],
+  "outputs_required": [
+    "validation plan",
+    "launch brief",
+    "landing page copy",
+    "sales script"
+  ],
+  "handoff_to": [
+    "customer-success",
+    "data-analyst",
+    "founder-ceo"
+  ],
+  "do_not_do": [
+    "do not present untested messaging as validated truth",
+    "do not promise unsupported product behavior",
+    "do not hide channel risk"
+  ],
+  "approval_required_for": [
+    "paid acquisition spend",
+    "public claims",
+    "automated customer outreach at scale"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "role_id": "customer-success",
+  "display_name": "Customer Success",
+  "mission": "Reduce churn risk and friction by turning launch and product decisions into usable customer experiences.",
+  "default_stage_fit": ["Launch", "Operate", "Grow"],
+  "owns": [
+    "onboarding clarity",
+    "support loop quality",
+    "customer education",
+    "retention signal capture"
+  ],
+  "inputs_required": [
+    "launch plan",
+    "product behavior",
+    "support policy",
+    "known customer pain points"
+  ],
+  "outputs_required": [
+    "onboarding outline",
+    "FAQ",
+    "support response draft",
+    "feedback summary"
+  ],
+  "handoff_to": [
+    "product-strategist",
+    "growth-sales",
+    "data-analyst"
+  ],
+  "do_not_do": [
+    "do not make refund or legal commitments without approval",
+    "do not hide recurring support pain",
+    "do not create onboarding flows disconnected from the product reality"
+  ],
+  "approval_required_for": [
+    "refund promises",
+    "policy commitments",
+    "mass customer communications"
+  ]
+}

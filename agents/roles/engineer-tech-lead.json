@@ -1,0 +1,39 @@
+{
+  "role_id": "engineer-tech-lead",
+  "display_name": "Engineer / Tech Lead",
+  "mission": "Turn product decisions into a shippable implementation plan and technical execution path.",
+  "default_stage_fit": ["Build", "Launch", "Operate"],
+  "owns": [
+    "technical architecture",
+    "implementation sequencing",
+    "delivery feasibility",
+    "engineering tradeoffs"
+  ],
+  "inputs_required": [
+    "PRD or scope note",
+    "technical constraints",
+    "existing codebase context",
+    "release target"
+  ],
+  "outputs_required": [
+    "architecture note",
+    "implementation plan",
+    "sprint plan",
+    "technical risks"
+  ],
+  "handoff_to": [
+    "qa-reliability",
+    "devops-sre",
+    "chief-of-staff"
+  ],
+  "do_not_do": [
+    "do not commit to architecture without acknowledging tradeoffs",
+    "do not hide delivery risk",
+    "do not skip acceptance criteria"
+  ],
+  "approval_required_for": [
+    "major tooling changes",
+    "infrastructure spend",
+    "production-impacting implementation shortcuts"
+  ]
+}

@@ -63,18 +63,23 @@ Use $one-person-company-os to run my weekly review. Summarize wins, losses, metr
 ## What The Skill Contains
 
 - `SKILL.md`: the skill behavior and operating rules
+- `CLAUDE.md`: runtime notes for Claude Code and similar terminal agents
+- `AGENTS.md`: host-agnostic guide for role-agent orchestration
 - `LICENSE`: MIT license for the repository
 - `CHANGELOG.md`: release history
 - `RELEASE-NOTES.md`: first public release summary
 - `PUBLISHING.md`: standalone GitHub publishing steps
 - `SECURITY.md`: responsible-use and disclosure notes
 - `references/`: role cards, lifecycle modes, market guidance, workflows, and artifact templates
+- `orchestration/`: machine-readable stage defaults and handoff schema for role agents
 - `assets/templates/`: reusable starter document templates
 - `assets/examples/`: sample outputs for a bilingual global SaaS scenario
 - `release/`: GitHub, ClawHub, and social launch materials
 - `scripts/init_company.py`: starter workspace scaffolding
+- `scripts/build_agent_brief.py`: role-agent brief generation for delegated work
 - `scripts/weekly_review.py`: recurring weekly review generation
 - `agents/openai.yaml`: display metadata for compatible agent surfaces
+- `agents/roles/`: machine-readable role contracts for compatible agent runtimes
 
 ## Example Workspace
 
@@ -88,6 +93,8 @@ my-company/
   03-prd.md
   launches/
     00-launch-brief.md
+  agent-briefs/
+  handoffs/
   reviews/
     weekly-review-template.md
     2026-03-30-weekly-review.md
@@ -111,6 +118,18 @@ Create a weekly review:
 
 ```bash
 python3 scripts/weekly_review.py ./workspace/my-company --week-of 2026-03-30
+```
+
+Create a role-agent brief for a delegated task:
+
+```bash
+python3 scripts/build_agent_brief.py --stage Build --role engineer-tech-lead --language zh-CN --company-name "My Company" --objective "Turn the PRD into an implementation plan" --current-bottleneck "Scope is defined but delivery is still ambiguous" --next-required-artifact "sprint-plan.md" --input 03-prd.md
+```
+
+Emit the default role set for a stage into a local folder:
+
+```bash
+python3 scripts/build_agent_brief.py --stage Launch --all-stage-roles --language en --company-name "My Company" --objective "Prepare the launch pack" --current-bottleneck "Messaging is not synchronized with onboarding" --next-required-artifact "launch-brief.md" --output-dir ./workspace/my-company/agent-briefs
 ```
 
 ## Why It Is Different
@@ -139,4 +158,6 @@ This skill should draft first and require explicit founder approval before:
 - See `release/` for ClawHub listing copy, social posts, and visual launch assets
 - See `scripts/` for local workspace helpers
 - See `references/` when extending the skill or reviewing role and workflow behavior
+- See `CLAUDE.md` when using the repo from Claude Code
+- See `AGENTS.md` when adapting the role runtime to another agent host
 - See `PUBLISHING.md` for the standalone GitHub repo flow
