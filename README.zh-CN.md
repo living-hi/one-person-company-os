@@ -71,6 +71,7 @@ Use $one-person-company to run my weekly review. Summarize wins, losses, metrics
 - `references/`：角色卡、生命周期模式、市场说明、工作流和产物模板
 - `assets/templates/`：可复用模板
 - `assets/examples/`：全球双语 SaaS 示例输出
+- `release/`：GitHub、ClawHub 和社媒发布材料
 - `scripts/init_company.py`：初始化公司工作区
 - `scripts/weekly_review.py`：生成每周复盘
 - `agents/openai.yaml`：兼容 agent 界面的展示元信息
@@ -137,6 +138,7 @@ python3 scripts/weekly_review.py ./workspace/my-company --week-of 2026-03-30
 
 - `assets/examples/global-saas-cn-en/`：示例输出
 - `SAMPLE-OUTPUTS.md`：可直接用于营销展示的片段
+- `release/`：ClawHub 上架文案、社媒文案和发布视觉素材
 - `scripts/`：本地辅助脚本
 - `references/`：扩展技能时用的参考资料
 - `PUBLISHING.md`：独立 GitHub 仓库发布流程

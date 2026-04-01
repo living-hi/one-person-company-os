@@ -71,6 +71,7 @@ Use $one-person-company to run my weekly review. Summarize wins, losses, metrics
 - `references/`: role cards, lifecycle modes, market guidance, workflows, and artifact templates
 - `assets/templates/`: reusable starter document templates
 - `assets/examples/`: sample outputs for a bilingual global SaaS scenario
+- `release/`: GitHub, ClawHub, and social launch materials
 - `scripts/init_company.py`: starter workspace scaffolding
 - `scripts/weekly_review.py`: recurring weekly review generation
 - `agents/openai.yaml`: display metadata for compatible agent surfaces
@@ -135,6 +136,7 @@ This skill should draft first and require explicit founder approval before:
 
 - See `assets/examples/global-saas-cn-en/` for sample outputs
 - See `SAMPLE-OUTPUTS.md` for marketing-ready excerpts
+- See `release/` for ClawHub listing copy, social posts, and visual launch assets
 - See `scripts/` for local workspace helpers
 - See `references/` when extending the skill or reviewing role and workflow behavior
 - See `PUBLISHING.md` for the standalone GitHub repo flow

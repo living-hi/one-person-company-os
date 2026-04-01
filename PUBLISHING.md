@@ -42,13 +42,13 @@ If `main` already exists locally, skip the branch creation step.
 
 ## ClawHub Submission Prep
 
-Use the materials in `../one-person-company-release/`:
+Use the materials in `release/`:
 
 - `clawhub-listing.md`
 - `sample-outputs.md`
 - `media-kit.md`
 - `social-posts.md`
-- the SVG assets under `../one-person-company-release/assets/`
+- the SVG assets under `release/assets/`
 
 ## Language Behavior To Mention Publicly
 

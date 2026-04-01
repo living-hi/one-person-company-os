@@ -8,6 +8,9 @@
 - strengthened trust-boundary and approval language
 - aligned packaging copy across skill metadata, GitHub materials, and ClawHub listing
 - added repository README for direct GitHub publishing
+- added Chinese repository README and bilingual navigation
+- added in-repo release materials for GitHub, ClawHub, and social launch
+- added GitHub validation workflow and contribution templates
 
 ## v0.1.0 - 2026-04-01
 

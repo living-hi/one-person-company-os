@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">One Person Company social card</title>
+  <desc id="desc">Launch card for the One Person Company skill.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6f0e4"/>
+      <stop offset="100%" stop-color="#eadfc9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="60" y="60" width="1480" height="780" rx="28" fill="#101010"/>
+  <rect x="102" y="104" width="420" height="38" rx="19" fill="#d9b97c"/>
+  <text x="132" y="129" fill="#101010" font-family="Georgia, serif" font-size="20" font-weight="700">One Person Company</text>
+  <text x="112" y="260" fill="#f8f3ea" font-family="Georgia, serif" font-size="86" font-weight="700">Run a solo SaaS</text>
+  <text x="112" y="348" fill="#f8f3ea" font-family="Georgia, serif" font-size="86" font-weight="700">like a real company.</text>
+  <text x="112" y="430" fill="#d7ccb8" font-family="'Trebuchet MS', Arial, sans-serif" font-size="30">
+    Charter, ICP, PRD, launch plan, and weekly review rhythm.
+  </text>
+  <text x="112" y="476" fill="#d7ccb8" font-family="'Trebuchet MS', Arial, sans-serif" font-size="30">
+    Chinese prompts yield Chinese materials. English prompts yield English materials.
+  </text>
+  <rect x="108" y="564" width="564" height="180" rx="24" fill="#f7f1e8"/>
+  <text x="144" y="618" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24" font-weight="700">First-run pack</text>
+  <text x="144" y="666" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="28">00-company-charter.md</text>
+  <text x="144" y="708" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="28">01-icp-card.md</text>
+  <text x="144" y="750" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="28">03-prd.md</text>
+  <rect x="858" y="174" width="598" height="520" rx="28" fill="#171717"/>
+  <rect x="896" y="214" width="522" height="56" rx="18" fill="#252525"/>
+  <text x="926" y="250" fill="#f7f1e8" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">Use $one-person-company to set up my solo SaaS...</text>
+  <rect x="896" y="300" width="522" height="94" rx="18" fill="#f7f1e8"/>
+  <text x="926" y="346" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="26">Output language:</text>
+  <text x="1104" y="346" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="26" font-weight="700">mirror the user's prompt</text>
+  <text x="926" y="382" fill="#5a4c3b" font-family="'Trebuchet MS', Arial, sans-serif" font-size="22">Draft-first, founder-approved, stage-aware.</text>
+  <rect x="896" y="426" width="250" height="200" rx="18" fill="#d9b97c"/>
+  <text x="930" y="474" fill="#101010" font-family="Georgia, serif" font-size="28" font-weight="700">Validate</text>
+  <text x="930" y="518" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">ICP</text>
+  <text x="930" y="552" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">Offer</text>
+  <text x="930" y="586" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">Pricing hypothesis</text>
+  <rect x="1168" y="426" width="250" height="200" rx="18" fill="#f1e3c7"/>
+  <text x="1202" y="474" fill="#101010" font-family="Georgia, serif" font-size="28" font-weight="700">Build</text>
+  <text x="1202" y="518" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">PRD</text>
+  <text x="1202" y="552" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">Sprint plan</text>
+  <text x="1202" y="586" fill="#101010" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">Release checklist</text>
+  <text x="112" y="812" fill="#d7ccb8" font-family="'Trebuchet MS', Arial, sans-serif" font-size="24">AI-native operating system for solo SaaS founders</text>
+</svg>
