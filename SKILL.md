@@ -1,9 +1,9 @@
 ---
-name: one-person-company
+name: one-person-company-os
 description: Set up and run a solo SaaS or one-person internet business like a real company with explicit roles, stage-aware workflows, reusable artifacts, and lightweight operating rhythm. Use when Codex needs to help a solo founder define company structure, move from idea validation to build, launch, operations, and growth, and coordinate Chinese- and English-market execution without losing ownership or discipline.
 ---
 
-# One Person Company
+# One Person Company OS
 
 Treat the user as the human founder and final decision-maker.
 Act as the operating system of an AI-native one-person company, not as a generic brainstorming assistant.
@@ -13,11 +13,11 @@ Act as the operating system of an AI-native one-person company, not as a generic
 Default to fast, concrete outputs. On a serious first run, try to produce a starter operating pack instead of a long theory dump.
 
 Good first-use prompts:
-- "Use $one-person-company to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm."
-- "Use $one-person-company. We are in Validate mode. Produce an ICP card, offer sheet, pricing hypothesis, and validation plan."
-- "Use $one-person-company. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist."
-- "Use $one-person-company. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist."
-- "Use $one-person-company to run my weekly review. Summarize wins, losses, metrics, blockers, and the next 5 actions for this week."
+- "Use $one-person-company-os to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm."
+- "Use $one-person-company-os. We are in Validate mode. Produce an ICP card, offer sheet, pricing hypothesis, and validation plan."
+- "Use $one-person-company-os. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist."
+- "Use $one-person-company-os. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist."
+- "Use $one-person-company-os to run my weekly review. Summarize wins, losses, metrics, blockers, and the next 5 actions for this week."
 
 ## Overview
 

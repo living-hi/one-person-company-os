@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scaffold a one-person-company workspace from bundled templates."""
+"""Scaffold a one-person-company-os workspace from bundled templates."""
 
 from __future__ import annotations
 
@@ -46,7 +46,7 @@ def render_template(text: str, company_name: str, mode: str, today: str) -> str:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Scaffold a one-person-company workspace from bundled templates."
+        description="Scaffold a one-person-company-os workspace from bundled templates."
     )
     parser.add_argument("company_name", help="Human-readable company name")
     parser.add_argument("--path", required=True, help="Directory where the company workspace will be created")

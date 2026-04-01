@@ -1,6 +1,6 @@
 # GitHub Announcement Draft
 
-I built `one-person-company`, an AI-native operating system for solo founders.
+I built `one-person-company-os`, an AI-native operating system for solo founders.
 
 The core use case is simple: help a solo SaaS founder run like a real company, not like a pile of disconnected prompts.
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
   <title id="title">Workspace preview</title>
-  <desc id="desc">Preview of a generated One Person Company workspace.</desc>
+  <desc id="desc">Preview of a generated One Person Company OS workspace.</desc>
   <rect width="1400" height="900" fill="#f4efe6"/>
   <rect x="70" y="70" width="1260" height="760" rx="28" fill="#111111"/>
   <text x="120" y="150" fill="#f8f3ea" font-family="Georgia, serif" font-size="56" font-weight="700">Generated workspace</text>

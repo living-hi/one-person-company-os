@@ -2,7 +2,7 @@
 
 ## v0.2.0 - First Public Release
 
-One Person Company is an AI-native operating system for solo founders, with solo SaaS founders as the primary use case.
+One Person Company OS is an AI-native operating system for solo founders, with solo SaaS founders as the primary use case.
 
 This release includes:
 

@@ -31,7 +31,7 @@ def render_template(text: str, company_name: str, today: str, week_of: str) -> s
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Create a dated weekly review file in a one-person-company workspace."
+        description="Create a dated weekly review file in a one-person-company-os workspace."
     )
     parser.add_argument("company_dir", help="Path to the company workspace created by init_company.py")
     parser.add_argument(

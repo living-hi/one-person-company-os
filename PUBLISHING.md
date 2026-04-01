@@ -4,7 +4,7 @@ This directory lives inside a larger workspace repository, so publish it as its 
 
 ## Recommended Flow
 
-1. Create a new empty GitHub repository, for example `one-person-company`
+1. Create a new empty GitHub repository, for example `one-person-company-os`
 2. In this directory, initialize a nested repository
 3. Commit the skill package
 4. Add the GitHub remote
@@ -15,11 +15,11 @@ This directory lives inside a larger workspace repository, so publish it as its 
 Run these commands from this directory:
 
 ```bash
-cd /home/living/.openclaw/workspace/one-person-company
+cd <repo-dir>
 git init
 git checkout -b main
 git add .
-git commit -m "release: publish one-person-company v0.2.0"
+git commit -m "release: publish one-person-company-os v0.2.0"
 git remote add origin <YOUR_GITHUB_REPO_URL>
 git push -u origin main
 ```
@@ -28,7 +28,7 @@ If `main` already exists locally, skip the branch creation step.
 
 ## Suggested First Repository Settings
 
-- repository name: `one-person-company`
+- repository name: `one-person-company-os`
 - visibility: public
 - description: `Set up and run a solo SaaS like a real company`
 - homepage: optional, add the ClawHub listing later if desired

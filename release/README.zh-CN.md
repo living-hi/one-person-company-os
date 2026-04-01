@@ -1,6 +1,6 @@
-# One Person Company
+# One Person Company OS
 
-One Person Company 帮一个 solo founder 把 solo SaaS 经营得像一家真正的公司。
+One Person Company OS 帮一个 solo founder 把 solo SaaS 经营得像一家真正的公司。
 
 它不是一堆 Prompt，也不是泛泛的创业建议，而是一层可执行的公司操作系统：角色分工、阶段化工作流、可复用文档、周复盘节奏，以及清晰的审批边界。
 
@@ -33,23 +33,23 @@ One Person Company 帮一个 solo founder 把 solo SaaS 经营得像一家真正
 直接这样调用：
 
 ```text
-使用 $one-person-company 帮我搭建一个 solo SaaS 公司。请直接产出 company charter、ICP、offer sheet、MVP scope 和 weekly operating rhythm，全部用中文写。
+使用 $one-person-company-os 帮我搭建一个 solo SaaS 公司。请直接产出 company charter、ICP、offer sheet、MVP scope 和 weekly operating rhythm，全部用中文写。
 ```
 
 ```text
-使用 $one-person-company，当前处于 Validate 阶段。请产出 ICP card、offer sheet、pricing hypothesis 和 validation plan，全部用中文写。
+使用 $one-person-company-os，当前处于 Validate 阶段。请产出 ICP card、offer sheet、pricing hypothesis 和 validation plan，全部用中文写。
 ```
 
 ```text
-使用 $one-person-company。我们正在做一个 B2B AI SaaS 的 Build 阶段，请产出 PRD、sprint plan、architecture note 和 release checklist，全部用中文写。
+使用 $one-person-company-os。我们正在做一个 B2B AI SaaS 的 Build 阶段，请产出 PRD、sprint plan、architecture note 和 release checklist，全部用中文写。
 ```
 
 ```text
-使用 $one-person-company。我们现在处于 Launch 阶段，请产出 launch brief、landing page outline、onboarding outline、FAQ 和两周 launch checklist，全部用中文写。
+使用 $one-person-company-os。我们现在处于 Launch 阶段，请产出 launch brief、landing page outline、onboarding outline、FAQ 和两周 launch checklist，全部用中文写。
 ```
 
 ```text
-使用 $one-person-company 帮我做本周 weekly review，请总结 wins、losses、metrics、blockers 和本周接下来 5 个动作，全部用中文写。
+使用 $one-person-company-os 帮我做本周 weekly review，请总结 wins、losses、metrics、blockers 和本周接下来 5 个动作，全部用中文写。
 ```
 
 ## 它和普通创业技能的区别

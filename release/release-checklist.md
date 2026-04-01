@@ -3,12 +3,12 @@
 ## Positioning
 
 - confirm the primary audience is `solo SaaS founders`
-- keep the broader one-person-company framing as secondary context, not the main headline
+- keep the broader one-person company framing as secondary context, not the main headline
 - use one primary tagline consistently across GitHub, ClawHub, and social posts
 
 ## Repository
 
-- publish the skill from `one-person-company/` as the repo root or mirror its contents into a dedicated repo
+- publish the skill from `one-person-company-os/` as the repo root or mirror its contents into a dedicated repo
 - include `README.md`, `SKILL.md`, and `CHANGELOG.md`
 - verify that `agents/openai.yaml` matches the public positioning
 - verify that `scripts/` run successfully from the published layout

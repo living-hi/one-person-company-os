@@ -2,7 +2,7 @@
 
 ## X / Short Post
 
-I built `one-person-company`, an AI-native operating system for solo founders.
+I built `one-person-company-os`, an AI-native operating system for solo founders.
 
 It helps a solo SaaS founder run like a real company by producing:
 
@@ -24,7 +24,7 @@ Most AI tools help solo founders write faster or code faster.
 
 Very few help them operate like a company.
 
-I built `one-person-company` to fill that gap:
+I built `one-person-company-os` to fill that gap:
 
 1. set up the company core
 2. define role ownership
@@ -36,7 +36,7 @@ Built for global execution, with Chinese and English as first-class markets.
 
 ## LinkedIn / Longer Post
 
-I built `one-person-company`, an AI-native operating system for solo founders.
+I built `one-person-company-os`, an AI-native operating system for solo founders.
 
 The main use case is helping a solo SaaS founder run like a real company, not like a pile of disconnected prompts.
 
@@ -57,7 +57,7 @@ Turn one founder into a functioning AI-native company.
 
 ## 中文发布文案
 
-我做了一个技能，叫 `one-person-company`。
+我做了一个技能，叫 `one-person-company-os`。
 
 它不是一堆 Prompt，也不是创业鸡汤，而是一套给 solo founder 用的 AI 原生公司操作系统。
 

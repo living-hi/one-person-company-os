@@ -2,7 +2,7 @@
 
 ## Name
 
-One Person Company
+One Person Company OS
 
 ## Short Description
 
@@ -16,7 +16,7 @@ Set up and run a solo SaaS like a real company
 
 ## Primary Pitch
 
-One Person Company is an AI-native operating system for solo founders, with solo SaaS founders as the primary use case.
+One Person Company OS is an AI-native operating system for solo founders, with solo SaaS founders as the primary use case.
 
 It helps one founder run like a real company by producing concrete operating artifacts instead of vague advice: company charter, ICP card, offer sheet, PRD, launch brief, dashboard outline, and weekly review. It also assigns clear AI role ownership across product, engineering, launch, operations, growth, sales, and support.
 
@@ -34,9 +34,9 @@ On the first serious run, this skill should produce a starter company pack such 
 
 ## Quick Start Prompts
 
-- `Use $one-person-company to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.`
-- `Use $one-person-company. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.`
-- `Use $one-person-company. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.`
+- `Use $one-person-company-os to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.`
+- `Use $one-person-company-os. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.`
+- `Use $one-person-company-os. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.`
 
 ## What Users Get
 
@@ -74,4 +74,4 @@ This skill should draft first and require explicit founder approval before produ
 
 ## Default Prompt
 
-Use $one-person-company to set up my solo SaaS company for global execution, with Chinese and English as the two priority markets.
+Use $one-person-company-os to set up my solo SaaS company for global execution, with Chinese and English as the two priority markets.

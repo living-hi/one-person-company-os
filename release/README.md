@@ -1,6 +1,6 @@
-# One Person Company
+# One Person Company OS
 
-One Person Company helps a solo founder run a solo SaaS like a real company.
+One Person Company OS helps a solo founder run a solo SaaS like a real company.
 
 Instead of giving you a pile of prompts, it gives you a practical operating layer: role ownership, stage-aware workflows, reusable artifacts, weekly review rhythm, and clear approval boundaries.
 
@@ -33,27 +33,27 @@ The first run should produce real working documents such as a company charter, I
 Use these prompts directly:
 
 ```text
-使用 $one-person-company 帮我搭建一个 solo SaaS 公司。请直接产出 company charter、ICP、offer sheet、MVP scope 和 weekly operating rhythm，全部用中文写。
+使用 $one-person-company-os 帮我搭建一个 solo SaaS 公司。请直接产出 company charter、ICP、offer sheet、MVP scope 和 weekly operating rhythm，全部用中文写。
 ```
 
 ```text
-Use $one-person-company to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.
+Use $one-person-company-os to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.
 ```
 
 ```text
-Use $one-person-company as my Chief of Staff and Product Strategist. We are in Validate mode. Produce an ICP card, offer sheet, pricing hypothesis, and validation plan.
+Use $one-person-company-os as my Chief of Staff and Product Strategist. We are in Validate mode. Produce an ICP card, offer sheet, pricing hypothesis, and validation plan.
 ```
 
 ```text
-Use $one-person-company. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.
+Use $one-person-company-os. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.
 ```
 
 ```text
-Use $one-person-company. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.
+Use $one-person-company-os. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.
 ```
 
 ```text
-Use $one-person-company to run my weekly review. Summarize wins, losses, metrics, blockers, and the next 5 actions for this week.
+Use $one-person-company-os to run my weekly review. Summarize wins, losses, metrics, blockers, and the next 5 actions for this week.
 ```
 
 ## What Makes It Different

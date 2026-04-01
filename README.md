@@ -1,8 +1,8 @@
-# One Person Company
+# One Person Company OS
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-One Person Company is an AI-native operating system for solo founders.
+One Person Company OS is an AI-native operating system for solo founders.
 
 Its primary use case is helping a solo SaaS founder run like a real company by producing concrete operating artifacts, assigning role ownership, and maintaining a lightweight weekly rhythm.
 
@@ -41,23 +41,23 @@ A strong first run should produce a starter operating pack such as:
 Use prompts like these:
 
 ```text
-使用 $one-person-company 帮我搭建一个 solo SaaS 公司。请直接产出 company charter、ICP、offer sheet、MVP scope 和 weekly operating rhythm，全部用中文写。
+使用 $one-person-company-os 帮我搭建一个 solo SaaS 公司。请直接产出 company charter、ICP、offer sheet、MVP scope 和 weekly operating rhythm，全部用中文写。
 ```
 
 ```text
-Use $one-person-company to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.
+Use $one-person-company-os to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.
 ```
 
 ```text
-Use $one-person-company. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.
+Use $one-person-company-os. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.
 ```
 
 ```text
-Use $one-person-company. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.
+Use $one-person-company-os. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.
 ```
 
 ```text
-Use $one-person-company to run my weekly review. Summarize wins, losses, metrics, blockers, and the next 5 actions for this week.
+Use $one-person-company-os to run my weekly review. Summarize wins, losses, metrics, blockers, and the next 5 actions for this week.
 ```
 
 ## What The Skill Contains
