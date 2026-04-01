@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local environment
+.env
+.env.*
+.venv/
+venv/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+
+# Generated company workspaces
+workspace/
+output/
+tmp/
+
+# Test and coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local release exports
+dist/
