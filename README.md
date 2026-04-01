@@ -1,5 +1,7 @@
 # One Person Company
 
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
 One Person Company is an AI-native operating system for solo founders.
 
 Its primary use case is helping a solo SaaS founder run like a real company by producing concrete operating artifacts, assigning role ownership, and maintaining a lightweight weekly rhythm.
