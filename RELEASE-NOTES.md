@@ -1,5 +1,16 @@
 # Release Notes
 
+## v0.2.1 - Release Validation and Publishing Cleanup
+
+This patch release tightens the publishing surface without changing the core positioning of the skill.
+
+This release includes:
+
+- a single-command `scripts/validate_release.py` check for workspace setup, weekly review generation, role-agent brief generation, and release SVG parsing
+- a GitHub Actions workflow that reuses the same release validator locally and in CI
+- README, publishing, and release-checklist updates so the validation step is part of the default release flow
+- `.gitignore` updates for local Codex metadata and tmp-validation output
+
 ## v0.2.0 - First Public Release
 
 One Person Company OS is an AI-native operating system for solo founders, with solo SaaS founders as the primary use case.

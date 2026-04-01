@@ -16,6 +16,7 @@ Run these commands from this directory:
 
 ```bash
 cd <repo-dir>
+python3 scripts/validate_release.py
 git init
 git checkout -b main
 git add .
@@ -25,6 +26,8 @@ git push -u origin main
 ```
 
 If `main` already exists locally, skip the branch creation step.
+
+Before pushing, make sure `python3 scripts/validate_release.py` passes locally so the helper scripts, agent-brief generation, and release SVG assets are all verified together.
 
 ## Suggested First Repository Settings
 

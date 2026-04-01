@@ -13,11 +13,13 @@ venv/
 # Editor / OS
 .DS_Store
 Thumbs.db
+.codex
 
 # Generated company workspaces
 workspace/
 output/
 tmp/
+tmp-validation/
 
 # Test and coverage artifacts
 .pytest_cache/

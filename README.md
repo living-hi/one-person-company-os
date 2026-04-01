@@ -132,6 +132,12 @@ Emit the default role set for a stage into a local folder:
 python3 scripts/build_agent_brief.py --stage Launch --all-stage-roles --language en --company-name "My Company" --objective "Prepare the launch pack" --current-bottleneck "Messaging is not synchronized with onboarding" --next-required-artifact "launch-brief.md" --output-dir ./workspace/my-company/agent-briefs
 ```
 
+Run the bundled release validation locally:
+
+```bash
+python3 scripts/validate_release.py
+```
+
 ## Why It Is Different
 
 - not generic startup advice
@@ -157,6 +163,7 @@ This skill should draft first and require explicit founder approval before:
 - See `SAMPLE-OUTPUTS.md` for marketing-ready excerpts
 - See `release/` for ClawHub listing copy, social posts, and visual launch assets
 - See `scripts/` for local workspace helpers
+- Run `python3 scripts/validate_release.py` before publishing changes
 - See `references/` when extending the skill or reviewing role and workflow behavior
 - See `CLAUDE.md` when using the repo from Claude Code
 - See `AGENTS.md` when adapting the role runtime to another agent host

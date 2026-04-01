@@ -132,6 +132,12 @@ python3 scripts/build_agent_brief.py --stage Build --role engineer-tech-lead --l
 python3 scripts/build_agent_brief.py --stage Launch --all-stage-roles --language en --company-name "My Company" --objective "Prepare the launch pack" --current-bottleneck "Messaging is not synchronized with onboarding" --next-required-artifact "launch-brief.md" --output-dir ./workspace/my-company/agent-briefs
 ```
 
+在本地运行仓库自带的发布验证：
+
+```bash
+python3 scripts/validate_release.py
+```
+
 ## 它为什么不一样
 
 - 不是创业鸡汤
@@ -159,6 +165,7 @@ python3 scripts/build_agent_brief.py --stage Launch --all-stage-roles --language
 - `SAMPLE-OUTPUTS.md`：可直接用于营销展示的片段
 - `release/`：ClawHub 上架文案、社媒文案和发布视觉素材
 - `scripts/`：本地辅助脚本
+- 发布前运行 `python3 scripts/validate_release.py`
 - `references/`：扩展技能时用的参考资料
 - `CLAUDE.md`：从 Claude Code 使用仓库时先看这里
 - `AGENTS.md`：适配其他 agent 宿主时先看这里

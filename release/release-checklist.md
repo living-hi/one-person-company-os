@@ -12,6 +12,7 @@
 - include `README.md`, `SKILL.md`, and `CHANGELOG.md`
 - verify that `agents/openai.yaml` matches the public positioning
 - verify that `scripts/` run successfully from the published layout
+- run `python3 scripts/validate_release.py` before tagging or pushing
 
 ## Proof Assets
 

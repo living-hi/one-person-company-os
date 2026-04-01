@@ -19,21 +19,5 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Validate helper scripts
-        run: |
-          workspace="$(mktemp -d)"
-          python3 scripts/init_company.py "Acme Solo" --path "$workspace" --mode saas
-          test -f "$workspace/acme-solo/00-company-charter.md"
-          python3 scripts/weekly_review.py "$workspace/acme-solo" --week-of 2026-03-30
-          test -f "$workspace/acme-solo/reviews/2026-03-30-weekly-review.md"
-
-      - name: Validate SVG assets
-        run: |
-          python3 - <<'PY'
-          import pathlib
-          import xml.etree.ElementTree as ET
-
-          for path in pathlib.Path("release/assets").glob("*.svg"):
-              ET.parse(path)
-              print("OK", path)
-          PY
+      - name: Validate helper scripts and release assets
+        run: python3 scripts/validate_release.py
