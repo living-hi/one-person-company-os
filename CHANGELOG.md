@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.5.0 - 2026-04-03
+
+- replaced the old three-form artifact model with numbered `.docx` deliverables inside `产物/`
+- added real DOCX generation in `scripts/common.py` and upgraded `scripts/generate_artifact_document.py` to emit numbered files only
+- added workspace starter deliverables for actual output tracking, software/code evidence, non-software deliverables, and post-launch deployment/production materials
+- added `08-阶段角色与交付矩阵.md` and `09-当前阶段交付要求.md` so role activation and required outputs are explicit
+- promoted `devops-sre` and `customer-success` into the default launch-stage role set to ensure上线后资料不缺位
+- upgraded release validation to assert numbered DOCX artifacts, launch-stage ops docs, and the expanded launch role pack
+
 ## v0.4.0 - 2026-04-03
 
 - upgraded the interaction contract from plain step reporting to a two-view output system with `用户导航版` and `审计版`

@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
+import zipfile
 from pathlib import Path
 
 
@@ -35,6 +36,12 @@ def assert_contains(text: str, *snippets: str) -> None:
     for snippet in snippets:
         if snippet not in text:
             raise AssertionError(f"expected snippet not found: {snippet}")
+
+
+def read_docx_text(path: Path) -> str:
+    with zipfile.ZipFile(path) as archive:
+        document = archive.read("word/document.xml").decode("utf-8")
+    return document
 
 
 def validate_python_compatibility_logic() -> None:
@@ -156,11 +163,22 @@ def validate_workspace_scripts() -> None:
         assert_exists(company_dir / "00-公司总览.md")
         assert_exists(company_dir / "04-当前回合.md")
         assert_exists(company_dir / "07-文档产物规范.md")
+        assert_exists(company_dir / "08-阶段角色与交付矩阵.md")
+        assert_exists(company_dir / "09-当前阶段交付要求.md")
         assert_exists(company_dir / "角色智能体" / "角色清单.md")
-        assert_exists(company_dir / "产物" / "文档模板" / "内部工作稿模板.md")
-        assert_exists(company_dir / "产物" / "文档模板" / "标准规范稿模板.md")
-        assert_exists(company_dir / "产物" / "文档模板" / "可转DOCX稿模板.md")
+        assert_exists(company_dir / "产物" / "00-交付模板" / "01-正式交付文档模板.docx")
+        assert_exists(company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx")
+        assert_exists(company_dir / "产物" / "02-软件与代码" / "01-代码与功能交付清单.docx")
+        assert_exists(company_dir / "产物" / "03-非软件与业务" / "01-非软件交付清单.docx")
         assert_exists(company_dir / "自动化" / "当前状态.json")
+        artifact_md_files = list((company_dir / "产物").rglob("*.md"))
+        if artifact_md_files:
+            raise AssertionError(f"expected only docx files under artifacts, found markdown: {artifact_md_files}")
+        assert_contains(
+            read_docx_text(company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx"),
+            "实际产出总表",
+            "真实产出",
+        )
 
         start = run(
             str(SCRIPTS_DIR / "start_round.py"),
@@ -214,6 +232,8 @@ def validate_workspace_scripts() -> None:
             "首页首屏规范",
             "--artifact-type",
             "产品规范",
+            "--category",
+            "software",
             "--summary",
             "明确首页首屏的价值主张、结构和 CTA 路径。",
             "--scope-in",
@@ -223,11 +243,17 @@ def validate_workspace_scripts() -> None:
             "--scope-out",
             "完整站点视觉系统",
             "--deliverable",
-            "首页首屏内部工作稿",
+            "首页首屏正式交付文档",
             "--deliverable",
-            "首页首屏可转 DOCX 规范稿",
+            "首页首屏代码与界面交付记录",
+            "--software-output",
+            "首页首屏组件代码",
+            "--software-output",
+            "CTA 路径配置",
+            "--evidence",
+            "workspace/北辰实验室/产物/02-软件与代码/待补充",
             "--change",
-            "本次补齐了三种稿型的统一结构",
+            "本次补齐了正式交付文档结构",
             "--decision",
             "先收敛价值主张再扩展视觉探索",
             "--risk",
@@ -236,15 +262,14 @@ def validate_workspace_scripts() -> None:
         assert_contains(
             artifact_docs.stdout,
             "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
-            "生成关键产物文档",
-            "内部工作稿",
-            "标准规范稿",
-            "可转 DOCX 稿",
+            "生成正式交付文档",
+            "已生成编号化 DOCX",
+            ".docx",
         )
         print(artifact_docs.stdout.strip())
-        assert_exists(company_dir / "产物" / "内部工作稿" / "首页首屏规范-内部工作稿.md")
-        assert_exists(company_dir / "产物" / "标准规范稿" / "首页首屏规范-标准规范稿.md")
-        assert_exists(company_dir / "产物" / "可转DOCX稿" / "首页首屏规范-可转DOCX稿.md")
+        generated_docx = company_dir / "产物" / "02-软件与代码" / "03-首页首屏规范.docx"
+        assert_exists(generated_docx)
+        assert_contains(read_docx_text(generated_docx), "首页首屏规范", "实际软件与代码产出", "证据与验收路径")
 
         checkpoint = run(
             str(SCRIPTS_DIR / "checkpoint_save.py"),
@@ -329,10 +354,15 @@ def validate_workspace_scripts() -> None:
             str(output_dir),
         )
         assert_contains(stage_briefs.stdout, "总控台.md", "增长负责人.md")
+        assert_contains(stage_briefs.stdout, "运维保障.md", "用户运营.md")
         assert_contains(stage_briefs.stderr, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "模式 A：脚本执行", "保存状态:")
         print(stage_briefs.stdout.strip())
         assert_exists(output_dir / "总控台.md")
         assert_exists(output_dir / "增长负责人.md")
+        assert_exists(output_dir / "运维保障.md")
+        assert_exists(output_dir / "用户运营.md")
+        assert_exists(company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx")
+        assert_exists(company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx")
         assert_exists(next((company_dir / "记录" / "检查点").glob("*-检查点.md")))
 
 

@@ -5,23 +5,19 @@ I upgraded `one-person-company-os` again.
 The previous release made the project easier to understand.
 This release makes it easier to actually operate.
 
-The main gap was interaction quality during real use:
+The main gap was no longer navigation.
+It was delivery discipline during real use:
 
-- users could still lose track of the current stage, round, and step
-- save and runtime fields were technically correct, but not always easy to interpret quickly
-- important outputs still leaned too much on chat formatting instead of standard document forms
+- important outputs could still sprawl across too many draft shapes
+- software and non-software runs could look productive without leaving auditable deliverables
+- launch-stage work could still miss deployment and production materials
 
 This release fixes that.
 
 This release includes:
 
-- a three-layer navigation bar: stage, round, current step
-- dual-labeled steps with natural-language guidance plus system labels
-- `用户导航版` and `审计版` output modes
-- `本次会做 / 不会做`, `本次变化`, and `回合仪表盘`
-- clearer save explanations and runtime explanations
-- a new artifact document generator
-- three standard artifact forms:
-  - internal draft
-  - standard spec
-  - DOCX-ready draft
+- numbered `.docx` artifact outputs only
+- real output packs for software, non-software, deployment, and production materials
+- explicit stage-role and deliverable requirements
+- stronger launch defaults with `运维保障` and `用户运营`
+- validation that now checks ops materials as part of release readiness

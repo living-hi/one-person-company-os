@@ -80,6 +80,14 @@ def main() -> int:
     print_step(4, 5, "执行与落盘")
     save_state(company_dir, state)
     render_workspace(company_dir, state)
+    stage_saved_paths = [
+        company_dir / "02-当前阶段.md",
+        company_dir / "04-当前回合.md",
+        company_dir / "08-阶段角色与交付矩阵.md",
+        company_dir / "09-当前阶段交付要求.md",
+    ]
+    if new_stage_id in {"launch", "operate", "grow"}:
+        stage_saved_paths.append(company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx")
 
     record = write_record(
         company_dir,
@@ -105,15 +113,11 @@ def main() -> int:
         needs_confirmation="否",
         persistence_mode="模式 A：脚本执行",
         company_dir=company_dir,
-        saved_paths=[
-            company_dir / "02-当前阶段.md",
-            company_dir / "04-当前回合.md",
-            record,
-            state_path(company_dir),
-        ],
+        saved_paths=stage_saved_paths + [record, state_path(company_dir)],
         work_scope=[
             "切换公司当前阶段，并刷新默认激活角色。",
             "如果指定了新阶段首回合，就同步创建首回合定义。",
+            "同步刷新该阶段要求的实际产出、部署与生产资料模板。",
             "把阶段切换的理由与结果写入工作区。",
         ],
         non_scope=[

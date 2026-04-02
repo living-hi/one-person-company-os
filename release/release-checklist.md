@@ -15,6 +15,9 @@
 - run `python3 scripts/validate_release.py`
 - confirm the Chinese-first workspace scripts still pass
 - confirm runtime output reports `installed`, `runnable`, `python_supported`, `workspace_created`, and `persisted`
+- confirm `产物/` only contains numbered `.docx` files in generated workspaces
+- confirm launch-stage workspaces include deployment and production starter materials
+- confirm launch-stage role briefs include `运维保障` and `用户运营`
 
 ## Proof Assets
 

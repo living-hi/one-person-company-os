@@ -1,5 +1,25 @@
 # Release Notes
 
+## v0.5.0 - Numbered DOCX Deliverables and Post-Launch Ops Pack
+
+This release upgrades `one-person-company-os` from “deliverable-aware” to “actually deliverable under audit.”
+
+The remaining gaps were practical:
+
+- artifacts still produced too many markdown-like forms instead of one formal output
+- software or non-software runs could look “busy” without leaving clear real deliverables
+- launch-stage work could miss deployment or production materials because the default role/output set was too light
+
+This release closes those gaps by adding:
+
+- numbered `.docx` outputs only inside `产物/`
+- a built-in DOCX writer so the workspace can generate formal deliverables without extra tooling
+- starter deliverable packs for actual outputs, software/code evidence, and non-software deliverables
+- automatic deployment, rollback, monitoring, and production materials for launch and later stages
+- explicit stage-role and deliverable matrices so users can see which roles and outputs must exist at each stage
+- default launch-stage activation of `运维保障` and `用户运营`
+- updated validation so release checks now assert numbered DOCX artifacts and launch-stage ops materials
+
 ## v0.4.0 - Navigation UX and Deliverable Document System
 
 This minor release upgrades the product from “state-aware skill” to “navigable and deliverable operating system.”

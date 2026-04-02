@@ -41,7 +41,7 @@ I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 
 - a three-layer navigation model
 - user-navigation and audit views
 - explicit state, save, and runtime explanations
-- internal draft, standard spec, and DOCX-ready artifact outputs
+- numbered DOCX deliverables with software/non-software evidence and post-launch deployment materials
 
 ## Why It Feels Like A Company OS
 
@@ -74,7 +74,7 @@ python3 scripts/preflight_check.py --mode create-company
 python3 scripts/ensure_python_runtime.py
 python3 scripts/init_company.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
 python3 scripts/start_round.py ./workspace/北辰实验室 --round-name "完成首页首屏" --goal "完成首页首屏结构与注册入口"
-python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "Homepage Hero Spec"
+python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "Homepage Hero Spec" --category software
 python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "end of current session"
 python3 scripts/validate_release.py
 ```

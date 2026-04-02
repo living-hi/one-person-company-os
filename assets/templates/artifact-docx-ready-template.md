@@ -32,24 +32,45 @@
 
 {{ARTIFACT_DELIVERABLES}}
 
-## 5. 本次变化
+## 5. 实际软件与代码产出
+
+{{ARTIFACT_SOFTWARE_OUTPUTS}}
+
+## 6. 实际非软件产出
+
+{{ARTIFACT_NON_SOFTWARE_OUTPUTS}}
+
+## 7. 证据与验收路径
+
+{{ARTIFACT_EVIDENCE}}
+
+## 8. 部署资料
+
+{{ARTIFACT_DEPLOYMENT_ITEMS}}
+
+## 9. 生产与运行资料
+
+{{ARTIFACT_PRODUCTION_ITEMS}}
+
+## 10. 本次变化
 
 {{ARTIFACT_CHANGES}}
 
-## 6. 关键决策
+## 11. 关键决策
 
 {{ARTIFACT_DECISIONS}}
 
-## 7. 风险、假设与待确认事项
+## 12. 风险、假设与待确认事项
 
 {{ARTIFACT_RISKS}}
 
-## 8. 后续动作
+## 13. 后续动作
 
 - {{ARTIFACT_NEXT_ACTION}}
 
-## 9. 转 DOCX 排版提示
+## 14. DOCX 提交要求
 
-- 保持一级标题和二级标题结构不变
-- 如需转 Word，可直接使用 Pandoc、Typora 或支持 Markdown 导出的编辑器
-- 正式外发前补齐封面、版本号、日期和审批信息
+- 文件名使用两位序号开头
+- `产物/` 目录只保留 `.docx` 正式交付文件
+- 软件产品必须补齐代码/脚本/配置/接口等至少一类真实产出
+- 上线后必须补齐部署、回滚、监控、告警和生产运行资料

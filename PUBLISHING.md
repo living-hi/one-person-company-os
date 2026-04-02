@@ -31,7 +31,7 @@ python3 scripts/validate_release.py
 git init
 git checkout -b main
 git add .
-git commit -m "release: publish one-person-company-os v0.4.0"
+git commit -m "release: publish one-person-company-os v0.5.0"
 git remote add origin <YOUR_GITHUB_REPO_URL>
 git push -u origin main
 ```
@@ -56,8 +56,8 @@ git push origin main
 clawhub publish /home/living/.openclaw/workspace/one-person-company-os \
   --slug one-person-company-os \
   --name "One Person Company OS" \
-  --version 0.4.0 \
-  --changelog "Upgrade navigation UX, dual-view output, and standard artifact document delivery."
+  --version 0.5.0 \
+  --changelog "Upgrade to numbered DOCX deliverables, explicit real-output packs, and post-launch ops materials."
 ```
 
 Replace the staged files, commit message, version, and changelog as needed.
@@ -72,9 +72,9 @@ Replace the staged files, commit message, version, and changelog as needed.
 
 ## Suggested Current Release
 
-- tag: `v0.4.0`
-- title: `v0.4.0: navigation UX and deliverable document system`
-- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.4.0-github-release.md`
+- tag: `v0.5.0`
+- title: `v0.5.0: numbered DOCX deliverables and post-launch ops pack`
+- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.5.0-github-release.md`
 
 ## ClawHub Submission Prep
 
@@ -95,10 +95,10 @@ Use the materials in `release/`:
 - After any timeout, verify with the download endpoint before retrying:
 
 ```bash
-curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=0.4.0" -o /tmp/one-person-company-os-0.4.0.zip
-unzip -p /tmp/one-person-company-os-0.4.0.zip README.zh-CN.md | sed -n '1,80p'
-unzip -p /tmp/one-person-company-os-0.4.0.zip agents/openai.yaml
-unzip -p /tmp/one-person-company-os-0.4.0.zip scripts/generate_artifact_document.py | sed -n '1,120p'
+curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=0.5.0" -o /tmp/one-person-company-os-0.5.0.zip
+unzip -p /tmp/one-person-company-os-0.5.0.zip README.zh-CN.md | sed -n '1,80p'
+unzip -p /tmp/one-person-company-os-0.5.0.zip agents/openai.yaml
+unzip -p /tmp/one-person-company-os-0.5.0.zip scripts/generate_artifact_document.py | sed -n '1,120p'
 ```
 
 - The public listing page may lag behind the downloadable package version. Trust the download endpoint first.

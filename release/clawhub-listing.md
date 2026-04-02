@@ -34,7 +34,7 @@ After founder confirmation, it keeps the company moving with:
 - trigger-based calibration
 - stage transition when the bottleneck changes
 - standard artifact templates and document-output rules
-- internal draft, standard spec, and DOCX-ready artifact outputs
+- numbered DOCX deliverables with software/non-software evidence and post-launch ops materials
 - OpenClaw-first Python recovery when the local runtime is not compatible
 
 ## First-Run Promise
@@ -67,7 +67,7 @@ The first serious run should produce:
 - one clear current stage, current round, blocker, and shortest next move
 - local scripts for preflight, workspace creation, round updates, checkpoint save, calibration, stage transitions, and Python runtime recovery
 - save transparency so users always know what is persisted versus chat-only
-- standard document outputs for internal work, formal specs, and DOCX-oriented delivery
+- numbered DOCX outputs that force real software or non-software deliverables plus deployment/production records after launch
 
 ## Trust Boundary
 

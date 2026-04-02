@@ -9,10 +9,12 @@ import re
 import shutil
 import subprocess
 import sys
+import zipfile
 from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional, TextIO
+from xml.sax.saxutils import escape
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -26,6 +28,7 @@ CORE_WORKSPACE_FILES = (
     "04-当前回合.md",
     "自动化/当前状态.json",
 )
+ARTIFACT_ROOT = "产物"
 REQUIRED_SCRIPT_NAMES = (
     "init_company.py",
     "build_agent_brief.py",
@@ -146,6 +149,32 @@ STAGE_ALIASES = {
     "增长期": "grow",
 }
 
+STAGE_REQUIRED_OUTPUTS = {
+    "validate": [
+        "用户问题证据、访谈纪要、付费或预约信号等真实验证材料。",
+        "至少一份可直接继续使用的正式交付文档，而不是只有聊天摘要。",
+    ],
+    "build": [
+        "实际软件或实际非软件交付物必须至少有一项真实落盘。",
+        "如果做软件，必须能看到代码、配置、脚本、接口或自动化资产中的至少一类产出。",
+        "如果做非软件产品，必须能看到服务方案、培训材料、研究成果、销售资料或执行清单中的至少一类产出。",
+        "必须同步保留测试或验收记录。",
+    ],
+    "launch": [
+        "必须同时看到对外可交付物和上线资料，不能只有发布文案。",
+        "必须包含部署清单、回滚方案、生产观测/告警安排。",
+        "必须包含上线公告、反馈回收路径和首轮支持安排。",
+    ],
+    "operate": [
+        "必须持续更新生产运行资料、事故复盘和用户反馈处理记录。",
+        "部署与生产类资料不能在产品上线后消失，必须继续维护。",
+    ],
+    "grow": [
+        "必须把增长实验、收入/成本复盘和运行稳定性资料一起保留。",
+        "增长动作不能脱离真实交付和生产运行状态单独存在。",
+    ],
+}
+
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -164,6 +193,27 @@ def safe_workspace_name(value: str) -> str:
 def slugify(value: str) -> str:
     slug = re.sub(r"[^\w]+", "-", value.strip().lower(), flags=re.UNICODE).strip("-_")
     return slug or "record"
+
+
+def safe_document_name(value: str) -> str:
+    cleaned = re.sub(r'[\\/:*?"<>|]', "-", value).strip()
+    cleaned = re.sub(r"\s+", "-", cleaned)
+    cleaned = re.sub(r"-{2,}", "-", cleaned).strip("-")
+    return cleaned or "未命名文档"
+
+
+def numbered_name(index: int, title: str, suffix: str) -> str:
+    return f"{index:02d}-{safe_document_name(title)}{suffix}"
+
+
+def next_numbered_index(directory: Path) -> int:
+    max_index = 0
+    if directory.is_dir():
+        for path in directory.iterdir():
+            match = re.match(r"^(\d{2})-", path.name)
+            if match:
+                max_index = max(max_index, int(match.group(1)))
+    return max_index + 1
 
 
 def normalize_stage(value: str) -> str:
@@ -318,6 +368,185 @@ def render_template(template_name: str, values: dict[str, str]) -> str:
     return rendered
 
 
+def iso_now() -> str:
+    return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+
+def docx_content_types_xml() -> str:
+    return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+</Types>
+"""
+
+
+def docx_root_rels_xml() -> str:
+    return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+</Relationships>
+"""
+
+
+def docx_document_rels_xml() -> str:
+    return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>
+"""
+
+
+def docx_styles_xml() -> str:
+    return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:qFormat/>
+    <w:rPr>
+      <w:sz w:val="22"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:rPr>
+      <w:b/>
+      <w:sz w:val="34"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:rPr>
+      <w:b/>
+      <w:sz w:val="28"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading3">
+    <w:name w:val="heading 3"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:rPr>
+      <w:b/>
+      <w:sz w:val="24"/>
+    </w:rPr>
+  </w:style>
+</w:styles>
+"""
+
+
+def docx_app_xml() -> str:
+    return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
+ xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>One Person Company OS</Application>
+</Properties>
+"""
+
+
+def docx_core_xml(title: str) -> str:
+    created = iso_now()
+    escaped = escape(title)
+    return f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:dcterms="http://purl.org/dc/terms/"
+ xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:title>{escaped}</dc:title>
+  <dc:creator>One Person Company OS</dc:creator>
+  <cp:lastModifiedBy>One Person Company OS</cp:lastModifiedBy>
+  <dcterms:created xsi:type="dcterms:W3CDTF">{created}</dcterms:created>
+  <dcterms:modified xsi:type="dcterms:W3CDTF">{created}</dcterms:modified>
+</cp:coreProperties>
+"""
+
+
+def docx_paragraph_xml(text: str, style: Optional[str] = None) -> str:
+    escaped_text = escape(text)
+    paragraph_style = f"<w:pPr><w:pStyle w:val=\"{style}\"/></w:pPr>" if style else ""
+    return (
+        "<w:p>"
+        f"{paragraph_style}"
+        "<w:r><w:t xml:space=\"preserve\">"
+        f"{escaped_text}"
+        "</w:t></w:r>"
+        "</w:p>"
+    )
+
+
+def markdown_to_docx_xml(markdown_text: str) -> str:
+    paragraphs: list[str] = []
+    for raw_line in markdown_text.splitlines():
+        line = raw_line.rstrip()
+        if not line:
+            paragraphs.append("<w:p/>")
+            continue
+        style = None
+        text = line
+        if line.startswith("# "):
+            style = "Heading1"
+            text = line[2:]
+        elif line.startswith("## "):
+            style = "Heading2"
+            text = line[3:]
+        elif line.startswith("### "):
+            style = "Heading3"
+            text = line[4:]
+        elif line.startswith("- "):
+            text = f"• {line[2:]}"
+        paragraphs.append(docx_paragraph_xml(text, style))
+
+    body = "".join(paragraphs) or "<w:p/>"
+    return (
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+        "<w:document xmlns:wpc=\"http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas\" "
+        "xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" "
+        "xmlns:o=\"urn:schemas-microsoft-com:office:office\" "
+        "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" "
+        "xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\" "
+        "xmlns:v=\"urn:schemas-microsoft-com:vml\" "
+        "xmlns:wp14=\"http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing\" "
+        "xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\" "
+        "xmlns:w10=\"urn:schemas-microsoft-com:office:word\" "
+        "xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" "
+        "xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\" "
+        "xmlns:wpg=\"http://schemas.microsoft.com/office/word/2010/wordprocessingGroup\" "
+        "xmlns:wpi=\"http://schemas.microsoft.com/office/word/2010/wordprocessingInk\" "
+        "xmlns:wne=\"http://schemas.microsoft.com/office/2006/wordml\" "
+        "xmlns:wps=\"http://schemas.microsoft.com/office/word/2010/wordprocessingShape\" "
+        "mc:Ignorable=\"w14 wp14\">"
+        f"<w:body>{body}"
+        "<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/><w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"708\" w:footer=\"708\" w:gutter=\"0\"/></w:sectPr>"
+        "</w:body></w:document>"
+    )
+
+
+def write_docx(path: Path, markdown_text: str, *, title: Optional[str] = None) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    doc_title = title or path.stem
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("[Content_Types].xml", docx_content_types_xml())
+        archive.writestr("_rels/.rels", docx_root_rels_xml())
+        archive.writestr("docProps/app.xml", docx_app_xml())
+        archive.writestr("docProps/core.xml", docx_core_xml(doc_title))
+        archive.writestr("word/_rels/document.xml.rels", docx_document_rels_xml())
+        archive.writestr("word/styles.xml", docx_styles_xml())
+        archive.writestr("word/document.xml", markdown_to_docx_xml(markdown_text))
+
+
 def load_role_specs() -> dict[str, dict[str, Any]]:
     specs: dict[str, dict[str, Any]] = {}
     for path in sorted(ROLE_DIR.glob("*.json")):
@@ -351,10 +580,12 @@ def ensure_workspace_dirs(company_dir: Path) -> None:
         "",
         "角色智能体",
         "流程",
-        "产物/内部工作稿",
-        "产物/标准规范稿",
-        "产物/可转DOCX稿",
-        "产物/文档模板",
+        "产物/00-交付模板",
+        "产物/01-实际交付",
+        "产物/02-软件与代码",
+        "产物/03-非软件与业务",
+        "产物/04-部署与生产",
+        "产物/05-上线与增长",
         "产物/产品",
         "产物/增长",
         "产物/运营",
@@ -405,9 +636,18 @@ def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
         [
             TEMPLATE_DIR / "company-overview-template.md",
             TEMPLATE_DIR / "artifact-output-guide-template.md",
-            TEMPLATE_DIR / "artifact-internal-draft-template.md",
-            TEMPLATE_DIR / "artifact-standard-spec-template.md",
             TEMPLATE_DIR / "artifact-docx-ready-template.md",
+            TEMPLATE_DIR / "artifact-delivery-index-template.md",
+            TEMPLATE_DIR / "artifact-software-delivery-template.md",
+            TEMPLATE_DIR / "artifact-non-software-delivery-template.md",
+            TEMPLATE_DIR / "artifact-quality-template.md",
+            TEMPLATE_DIR / "artifact-deployment-template.md",
+            TEMPLATE_DIR / "artifact-production-template.md",
+            TEMPLATE_DIR / "artifact-launch-feedback-template.md",
+            TEMPLATE_DIR / "artifact-validate-evidence-template.md",
+            TEMPLATE_DIR / "artifact-growth-template.md",
+            TEMPLATE_DIR / "stage-role-deliverable-matrix-template.md",
+            TEMPLATE_DIR / "current-stage-deliverable-template.md",
             ORCHESTRATION_DIR / "stage-defaults.json",
             ORCHESTRATION_DIR / "handoff-schema.json",
         ]
@@ -764,6 +1004,158 @@ def emit_runtime_report(
         )
 
 
+def build_matrix_values(role_specs: dict[str, dict[str, Any]]) -> dict[str, str]:
+    defaults = load_stage_defaults()
+    values: dict[str, str] = {}
+    for stage_id in STAGE_CONFIG:
+        stage_upper = stage_id.upper()
+        stage_roles = role_display_names(defaults["stage_defaults"][stage_id], role_specs)
+        optional_roles = role_display_names(defaults["stage_optional_roles"].get(stage_id, []), role_specs)
+        values[f"{stage_upper}_DEFAULT_ROLES"] = format_list(stage_roles)
+        values[f"{stage_upper}_OPTIONAL_ROLES"] = format_list(optional_roles)
+        values[f"{stage_upper}_REQUIRED_OUTPUTS"] = format_list(STAGE_REQUIRED_OUTPUTS[stage_id])
+    return values
+
+
+def stage_artifact_specs(stage_id: str) -> list[dict[str, str]]:
+    common_specs = [
+        {
+            "subdir": "00-交付模板",
+            "filename": "01-正式交付文档模板.docx",
+            "template": "artifact-docx-ready-template.md",
+        },
+        {
+            "subdir": "01-实际交付",
+            "filename": "01-实际产出总表.docx",
+            "template": "artifact-delivery-index-template.md",
+        },
+        {
+            "subdir": "02-软件与代码",
+            "filename": "01-代码与功能交付清单.docx",
+            "template": "artifact-software-delivery-template.md",
+        },
+        {
+            "subdir": "03-非软件与业务",
+            "filename": "01-非软件交付清单.docx",
+            "template": "artifact-non-software-delivery-template.md",
+        },
+    ]
+    stage_specific = {
+        "validate": [
+            {
+                "subdir": "01-实际交付",
+                "filename": "02-问题与用户证据包.docx",
+                "template": "artifact-validate-evidence-template.md",
+            },
+        ],
+        "build": [
+            {
+                "subdir": "02-软件与代码",
+                "filename": "02-测试与验收记录.docx",
+                "template": "artifact-quality-template.md",
+            },
+        ],
+        "launch": [
+            {
+                "subdir": "02-软件与代码",
+                "filename": "02-测试与验收记录.docx",
+                "template": "artifact-quality-template.md",
+            },
+            {
+                "subdir": "04-部署与生产",
+                "filename": "01-部署与回滚清单.docx",
+                "template": "artifact-deployment-template.md",
+            },
+            {
+                "subdir": "04-部署与生产",
+                "filename": "02-生产观测与告警清单.docx",
+                "template": "artifact-production-template.md",
+            },
+            {
+                "subdir": "05-上线与增长",
+                "filename": "01-上线公告与反馈回收清单.docx",
+                "template": "artifact-launch-feedback-template.md",
+            },
+        ],
+        "operate": [
+            {
+                "subdir": "04-部署与生产",
+                "filename": "01-部署与回滚清单.docx",
+                "template": "artifact-deployment-template.md",
+            },
+            {
+                "subdir": "04-部署与生产",
+                "filename": "02-生产观测与告警清单.docx",
+                "template": "artifact-production-template.md",
+            },
+            {
+                "subdir": "04-部署与生产",
+                "filename": "03-事故响应与复盘记录.docx",
+                "template": "artifact-production-template.md",
+            },
+            {
+                "subdir": "05-上线与增长",
+                "filename": "01-上线公告与反馈回收清单.docx",
+                "template": "artifact-launch-feedback-template.md",
+            },
+        ],
+        "grow": [
+            {
+                "subdir": "04-部署与生产",
+                "filename": "01-部署与回滚清单.docx",
+                "template": "artifact-deployment-template.md",
+            },
+            {
+                "subdir": "04-部署与生产",
+                "filename": "02-生产观测与告警清单.docx",
+                "template": "artifact-production-template.md",
+            },
+            {
+                "subdir": "05-上线与增长",
+                "filename": "01-增长实验与经营复盘.docx",
+                "template": "artifact-growth-template.md",
+            },
+        ],
+    }
+    return common_specs + stage_specific.get(stage_id, [])
+
+
+def artifact_template_values(common_values: dict[str, str], state: dict[str, Any]) -> dict[str, str]:
+    current_round = state.get("current_round", {})
+    current_stage = state["stage_id"]
+    return {
+        **common_values,
+        "ARTIFACT_TITLE": "正式交付文档模板",
+        "ARTIFACT_TYPE": "正式交付文档",
+        "ARTIFACT_OWNER": current_round.get("owner_role_name", "总控台"),
+        "ARTIFACT_OBJECTIVE": current_round.get("goal", "记录一个可真正交付的实际产出"),
+        "ARTIFACT_SUMMARY": "这是一份正式交付文档模板。交付时必须写清真实产出、证据、责任人和下一步动作。",
+        "ARTIFACT_SCOPE_IN": format_list([
+            "实际软件产出或实际非软件产出",
+            "验收证据与责任人",
+            "与当前阶段匹配的部署/生产资料",
+        ]),
+        "ARTIFACT_SCOPE_OUT": format_list([
+            "只有聊天记录、没有文件或链接的伪交付",
+            "缺少证据路径的空泛总结",
+        ]),
+        "ARTIFACT_DELIVERABLES": format_list(STAGE_REQUIRED_OUTPUTS[current_stage]),
+        "ARTIFACT_CHANGES": format_list([
+            "文件名使用两位序号开头。",
+            "产物目录默认只落 DOCX。",
+            "上线后自动要求部署与生产资料。",
+        ]),
+        "ARTIFACT_DECISIONS": format_list([
+            "关键产物统一进入正式交付文档路径。",
+            "软件和非软件产出都必须可被审计。",
+        ]),
+        "ARTIFACT_RISKS": format_list([
+            "没有真实文件、代码、配置、材料或证据时，不应视为完成交付。",
+        ]),
+        "ARTIFACT_NEXT_ACTION": current_round.get("next_action", "补齐本轮真实交付与证据。"),
+    }
+
+
 def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     role_specs = load_role_specs()
     ensure_workspace_dirs(company_dir)
@@ -799,10 +1191,12 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         "STAGE_EXIT_CRITERIA": stage["exit_criteria"],
         "NEXT_STAGE_REQUIREMENTS": stage["next_requirements"],
         "STAGE_RISKS": format_list(stage["risks"]),
+        "CURRENT_STAGE_REQUIRED_OUTPUTS": format_list(STAGE_REQUIRED_OUTPUTS[stage_id]),
         "ACTIVE_ROLE_LIST": format_list(active_display),
         "AVAILABLE_ROLE_LIST": format_list(available_display),
         "ACTIVE_ROLE_INLINE": "、".join(active_display) or "无",
     }
+    matrix_values = build_matrix_values(role_specs)
 
     write_text(company_dir / "00-公司总览.md", render_template("company-overview-template.md", common_values))
     write_text(company_dir / "01-产品定位.md", render_template("product-positioning-template.md", common_values))
@@ -829,6 +1223,14 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text(company_dir / "05-推进规则.md", render_template("execution-rules-template.md", common_values))
     write_text(company_dir / "06-触发器与校准规则.md", render_template("calibration-rules-template.md", common_values))
     write_text(company_dir / "07-文档产物规范.md", render_template("artifact-output-guide-template.md", common_values))
+    write_text(
+        company_dir / "08-阶段角色与交付矩阵.md",
+        render_template("stage-role-deliverable-matrix-template.md", {**common_values, **matrix_values}),
+    )
+    write_text(
+        company_dir / "09-当前阶段交付要求.md",
+        render_template("current-stage-deliverable-template.md", common_values),
+    )
 
     write_text(company_dir / "角色智能体" / "角色清单.md", render_template("role-index-template.md", common_values))
     for role_id in active_roles:
@@ -852,6 +1254,10 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text(company_dir / "流程" / "阶段切换流程.md", render_template("stage-flow-template.md", common_values))
     write_text(company_dir / "自动化" / "提醒规则.md", render_template("reminder-rules-template.md", common_values))
     write_text(company_dir / "自动化" / "定时任务定义.md", render_template("scheduler-spec-template.md", common_values))
-    write_text(company_dir / "产物" / "文档模板" / "内部工作稿模板.md", render_template("artifact-internal-draft-template.md", common_values))
-    write_text(company_dir / "产物" / "文档模板" / "标准规范稿模板.md", render_template("artifact-standard-spec-template.md", common_values))
-    write_text(company_dir / "产物" / "文档模板" / "可转DOCX稿模板.md", render_template("artifact-docx-ready-template.md", common_values))
+
+    docx_values = artifact_template_values(common_values, state)
+    for spec in stage_artifact_specs(stage_id):
+        rendered = render_template(spec["template"], docx_values)
+        filename = spec["filename"]
+        title = filename[:-5] if filename.endswith(".docx") else filename
+        write_docx(company_dir / ARTIFACT_ROOT / spec["subdir"] / filename, rendered, title=title)

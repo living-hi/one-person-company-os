@@ -155,30 +155,30 @@ The round dashboard always surfaces:
 - shortest next action
 - completion criteria
 
-## Three Artifact Document Forms
+## Numbered DOCX Deliverables
 
-Key artifacts no longer exist as one generic markdown shape.
+Key artifacts no longer exist as loose markdown drafts.
 
-The system now supports three forms by default:
+The default contract is now:
 
-- `Internal draft`
-  - for fast internal work, open questions, and intermediate thinking
-- `Standard spec`
-  - for review, handoff, reuse, and operational stability
-- `DOCX-ready draft`
-  - for formal sharing, approvals, client-facing documents, and archiving
+- every formal artifact inside `产物/` is a numbered `.docx`
+- software work must leave real code, config, script, interface, or automation evidence
+- non-software work must leave real deliverables instead of chat-only summaries
+- launch and post-launch stages must include deployment and production materials
 
 The workspace now includes:
 
 - `07-文档产物规范.md`
-- `产物/文档模板/内部工作稿模板.md`
-- `产物/文档模板/标准规范稿模板.md`
-- `产物/文档模板/可转DOCX稿模板.md`
+- `08-阶段角色与交付矩阵.md`
+- `09-当前阶段交付要求.md`
+- `产物/00-交付模板/01-正式交付文档模板.docx`
+- `产物/01-实际交付/01-实际产出总表.docx`
+- `产物/04-部署与生产/01-部署与回滚清单.docx` when the stage requires it
 
 To generate artifact documents directly:
 
 ```bash
-python3 scripts/generate_artifact_document.py <company-workspace-dir> --title "Artifact Title"
+python3 scripts/generate_artifact_document.py <company-workspace-dir> --title "Artifact Title" --category software
 ```
 
 ## Execution Modes
@@ -207,6 +207,8 @@ Company/
   05-推进规则.md
   06-触发器与校准规则.md
   07-文档产物规范.md
+  08-阶段角色与交付矩阵.md
+  09-当前阶段交付要求.md
   角色智能体/
   流程/
   产物/

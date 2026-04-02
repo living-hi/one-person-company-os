@@ -39,7 +39,7 @@ clawhub install one-person-company-os
 - 三层导航条与回合仪表盘
 - 用户导航版与审计版双视图输出
 - 状态透明、保存透明、运行透明的执行过程
-- 内部工作稿、标准规范稿、可转 DOCX 稿三种文档形态
+- 带序号的正式 DOCX 交付，以及软件/非软件/部署生产证据链
 
 ## 它为什么更像 Company OS
 
@@ -71,7 +71,7 @@ python3 scripts/preflight_check.py --mode 创建公司
 python3 scripts/ensure_python_runtime.py
 python3 scripts/init_company.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
 python3 scripts/start_round.py ./workspace/北辰实验室 --round-name "完成首页首屏" --goal "完成首页首屏结构与注册入口"
-python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "首页首屏规范"
+python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "首页首屏规范" --category software
 python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "准备结束当前会话"
 python3 scripts/validate_release.py
 ```
