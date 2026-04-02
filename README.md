@@ -2,9 +2,11 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-One Person Company OS is a Chinese-first operating system for AI-native solo companies.
+One Person Company OS is a Chinese-first control tower for AI-native solo companies.
 
-It is no longer centered on weekly reviews or heavy startup documents. The core loop is now:
+Start with one product idea. The skill first produces a company setup draft, then after founder confirmation it creates the workspace, core role briefs, and the first execution round.
+
+The core loop is:
 
 - create the company
 - start a round
@@ -12,35 +14,44 @@ It is no longer centered on weekly reviews or heavy startup documents. The core 
 - calibrate only when triggered
 - transition stages when the bottleneck changes
 
-## What It Solves
+## What It Helps You Do
 
-This skill helps one founder run like a company without drowning in management overhead.
+- turn a vague idea into an executable solo-company setup
+- keep one clear current stage, current round, current blocker, and shortest next move
+- move with a minimal role system instead of management overhead
+- calibrate only when blocked, drifting, finishing key outputs, or preparing a stage transition
 
-It does that by combining:
+## What You Get On The First Run
 
-- a Chinese-first workspace
-- a minimal role system
-- round-based execution
-- trigger-based calibration
-- OpenClaw-friendly local scripts and agent briefs
+- a one-line product definition
+- 3 to 5 company name options
+- a suggested current stage
+- a minimal org structure and first active roles
+- a Chinese workspace plan
+- the first executable round
+- explicit founder approval items
 
-## Main Entry Prompts
+## Start With These Prompts
 
 ```text
-我想创建一间一人公司，请帮我调用 one-person-company-os。
-主要是打造一个 AI 产品，请你开始。
+Use one-person-company-os to help me create a one-person company around an AI product.
+Start with a company setup draft. After I confirm it, create the workspace, role briefs, and first round.
 ```
 
 ```text
-帮我启动当前阶段的第一个推进回合。
+Start the first execution round for the current stage.
 ```
 
 ```text
-我卡住了，帮我进入校准回合。
+Continue the current round and tell me the shortest path forward.
 ```
 
 ```text
-帮我判断现在是否应该切换阶段。
+I am blocked. Enter a calibration round.
+```
+
+```text
+Tell me whether I should transition to the next stage now.
 ```
 
 ## Core Modes
@@ -51,7 +62,7 @@ It does that by combining:
 - `校准回合`
 - `切换阶段`
 
-## Workspace Outcome
+## What Gets Created After Confirmation
 
 The V2 workspace is centered on the current company state and the current round:
 

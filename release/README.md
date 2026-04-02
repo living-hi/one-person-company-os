@@ -1,8 +1,10 @@
 # One Person Company OS
 
-One Person Company OS is now a Chinese-first operating system for AI-native solo companies.
+One Person Company OS is a Chinese-first control tower for AI-native solo companies.
 
-The new product shape is simple:
+Start with one product idea. It first gives you a company setup draft, then after founder confirmation it creates the workspace, core role briefs, and the first execution round.
+
+The product loop is simple:
 
 - create the company
 - start a round
@@ -10,23 +12,24 @@ The new product shape is simple:
 - calibrate only when triggered
 - transition stages when the bottleneck changes
 
-## What Makes It Different
+## What It Helps You Do
 
-- Chinese-first workspace and operating language
-- round-based execution instead of week-based management
-- minimal role activation instead of role overload
-- OpenClaw-first local workflow
+- turn an idea into an executable solo-company setup
+- keep one clear current stage, current round, current blocker, and shortest next move
+- move with a minimal role system instead of management overhead
+- calibrate only when blocked, drifting, finishing key outputs, or preparing a stage transition
 
 ## First-Run Promise
 
 The first serious run should produce:
 
 - a company setup draft
-- company name options
+- 3 to 5 company name options
 - a suggested stage
-- a minimal role system
+- a minimal org structure and first active roles
 - a Chinese workspace plan
 - the first executable round
+- explicit founder approval items
 
 ## Local Workflow
 
