@@ -35,71 +35,139 @@ def validate_workspace_scripts() -> None:
     with tempfile.TemporaryDirectory(prefix="opc-validate-") as tmp_dir:
         workspace = Path(tmp_dir)
 
-        init = run(str(SCRIPTS_DIR / "init_company.py"), "Acme Solo", "--path", str(workspace), "--mode", "saas")
+        init = run(
+            str(SCRIPTS_DIR / "init_company.py"),
+            "北辰实验室",
+            "--path",
+            str(workspace),
+            "--product-name",
+            "北辰助手",
+            "--stage",
+            "构建期",
+            "--target-user",
+            "独立开发者",
+            "--core-problem",
+            "缺少持续推进的一人公司系统",
+            "--product-pitch",
+            "一个帮助独立开发者持续推进业务的总控台",
+        )
         print(init.stdout.strip())
 
-        company_dir = workspace / "acme-solo"
-        assert_exists(company_dir / "00-company-charter.md")
-        assert_exists(company_dir / "reviews" / "weekly-review-template.md")
+        company_dir = workspace / "北辰实验室"
+        assert_exists(company_dir / "00-公司总览.md")
+        assert_exists(company_dir / "04-当前回合.md")
+        assert_exists(company_dir / "角色智能体" / "角色清单.md")
+        assert_exists(company_dir / "自动化" / "当前状态.json")
 
-        weekly = run(
-            str(SCRIPTS_DIR / "weekly_review.py"),
+        start = run(
+            str(SCRIPTS_DIR / "start_round.py"),
             str(company_dir),
-            "--week-of",
-            "2026-03-30",
+            "--round-name",
+            "完成首页首屏",
+            "--goal",
+            "完成首页首屏结构与注册入口",
+            "--owner",
+            "product-strategist",
+            "--artifact",
+            "产物/产品/首页首屏草稿.md",
+            "--next-action",
+            "先确定首屏价值主张",
         )
-        print(weekly.stdout.strip())
-        assert_exists(company_dir / "reviews" / "2026-03-30-weekly-review.md")
+        print(start.stdout.strip())
+
+        update = run(
+            str(SCRIPTS_DIR / "update_round.py"),
+            str(company_dir),
+            "--status",
+            "执行中",
+            "--blocker",
+            "首屏信息层级仍不稳定",
+            "--next-action",
+            "重写首屏主标题与副标题",
+            "--note",
+            "进入执行阶段",
+        )
+        print(update.stdout.strip())
+
+        calibrate = run(
+            str(SCRIPTS_DIR / "calibrate_round.py"),
+            str(company_dir),
+            "--reason",
+            "30 分钟内无法确定首屏价值主张",
+            "--finding",
+            "需要产品负责人先收敛目标用户表达",
+            "--next-action",
+            "把目标用户缩小到做 AI SaaS 的独立开发者",
+        )
+        print(calibrate.stdout.strip())
+
+        transition = run(
+            str(SCRIPTS_DIR / "transition_stage.py"),
+            str(company_dir),
+            "--stage",
+            "上线期",
+            "--reason",
+            "关键功能与首屏已经具备对外测试条件",
+            "--first-round-name",
+            "准备首轮外部测试",
+            "--first-round-goal",
+            "整理测试入口、反馈表单和告知文案",
+            "--first-round-owner",
+            "growth-sales",
+        )
+        print(transition.stdout.strip())
 
         single_brief = run(
             str(SCRIPTS_DIR / "build_agent_brief.py"),
             "--stage",
-            "Build",
+            "构建期",
             "--role",
             "engineer-tech-lead",
-            "--language",
-            "en",
             "--company-name",
-            "Acme Solo",
+            "北辰实验室",
             "--objective",
-            "Turn the PRD into an implementation plan",
+            "把首屏需求落实成可交付路径",
+            "--current-round",
+            "完成首页首屏",
+            "--round-goal",
+            "完成首页首屏结构与注册入口",
             "--current-bottleneck",
-            "Scope is defined but delivery is still ambiguous",
-            "--next-required-artifact",
-            "sprint-plan.md",
-            "--input",
-            "03-prd.md",
+            "前端结构还未收敛",
+            "--next-shortest-action",
+            "先拆出首屏组件和 CTA 路径",
             "--output-format",
             "json",
         )
         packet = json.loads(single_brief.stdout)
         if packet["role_id"] != "engineer-tech-lead":
             raise ValueError("unexpected role id in single brief validation")
-        if packet["stage"] != "Build":
+        if packet["stage_id"] != "build":
             raise ValueError("unexpected stage in single brief validation")
 
-        output_dir = company_dir / "agent-briefs"
+        output_dir = company_dir / "角色智能体"
         stage_briefs = run(
             str(SCRIPTS_DIR / "build_agent_brief.py"),
             "--stage",
-            "Launch",
-            "--all-stage-roles",
-            "--language",
-            "en",
+            "上线期",
+            "--all-default-roles",
             "--company-name",
-            "Acme Solo",
+            "北辰实验室",
             "--objective",
-            "Prepare the launch pack",
+            "启动上线期的第一个回合",
+            "--current-round",
+            "准备首轮外部测试",
+            "--round-goal",
+            "整理测试入口、反馈表单和告知文案",
             "--current-bottleneck",
-            "Messaging is not synchronized with onboarding",
-            "--next-required-artifact",
-            "launch-brief.md",
+            "反馈入口还没打通",
+            "--next-shortest-action",
+            "先确认首轮测试表单字段",
             "--output-dir",
             str(output_dir),
         )
         print(stage_briefs.stdout.strip())
-        assert_exists(output_dir / "founder-ceo.md")
-        assert_exists(output_dir / "growth-sales.md")
+        assert_exists(output_dir / "总控台.md")
+        assert_exists(output_dir / "增长负责人.md")
 
 
 def validate_svg_assets() -> None:

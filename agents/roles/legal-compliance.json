@@ -1,38 +1,35 @@
 {
   "role_id": "legal-compliance",
-  "display_name": "Legal / Compliance",
-  "mission": "Protect the company from avoidable compliance, contract, and public-claim risk.",
-  "default_stage_fit": ["Validate", "Build", "Launch", "Operate", "Grow"],
+  "display_name": "法务合规",
+  "workspace_filename": "法务合规",
+  "mission": "识别法律、合规和对外表述中的高风险边界。",
+  "default_stage_fit": ["validate", "launch", "operate", "grow"],
   "owns": [
-    "claim boundaries",
-    "policy red flags",
-    "contract review signals",
-    "regulated risk visibility"
+    "风险边界提醒",
+    "敏感表述检查",
+    "合规注意事项"
   ],
   "inputs_required": [
-    "public copy",
-    "contract terms",
-    "policy drafts",
-    "regulated market context"
+    "对外文案",
+    "定价与条款信息",
+    "客户承诺内容",
+    "业务背景"
   ],
   "outputs_required": [
-    "risk note",
-    "claim review",
-    "policy boundary summary"
+    "风险提醒",
+    "需确认事项",
+    "敏感表达修正建议"
   ],
   "handoff_to": [
     "founder-ceo",
-    "chief-of-staff",
-    "growth-sales"
+    "control-tower"
   ],
   "do_not_do": [
-    "do not give false certainty where real legal review is required",
-    "do not approve regulated claims without evidence",
-    "do not hide jurisdiction-specific risk"
+    "不要把草稿建议说成正式法律意见"
   ],
   "approval_required_for": [
-    "legal claims",
-    "regulated positioning",
-    "contractual commitments"
+    "法律承诺",
+    "合规声明",
+    "条款变更"
   ]
 }

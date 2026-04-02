@@ -6,72 +6,55 @@ One Person Company OS
 
 ## Short Description
 
-Set up and run a solo SaaS like a real company
+中文优先的一人公司总控台，按回合推进业务
 
 ## Tagline Options
 
-- Turn one founder into a functioning AI-native company.
-- Set up your solo SaaS with a charter, PRD, launch plan, and weekly review rhythm.
-- Build, launch, and operate like a company, not like a pile of prompts.
+- 把一个创始人升级成一间高效推进的一人公司。
+- Create the company, run the round, calibrate only when needed.
+- 一人公司不是按周拖着走，而是按回合推进。
 
 ## Primary Pitch
 
-One Person Company OS is an AI-native operating system for solo founders, with solo SaaS founders as the primary use case.
+One Person Company OS is a Chinese-first operating system for AI-native solo companies.
 
-It helps one founder run like a real company by producing concrete operating artifacts instead of vague advice: company charter, ICP card, offer sheet, PRD, launch brief, dashboard outline, and weekly review. It also assigns clear AI role ownership across product, engineering, launch, operations, growth, sales, and support.
+It helps a founder move from an idea to a working company setup, then keep advancing through one current round at a time. Instead of pushing weekly review documents, it keeps the business aligned through:
 
-The operating model stays shared across markets while the execution layer can be localized for Chinese and English users.
+- company setup draft
+- Chinese workspace creation
+- minimal role activation
+- current round control
+- trigger-based calibration
+- stage transition when the bottleneck changes
 
 ## First-Run Promise
 
-On the first serious run, this skill should produce a starter company pack such as:
+The first serious run should produce:
 
-- company charter
-- ICP card
-- offer sheet
-- MVP scope or PRD
-- weekly operating rhythm
+- a company setup draft
+- company name options
+- the suggested current stage
+- a minimal role system
+- a Chinese workspace structure
+- the first executable round
 
 ## Quick Start Prompts
 
-- `Use $one-person-company-os to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.`
-- `Use $one-person-company-os. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.`
-- `Use $one-person-company-os. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.`
+- `我想创建一间一人公司，请帮我调用 one-person-company-os。主要是打造一个 AI 产品，请你开始。`
+- `帮我启动当前阶段的第一个推进回合。`
+- `我卡住了，帮我进入校准回合。`
 
 ## What Users Get
 
-- stage-aware execution for `Validate`, `Build`, `Launch`, `Operate`, and `Grow`
-- explicit AI roles with ownership and handoffs
-- reusable artifacts that another agent or teammate can continue from
-- weekly operating rhythm instead of one-off setup advice
-- local scaffolding scripts for company setup and recurring weekly reviews
-
-## Language Behavior
-
-- Chinese prompt in, Chinese materials out by default
-- English prompt in, English materials out by default
-- bilingual output only when explicitly requested
-- market-facing localization can differ from internal working language
-
-## Best For
-
-- solo SaaS founders
-- indie hackers shipping paid software
-- independent developers turning a product into a business
-- founder-led micro-teams
-
-## Why It Stands Out
-
-- not generic startup advice
-- not prompt cosplay
-- not limited to one function
-- optimized for recurring execution, not just day-one planning
-- built for bilingual global execution without splitting the company into two disconnected systems
+- Chinese-first operating outputs
+- round-based execution instead of week-based management
+- explicit role ownership with a minimal starter set
+- local scripts for workspace creation, round updates, calibration, and stage transitions
 
 ## Trust Boundary
 
-This skill should draft first and require explicit founder approval before production deployment, pricing changes, legal claims, budget spend, destructive data actions, or customer communication at scale.
+This skill drafts first and still requires explicit founder approval before launch, pricing changes, budget spend, legal claims, or customer-facing high-risk actions.
 
 ## Default Prompt
 
-Use $one-person-company-os to set up my solo SaaS company for global execution, with Chinese and English as the two priority markets.
+我想创建一间一人公司，请帮我调用 one-person-company-os。主要是打造一个 AI 产品，请你先给出公司创建草案，再等我确认后创建中文工作区、角色智能体和回合流程。

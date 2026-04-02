@@ -2,169 +2,104 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-One Person Company OS is an AI-native operating system for solo founders.
+One Person Company OS is a Chinese-first operating system for AI-native solo companies.
 
-Its primary use case is helping a solo SaaS founder run like a real company by producing concrete operating artifacts, assigning role ownership, and maintaining a lightweight weekly rhythm.
+It is no longer centered on weekly reviews or heavy startup documents. The core loop is now:
 
-This repository contains the actual skill package: the publishable `SKILL.md`, supporting references, reusable templates, helper scripts, and example assets.
+- create the company
+- start a round
+- advance the round
+- calibrate only when triggered
+- transition stages when the bottleneck changes
 
-## Core Promise
+## What It Solves
 
-Turn one founder into a functioning AI-native company.
+This skill helps one founder run like a company without drowning in management overhead.
 
-## Best Fit
+It does that by combining:
 
-- solo SaaS founders
-- indie hackers shipping paid software
-- independent developers turning a product into a business
-- founder-led micro-teams
+- a Chinese-first workspace
+- a minimal role system
+- round-based execution
+- trigger-based calibration
+- OpenClaw-friendly local scripts and agent briefs
 
-## First-Run Outcome
-
-A strong first run should produce a starter operating pack such as:
-
-- company charter
-- ICP card
-- offer sheet
-- MVP scope or PRD
-- weekly operating rhythm
-
-## Language Behavior
-
-- if the user works in Chinese, the skill should output Chinese materials by default
-- if the user works in English, the skill should output English materials by default
-- bilingual output should happen only when explicitly requested
-- shared company logic can stay in one working language while market-facing materials are localized separately
-
-## Quick Start
-
-Use prompts like these:
+## Main Entry Prompts
 
 ```text
-使用 $one-person-company-os 帮我搭建一个 solo SaaS 公司。请直接产出 company charter、ICP、offer sheet、MVP scope 和 weekly operating rhythm，全部用中文写。
+我想创建一间一人公司，请帮我调用 one-person-company-os。
+主要是打造一个 AI 产品，请你开始。
 ```
 
 ```text
-Use $one-person-company-os to set up my solo SaaS company. I want a charter, ICP, offer sheet, MVP scope, and weekly operating rhythm.
+帮我启动当前阶段的第一个推进回合。
 ```
 
 ```text
-Use $one-person-company-os. We are in Build mode for a B2B AI SaaS. Produce a PRD, sprint plan, architecture note, and release checklist.
+我卡住了，帮我进入校准回合。
 ```
 
 ```text
-Use $one-person-company-os. We are in Launch mode. Produce a launch brief, landing page outline, onboarding outline, FAQ, and a 2-week launch checklist.
+帮我判断现在是否应该切换阶段。
 ```
+
+## Core Modes
+
+- `创建公司`
+- `启动回合`
+- `推进回合`
+- `校准回合`
+- `切换阶段`
+
+## Workspace Outcome
+
+The V2 workspace is centered on the current company state and the current round:
 
 ```text
-Use $one-person-company-os to run my weekly review. Summarize wins, losses, metrics, blockers, and the next 5 actions for this week.
+公司名/
+  00-公司总览.md
+  01-产品定位.md
+  02-当前阶段.md
+  03-组织架构.md
+  04-当前回合.md
+  05-推进规则.md
+  06-触发器与校准规则.md
+  角色智能体/
+  流程/
+  产物/
+  记录/
+  自动化/
 ```
 
-## What The Skill Contains
+## Local Scripts
 
-- `SKILL.md`: the skill behavior and operating rules
-- `CLAUDE.md`: runtime notes for Claude Code and similar terminal agents
-- `AGENTS.md`: host-agnostic guide for role-agent orchestration
-- `LICENSE`: MIT license for the repository
-- `CHANGELOG.md`: release history
-- `RELEASE-NOTES.md`: first public release summary
-- `PUBLISHING.md`: standalone GitHub publishing steps
-- `SECURITY.md`: responsible-use and disclosure notes
-- `references/`: role cards, lifecycle modes, market guidance, workflows, and artifact templates
-- `orchestration/`: machine-readable stage defaults and handoff schema for role agents
-- `assets/templates/`: reusable starter document templates
-- `assets/examples/`: sample outputs for a bilingual global SaaS scenario
-- `release/`: GitHub, ClawHub, and social launch materials
-- `scripts/init_company.py`: starter workspace scaffolding
-- `scripts/build_agent_brief.py`: role-agent brief generation for delegated work
-- `scripts/weekly_review.py`: recurring weekly review generation
-- `agents/openai.yaml`: display metadata for compatible agent surfaces
-- `agents/roles/`: machine-readable role contracts for compatible agent runtimes
+- `scripts/init_company.py`
+- `scripts/build_agent_brief.py`
+- `scripts/start_round.py`
+- `scripts/update_round.py`
+- `scripts/calibrate_round.py`
+- `scripts/transition_stage.py`
+- `scripts/validate_release.py`
 
-## Example Workspace
+## References
 
-The helper scripts are designed to produce a company workspace like this:
+- `references/bootstrap-playbook.md`
+- `references/round-execution-playbook.md`
+- `references/calibration-playbook.md`
+- `references/stage-transition-playbook.md`
+- `references/openclaw-runtime.md`
+- `references/chinese-workspace-conventions.md`
 
-```text
-my-company/
-  00-company-charter.md
-  01-icp-card.md
-  02-offer-sheet.md
-  03-prd.md
-  launches/
-    00-launch-brief.md
-  agent-briefs/
-  handoffs/
-  reviews/
-    weekly-review-template.md
-    2026-03-30-weekly-review.md
-  decisions/
-    decision-log-entry-template.md
-  roles/
-    role-card-template.md
-  metrics/
-    dashboard-outline.md
-```
+## Validation
 
-## Local File Workflow
-
-Initialize a starter company workspace:
-
-```bash
-python3 scripts/init_company.py "My Company" --path ./workspace --mode saas
-```
-
-Create a weekly review:
-
-```bash
-python3 scripts/weekly_review.py ./workspace/my-company --week-of 2026-03-30
-```
-
-Create a role-agent brief for a delegated task:
-
-```bash
-python3 scripts/build_agent_brief.py --stage Build --role engineer-tech-lead --language zh-CN --company-name "My Company" --objective "Turn the PRD into an implementation plan" --current-bottleneck "Scope is defined but delivery is still ambiguous" --next-required-artifact "sprint-plan.md" --input 03-prd.md
-```
-
-Emit the default role set for a stage into a local folder:
-
-```bash
-python3 scripts/build_agent_brief.py --stage Launch --all-stage-roles --language en --company-name "My Company" --objective "Prepare the launch pack" --current-bottleneck "Messaging is not synchronized with onboarding" --next-required-artifact "launch-brief.md" --output-dir ./workspace/my-company/agent-briefs
-```
-
-Run the bundled release validation locally:
+Run:
 
 ```bash
 python3 scripts/validate_release.py
 ```
 
-## Why It Is Different
+## Notes
 
-- not generic startup advice
-- not prompt cosplay
-- not limited to one function
-- designed for recurring execution instead of one-off setup
-- built for Chinese and English market execution without splitting the company core
-
-## Trust Boundary
-
-This skill should draft first and require explicit founder approval before:
-
-- production deployment
-- live pricing changes
-- legal or compliance claims
-- destructive data actions
-- budget spend
-- customer communication at scale
-
-## Repository Guide
-
-- See `assets/examples/global-saas-cn-en/` for sample outputs
-- See `SAMPLE-OUTPUTS.md` for marketing-ready excerpts
-- See `release/` for ClawHub listing copy, social posts, and visual launch assets
-- See `scripts/` for local workspace helpers
-- Run `python3 scripts/validate_release.py` before publishing changes
-- See `references/` when extending the skill or reviewing role and workflow behavior
-- See `CLAUDE.md` when using the repo from Claude Code
-- See `AGENTS.md` when adapting the role runtime to another agent host
-- See `PUBLISHING.md` for the standalone GitHub repo flow
+- Chinese is the default for Chinese users, including workspace names and daily operating terms.
+- The founder remains the final approver for budget, launch, compliance, and customer-facing actions.
+- Weekly review is no longer the main loop. Time-based review is only a fallback.

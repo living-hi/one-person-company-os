@@ -1,76 +1,79 @@
 {
-  "version": "1.0",
+  "version": "2.0",
+  "stage_labels": {
+    "validate": "验证期",
+    "build": "构建期",
+    "launch": "上线期",
+    "operate": "运营期",
+    "grow": "增长期"
+  },
   "stage_defaults": {
-    "Validate": [
+    "validate": [
       "founder-ceo",
-      "chief-of-staff",
+      "control-tower",
       "product-strategist",
       "growth-sales"
     ],
-    "Build": [
+    "build": [
       "founder-ceo",
-      "chief-of-staff",
+      "control-tower",
+      "product-strategist",
+      "engineer-tech-lead"
+    ],
+    "launch": [
+      "founder-ceo",
+      "control-tower",
       "product-strategist",
       "engineer-tech-lead",
-      "qa-reliability",
-      "devops-sre"
-    ],
-    "Launch": [
-      "founder-ceo",
-      "chief-of-staff",
-      "product-strategist",
       "designer",
       "growth-sales",
-      "customer-success"
+      "qa-reliability"
     ],
-    "Operate": [
+    "operate": [
       "founder-ceo",
-      "chief-of-staff",
+      "control-tower",
       "engineer-tech-lead",
+      "customer-success",
       "qa-reliability",
       "devops-sre",
-      "customer-success",
       "data-analyst"
     ],
-    "Grow": [
+    "grow": [
       "founder-ceo",
-      "chief-of-staff",
+      "control-tower",
       "product-strategist",
       "growth-sales",
+      "customer-success",
       "data-analyst",
       "finance"
     ]
   },
   "stage_optional_roles": {
-    "Validate": [
+    "validate": [
       "designer",
-      "finance",
-      "legal-compliance",
-      "community"
+      "legal-compliance"
     ],
-    "Build": [
+    "build": [
       "designer",
+      "qa-reliability",
+      "devops-sre",
+      "legal-compliance"
+    ],
+    "launch": [
+      "customer-success",
       "data-analyst",
       "legal-compliance"
     ],
-    "Launch": [
-      "engineer-tech-lead",
-      "qa-reliability",
-      "content-seo",
-      "community",
-      "legal-compliance"
-    ],
-    "Operate": [
+    "operate": [
       "product-strategist",
       "growth-sales",
       "finance",
       "legal-compliance"
     ],
-    "Grow": [
+    "grow": [
       "designer",
-      "customer-success",
-      "content-seo",
-      "community",
+      "qa-reliability",
+      "devops-sre",
       "legal-compliance"
     ]
   }

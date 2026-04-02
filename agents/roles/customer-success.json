@@ -1,39 +1,37 @@
 {
   "role_id": "customer-success",
-  "display_name": "Customer Success",
-  "mission": "Reduce churn risk and friction by turning launch and product decisions into usable customer experiences.",
-  "default_stage_fit": ["Launch", "Operate", "Grow"],
+  "display_name": "用户运营",
+  "workspace_filename": "用户运营",
+  "mission": "维护用户反馈、上手体验和持续使用信号。",
+  "default_stage_fit": ["launch", "operate", "grow"],
   "owns": [
-    "onboarding clarity",
-    "support loop quality",
-    "customer education",
-    "retention signal capture"
+    "用户上手",
+    "问题跟进",
+    "反馈整理",
+    "留存信号"
   ],
   "inputs_required": [
-    "launch plan",
-    "product behavior",
-    "support policy",
-    "known customer pain points"
+    "用户反馈",
+    "当前产品状态",
+    "常见问题",
+    "增长与支持信息"
   ],
   "outputs_required": [
-    "onboarding outline",
-    "FAQ",
-    "support response draft",
-    "feedback summary"
+    "反馈摘要",
+    "上手建议",
+    "问题分级",
+    "留存风险说明"
   ],
   "handoff_to": [
     "product-strategist",
-    "growth-sales",
-    "data-analyst"
+    "control-tower"
   ],
   "do_not_do": [
-    "do not make refund or legal commitments without approval",
-    "do not hide recurring support pain",
-    "do not create onboarding flows disconnected from the product reality"
+    "不要擅自承诺产品能力",
+    "不要忽视重复出现的问题"
   ],
   "approval_required_for": [
-    "refund promises",
-    "policy commitments",
-    "mass customer communications"
+    "大规模客户触达",
+    "补偿或退款策略"
   ]
 }

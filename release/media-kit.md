@@ -4,22 +4,22 @@
 
 - `assets/repo-social-card.svg`
 - `assets/workspace-preview.svg`
-- `assets/charter-preview.svg`
-- `assets/weekly-review-preview.svg`
+- `assets/company-overview-preview.svg`
+- `assets/round-preview.svg`
 
 ## Suggested Use
 
-- use `repo-social-card.svg` as the repository social preview or launch card
-- use `workspace-preview.svg` to show first-run tangible output
-- use `charter-preview.svg` to prove the skill produces real operating documents
-- use `weekly-review-preview.svg` to show recurring use, not just first-time setup
+- use `repo-social-card.svg` as the repository social preview
+- use `workspace-preview.svg` to show the Chinese-first workspace layout
+- use `company-overview-preview.svg` to show the company setup layer
+- use `round-preview.svg` to show the current-round control layer
 
 ## Copy Pairing
 
 Recommended headline:
 
-`Set up and run a solo SaaS like a real company.`
+`中文优先的一人公司总控台，按回合推进业务。`
 
 Recommended support line:
 
-`Company charter, ICP, PRD, launch plan, and weekly review rhythm in the user's working language.`
+`Create the company, run one round at a time, calibrate only when needed.`

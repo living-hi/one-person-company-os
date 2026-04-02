@@ -1,67 +1,54 @@
 # Sample Outputs
 
-These excerpts are useful when showing what the skill actually produces on a serious first run.
+These excerpts show the V2 behavior: Chinese-first company setup, current-round control, calibration, and stage transition.
 
-## Company Charter
+## 公司总览
 
-From `assets/examples/global-saas-cn-en/00-company-charter.md`
-
-```md
-# Northstar Copilot Company Charter
-
-## Mission
-
-Help solo founders and tiny product teams run lean AI-native businesses with less coordination overhead and faster execution.
-
-## Problem
-
-Founders can move fast with AI, but they still lack a coherent operating system for product, launch, operations, sales, and review cadence across markets.
-```
-
-## Shared Product Core
-
-From `assets/examples/global-saas-cn-en/01-shared-product-core.md`
+From `assets/examples/zh-round-mode/00-公司总览.md`
 
 ```md
-## Core Promise
-
-Turn a solo founder into a functioning AI-native company with structured roles, workflows, artifacts, and operating rhythm.
-
-## Shared Product Truth
-
-- One workspace for company charter, ICP, PRD, launch planning, weekly review, and decision logs
-- One shared role system across founder, product, engineering, operations, and growth
-- Stage-aware workflows: Validate, Build, Launch, Operate, Grow
+- 产品名称: 北辰助手
+- 当前阶段: 构建期
+- 当前主目标: 完成首个可外测版本
+- 当前瓶颈: 首页价值主张与注册入口还未收敛
+- 当前回合: 完成首页首屏
 ```
 
-## Weekly Review
+## 当前回合
 
-From `assets/examples/global-saas-cn-en/05-weekly-review-example.md`
+From `assets/examples/zh-round-mode/01-当前回合.md`
 
 ```md
-## Wins
-
-- Clarified the global positioning: one product, two priority language markets
-- Finished the first publishable skill package and scaffolding scripts
-
-## Priorities Next Week
-
-- publish GitHub and ClawHub listings
-- prepare one bilingual launch page
-- recruit first founder design partners
+- 当前状态: 执行中
+- 负责角色: 产品负责人
+- 回合目标: 完成首页首屏结构与注册入口
+- 当前阻塞: 首屏信息层级仍不稳定
+- 下一步最短动作: 重写首屏主标题与副标题
 ```
 
-## Example Workspace Tree
+## 校准记录
+
+From `assets/examples/zh-round-mode/02-校准记录.md`
+
+```md
+- 触发原因: 30 分钟内无法确定首屏价值主张
+- 当前结论: 需要产品负责人先收敛目标用户表达
+- 下一步最短动作: 把目标用户缩小到做 AI SaaS 的独立开发者
+```
+
+## 示例工作区
 
 ```text
-my-company/
-  00-company-charter.md
-  01-icp-card.md
-  02-offer-sheet.md
-  03-prd.md
-  launches/00-launch-brief.md
-  reviews/weekly-review-template.md
-  decisions/decision-log-entry-template.md
-  roles/role-card-template.md
-  metrics/dashboard-outline.md
+北辰实验室/
+  00-公司总览.md
+  01-产品定位.md
+  02-当前阶段.md
+  03-组织架构.md
+  04-当前回合.md
+  05-推进规则.md
+  06-触发器与校准规则.md
+  角色智能体/
+  流程/
+  记录/
+  自动化/
 ```

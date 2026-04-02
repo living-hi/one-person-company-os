@@ -1,5 +1,26 @@
 # Release Notes
 
+## v0.3.0 - Round-Based Solo Company OS
+
+This release is a full V2 rewrite of the skill.
+
+The product is no longer organized around weekly review and heavy startup documentation. It is now organized around:
+
+- create the company
+- start a round
+- advance the round
+- calibrate only when triggered
+- transition stages when the bottleneck changes
+
+This release includes:
+
+- a rewritten `SKILL.md` centered on five clear user intents
+- a Chinese-first workspace with Chinese file names and operating language by default
+- a new `总控台` role and a smaller default starter role set
+- new scripts for round start, round update, calibration, and stage transition
+- rewritten references, templates, sample outputs, and release materials
+- removal of the old weekly review flow, the legacy role/workflow references, and the previous bilingual SaaS example pack
+
 ## v0.2.1 - Release Validation and Publishing Cleanup
 
 This patch release tightens the publishing surface without changing the core positioning of the skill.

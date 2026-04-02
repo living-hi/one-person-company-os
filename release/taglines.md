@@ -1,7 +1,7 @@
 # Taglines
 
-- Turn one founder into a functioning AI-native company.
-- Set up and run a solo SaaS like a real company.
-- Build, launch, and operate like a company, not like a pile of prompts.
-- The operating system for AI-native solo SaaS founders.
-- One founder. One product core. One real company operating system.
+- 中文优先的一人公司总控台，按回合推进业务。
+- Create the company, run the round, calibrate only when needed.
+- One founder. One control tower. One current round.
+- 把一个创始人升级成一间高效推进的一人公司。
+- AI-native solo company operations, without week-based drag.

@@ -1,80 +1,53 @@
 # Claude Code Runtime Notes
 
-Use this file when the host is Claude Code or another terminal agent runtime that does not natively consume OpenClaw `SKILL.md`.
+当宿主是 Claude Code 或其他终端智能体时，按 OpenClaw 同样的协议运行。
 
-## Purpose
+## 首次使用
 
-Treat this repository as a role-aware operating system for a solo SaaS founder.
+把用户的一句话理解成“创建公司请求”，先输出：
 
-The core behavior lives in:
-- `SKILL.md`
-- `agents/roles/*.json`
-- `orchestration/stage-defaults.json`
-- `orchestration/handoff-schema.json`
-- `scripts/build_agent_brief.py`
+- 产品一句话定义
+- 公司名称建议
+- 当前建议阶段
+- 最小组织架构
+- 首批激活角色
+- 工作区结构
+- 首个推进回合
+- 需要确认的事项
 
-## Default Working Rules
+未确认前不要假装已经创建角色。
 
-- Treat the human user as the founder and final decision-maker.
-- Produce artifacts, not just advice.
-- Activate only the minimum role set needed for the current bottleneck.
-- Mirror the user's working language by default.
-- If the user asks in Chinese, draft the operating materials in Chinese unless asked otherwise.
-- If the user asks in English, draft the operating materials in English unless asked otherwise.
-- Do not claim a delegated agent ran unless the host actually launched one.
+## 运行模式
 
-## Runtime Flow
+只保留 5 个模式：
 
-1. Infer or confirm the primary stage:
-   `Validate`, `Build`, `Launch`, `Operate`, or `Grow`
-2. Read `orchestration/stage-defaults.json` to identify the default role set for that stage.
-3. Narrow the activated roles to the smallest set needed for the task.
-4. Read the matching files in `agents/roles/` for machine-readable role contracts.
-5. When delegation is supported, generate a role brief with `scripts/build_agent_brief.py` before assigning work.
-6. Keep handoffs consistent with `orchestration/handoff-schema.json`.
-7. End with a reusable artifact pack and continuation context.
+- 创建公司
+- 启动回合
+- 推进回合
+- 校准回合
+- 切换阶段
 
-## When To Delegate
+## 默认行为
 
-Delegate only when the host actually supports sub-agents and delegation will materially improve execution.
+- 中文用户默认全中文
+- 每次只推进一个当前回合
+- 触发器出现时才进入校准
+- 需要预算、上线、改价、客户触达时必须让用户确认
 
-Good delegation candidates:
-- Product scope definition
-- Architecture planning
-- Launch copy drafting
-- Weekly review synthesis
-- Funnel or metric diagnosis
-
-Do not delegate:
-- Founder approvals
-- Legal certainty
-- Production actions without explicit approval
-- Any action the host cannot actually execute
-
-## Output Contract
-
-Prefer this response structure:
+## 建议输出结构
 
 ```md
-## Session Frame
-- Stage:
-- Working language:
-- Bottleneck:
-- Success criterion:
+## 当前模式
+- 模式：
+- 阶段：
+- 回合：
 
-## Activated Roles
-- role:
-  owner:
-  output:
+## 当前结论
+- 角色：
+- 产物：
+- 风险：
 
-## Artifact Pack
-- artifact:
-
-## Approval Gates
-- gate:
-
-## Next Actions
-- action:
+## 下一步
+- 最短动作：
+- 是否需要确认：
 ```
-
-When delegation is used, append a short continuation context that the next role can consume without rebuilding context.

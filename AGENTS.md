@@ -1,67 +1,62 @@
 # Agent Runtime Guide
 
-This repository supports role-aware execution across terminal agent hosts such as Codex, Claude Code, and compatible OpenClaw runtimes.
+本仓库优先服务 OpenClaw。
 
-## Core Files
+## 运行原则
 
-- `SKILL.md`: primary OpenClaw and Codex-facing skill behavior
-- `agents/openai.yaml`: OpenClaw-compatible UI metadata
-- `agents/roles/*.json`: machine-readable role contracts
-- `orchestration/stage-defaults.json`: default role activation by stage
-- `orchestration/handoff-schema.json`: required handoff fields
-- `scripts/build_agent_brief.py`: generate role packets for delegated work
+- 用户始终是创始人和最终决策者。
+- 智能体系统默认使用中文。
+- 首次进入必须先出“公司创建草案”，确认后再落地。
+- 系统以“回合”推进，不以“周复盘”推进。
+- 角色默认最小激活，避免第一次就铺满全公司角色。
 
-## Stage Model
+## 默认智能体
 
-Use one primary stage per session:
-- `Validate`
-- `Build`
-- `Launch`
-- `Operate`
-- `Grow`
+首次确认后，默认只创建：
 
-Secondary stages are allowed only when they materially change the required outputs.
+- `总控台`
+- `产品负责人`
+- `工程负责人`
 
-## Role Activation Rules
+按需再创建：
 
-- Activate the smallest role set that can move the bottleneck.
-- Keep one owner per output.
-- Reuse the same role ids from `agents/roles/*.json`.
-- If the host does not support sub-agents, simulate the role workflow in one response.
+- `设计负责人`
+- `增长负责人`
+- `用户运营`
+- `质量保障`
+- `数据分析`
+- `财务`
+- `法务合规`
+- `运维保障`
 
-## Handoff Contract
+## 回合上下文
 
-Every role handoff should preserve:
-- stage
-- working language
-- objective
-- company name
-- inputs
-- required outputs
-- constraints
-- approval gates
-- handoff targets
-- continuation context
+所有角色交接都必须保留这些字段：
 
-Use `orchestration/handoff-schema.json` as the source of truth.
+- 当前阶段
+- 当前回合编号
+- 当前回合目标
+- 当前状态
+- 关键产物
+- 当前阻塞
+- 下一步最短动作
+- 是否需要创始人确认
 
-## Brief Generation
+以 [orchestration/handoff-schema.json](/home/living/.openclaw/workspace/one-person-company/orchestration/handoff-schema.json) 为准。
 
-Single role:
+## 推荐执行顺序
 
-```bash
-python3 scripts/build_agent_brief.py --stage Build --role engineer-tech-lead --language zh-CN --company-name "My Company" --objective "Turn the PRD into an implementation plan" --current-bottleneck "Scope is defined but delivery is still ambiguous" --next-required-artifact "sprint-plan.md" --input 03-prd.md
-```
+1. 输出公司创建草案
+2. 等创始人确认
+3. 创建工作区
+4. 生成角色智能体 brief
+5. 启动首个回合
+6. 仅在触发器出现时进入校准
+7. 回合完成后再判断是否切换阶段
 
-Stage default role set:
+## 不该做的事
 
-```bash
-python3 scripts/build_agent_brief.py --stage Launch --all-stage-roles --language en --company-name "My Company" --objective "Prepare the launch pack" --current-bottleneck "Messaging is not synchronized with onboarding" --next-required-artifact "launch-brief.md" --output-dir ./workspace/my-company/agent-briefs
-```
-
-## Language Rules
-
-- Chinese prompt in: Chinese artifact drafts out by default
-- English prompt in: English artifact drafts out by default
-- Bilingual output only when explicitly requested
-- Preserve names, URLs, legal entities, and code identifiers in original form when translation would reduce accuracy
+- 不要谎称已经创建了智能体
+- 不要在未确认时批量写文件
+- 不要默认进入长周期周报模式
+- 不要一次性激活过多角色

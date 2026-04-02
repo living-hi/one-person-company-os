@@ -1,39 +1,39 @@
 {
   "role_id": "growth-sales",
-  "display_name": "Growth / Sales",
-  "mission": "Turn the offer into demand capture, pipeline movement, and market learning.",
-  "default_stage_fit": ["Validate", "Launch", "Grow"],
+  "display_name": "增长负责人",
+  "workspace_filename": "增长负责人",
+  "mission": "把产品带到目标用户面前，建立流量、转化和反馈闭环。",
+  "default_stage_fit": ["validate", "launch", "grow"],
   "owns": [
-    "positioning in market",
-    "distribution choices",
-    "pipeline motion",
-    "message testing"
+    "分发路径",
+    "获客动作",
+    "转化文案",
+    "反馈回收"
   ],
   "inputs_required": [
-    "offer sheet",
-    "target audience",
-    "pricing hypothesis",
-    "launch context"
+    "产品定位",
+    "目标用户",
+    "当前阶段目标",
+    "可用渠道"
   ],
   "outputs_required": [
-    "validation plan",
-    "launch brief",
-    "landing page copy",
-    "sales script"
+    "渠道动作清单",
+    "转化文案",
+    "反馈记录",
+    "增长实验建议"
   ],
   "handoff_to": [
     "customer-success",
     "data-analyst",
-    "founder-ceo"
+    "control-tower"
   ],
   "do_not_do": [
-    "do not present untested messaging as validated truth",
-    "do not promise unsupported product behavior",
-    "do not hide channel risk"
+    "不要同时铺太多渠道",
+    "不要为了流量牺牲目标用户准确性"
   ],
   "approval_required_for": [
-    "paid acquisition spend",
-    "public claims",
-    "automated customer outreach at scale"
+    "广告预算",
+    "对外公开活动",
+    "改动核心定价表达"
   ]
 }

@@ -2,43 +2,27 @@
 
 ## Positioning
 
-- confirm the primary audience is `solo SaaS founders`
-- keep the broader one-person company framing as secondary context, not the main headline
-- use one primary tagline consistently across GitHub, ClawHub, and social posts
+- keep the primary audience as AI-native solo founders and independent builders
+- keep the primary mental model as `创建公司 -> 启动回合 -> 推进回合 -> 校准 -> 切阶段`
+- avoid reintroducing week-based positioning as the main loop
 
 ## Repository
 
-- publish the skill from `one-person-company-os/` as the repo root or mirror its contents into a dedicated repo
-- include `README.md`, `SKILL.md`, and `CHANGELOG.md`
-- verify that `agents/openai.yaml` matches the public positioning
-- verify that `scripts/` run successfully from the published layout
-- run `python3 scripts/validate_release.py` before tagging or pushing
+- verify `README.md`, `README.zh-CN.md`, and `SKILL.md` describe the same product
+- verify `agents/openai.yaml` matches the current positioning
+- run `python3 scripts/validate_release.py`
+- confirm the Chinese-first workspace scripts still pass
 
 ## Proof Assets
 
-- add one screenshot of the generated workspace tree
-- add one screenshot of a company charter sample
-- add one screenshot of a weekly review sample
-- include `sample-outputs.md` excerpts in the repo README or release post
+- include one screenshot of the generated Chinese workspace
+- include one screenshot of `00-公司总览.md`
+- include one screenshot of `04-当前回合.md`
+- include `SAMPLE-OUTPUTS.md` excerpts in the release post
 
-## ClawHub
+## Post-Launch Loop
 
-- use the short description: `Set up and run a solo SaaS like a real company`
-- keep the first-run promise visible above the fold
-- include at least three quick-start prompts
-- keep the trust-boundary section explicit
-- make the language behavior explicit: Chinese in -> Chinese out, English in -> English out
-
-## GitHub Launch
-
-- publish the announcement post
-- pin the repo after publishing
-- include one example output in the release notes
-- add topics relevant to solo founders, SaaS, AI agents, and workflows
-
-## Immediate Post-Launch Loop
-
-- collect the first 10 founder reactions
-- record which prompt people actually copy first
-- track whether users care more about setup or weekly review
-- tighten the README based on the first confusion points
+- collect founder reactions to the new round-based workflow
+- watch which first prompt users actually copy
+- track whether users understand `总控台` quickly
+- tighten the setup draft if users still ask too many clarifying questions

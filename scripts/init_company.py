@@ -1,66 +1,34 @@
 #!/usr/bin/env python3
-"""Scaffold a one-person-company-os workspace from bundled templates."""
+"""Initialize a Chinese-first One Person Company OS workspace."""
 
 from __future__ import annotations
 
 import argparse
-import re
-from datetime import date
 from pathlib import Path
 
-
-TEMPLATE_MAP = {
-    "00-company-charter.md": "company-charter-template.md",
-    "01-icp-card.md": "icp-card-template.md",
-    "02-offer-sheet.md": "offer-sheet-template.md",
-    "03-prd.md": "prd-template.md",
-    "launches/00-launch-brief.md": "launch-brief-template.md",
-    "reviews/weekly-review-template.md": "weekly-review-template.md",
-    "decisions/decision-log-entry-template.md": "decision-log-entry-template.md",
-    "roles/role-card-template.md": "role-card-template.md",
-    "metrics/dashboard-outline.md": "dashboard-outline-template.md",
-}
-
-MODE_HINTS = {
-    "generic": "- Add the business model details that matter most for this company.",
-    "saas": "- Clarify the product wedge, activation path, pricing model, and retention mechanic.",
-    "service": "- Clarify the service package, delivery scope, fulfillment method, and cash collection rhythm.",
-    "content": "- Clarify the audience, content engine, distribution channels, and monetization path.",
-}
-
-
-def slugify(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-    return slug or "company"
-
-
-def render_template(text: str, company_name: str, mode: str, today: str) -> str:
-    return (
-        text.replace("{{COMPANY_NAME}}", company_name)
-        .replace("{{DATE}}", today)
-        .replace("{{MODE}}", mode)
-        .replace("{{MODE_HINTS}}", MODE_HINTS[mode])
-        .replace("{{WEEK_OF}}", today)
-    )
+from common import (
+    default_role_ids_for_stage,
+    normalize_stage,
+    now_string,
+    render_workspace,
+    safe_workspace_name,
+    save_state,
+    stage_label,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Scaffold a one-person-company-os workspace from bundled templates."
-    )
-    parser.add_argument("company_name", help="Human-readable company name")
-    parser.add_argument("--path", required=True, help="Directory where the company workspace will be created")
-    parser.add_argument(
-        "--mode",
-        choices=sorted(MODE_HINTS),
-        default="generic",
-        help="Business model flavor used to tailor the starter notes",
-    )
-    parser.add_argument(
-        "--force",
-        action="store_true",
-        help="Allow writing into an existing company directory",
-    )
+    parser = argparse.ArgumentParser(description="创建 One Person Company OS 中文工作区。")
+    parser.add_argument("company_name", help="公司名称")
+    parser.add_argument("--path", required=True, help="工作区父目录")
+    parser.add_argument("--product-name", default="未命名产品", help="产品名称")
+    parser.add_argument("--stage", default="验证期", help="当前阶段，如 验证期、构建期、上线期")
+    parser.add_argument("--target-user", default="待确认用户", help="目标用户")
+    parser.add_argument("--core-problem", default="待确认核心问题", help="核心问题")
+    parser.add_argument("--product-pitch", default="待补充产品一句话定义", help="产品一句话定义")
+    parser.add_argument("--company-goal", default="先完成当前阶段最关键的一个回合", help="当前主目标")
+    parser.add_argument("--current-bottleneck", default="尚未定义首个回合", help="当前瓶颈")
+    parser.add_argument("--force", action="store_true", help="允许写入已存在目录")
     return parser
 
 
@@ -68,47 +36,50 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
+    stage_id = normalize_stage(args.stage)
     root = Path(args.path).expanduser().resolve()
-    company_dir = root / slugify(args.company_name)
-
+    company_dir = root / safe_workspace_name(args.company_name)
     if company_dir.exists() and not args.force:
         parser.error(f"target already exists: {company_dir}")
 
-    template_dir = Path(__file__).resolve().parent.parent / "assets" / "templates"
-    if not template_dir.is_dir():
-        parser.error(f"template directory not found: {template_dir}")
+    active_roles = default_role_ids_for_stage(stage_id)
+    state = {
+        "version": "2.0",
+        "language": "zh-CN",
+        "company_name": args.company_name,
+        "product_name": args.product_name,
+        "stage_id": stage_id,
+        "stage_label": stage_label(stage_id),
+        "target_user": args.target_user,
+        "core_problem": args.core_problem,
+        "product_pitch": args.product_pitch,
+        "company_goal": args.company_goal,
+        "current_bottleneck": args.current_bottleneck,
+        "active_roles": active_roles,
+        "current_round": {
+            "round_id": "未启动",
+            "name": "未启动",
+            "goal": "待定义",
+            "status": "待定义",
+            "owner_role_id": active_roles[1] if len(active_roles) > 1 else active_roles[0],
+            "owner_role_name": "总控台",
+            "artifact": "待定义",
+            "blocker": "无",
+            "next_action": "先确认首个推进回合",
+            "success_criteria": "首个回合被明确并进入已拆解",
+            "started_at": now_string(),
+            "updated_at": now_string(),
+        },
+    }
 
-    today = date.today().isoformat()
-    directories = [
-        company_dir,
-        company_dir / "roles",
-        company_dir / "agent-briefs",
-        company_dir / "handoffs",
-        company_dir / "workflows",
-        company_dir / "launches",
-        company_dir / "reviews",
-        company_dir / "decisions",
-        company_dir / "metrics",
-    ]
-    for directory in directories:
-        directory.mkdir(parents=True, exist_ok=True)
-
-    created_files: list[Path] = []
-    for output_name, template_name in TEMPLATE_MAP.items():
-        template_path = template_dir / template_name
-        output_path = company_dir / output_name
-        rendered = render_template(
-            template_path.read_text(encoding="utf-8"),
-            company_name=args.company_name,
-            mode=args.mode,
-            today=today,
-        )
-        output_path.write_text(rendered, encoding="utf-8")
-        created_files.append(output_path)
+    save_state(company_dir, state)
+    render_workspace(company_dir, state)
 
     print(f"Created company workspace: {company_dir}")
-    for path in created_files:
-        print(path.relative_to(company_dir))
+    print("00-公司总览.md")
+    print("04-当前回合.md")
+    print("角色智能体/角色清单.md")
+    print("自动化/当前状态.json")
     return 0
 
 

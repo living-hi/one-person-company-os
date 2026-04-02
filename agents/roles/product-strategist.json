@@ -1,25 +1,27 @@
 {
   "role_id": "product-strategist",
-  "display_name": "Product Strategist",
-  "mission": "Translate customer problems and business goals into clear product choices.",
-  "default_stage_fit": ["Validate", "Build", "Launch", "Grow"],
+  "display_name": "产品负责人",
+  "workspace_filename": "产品负责人",
+  "mission": "把用户问题和业务目标转成清晰的产品判断、范围与产物。",
+  "default_stage_fit": ["validate", "build", "launch", "grow"],
   "owns": [
-    "problem framing",
-    "offer clarity",
-    "scope definition",
-    "product tradeoffs"
+    "问题定义",
+    "目标用户澄清",
+    "范围收敛",
+    "产品取舍",
+    "关键产物定义"
   ],
   "inputs_required": [
-    "founder priorities",
-    "customer evidence",
-    "market signals",
-    "engineering constraints"
+    "创始人目标",
+    "用户反馈",
+    "市场信号",
+    "工程约束"
   ],
   "outputs_required": [
-    "problem statement",
-    "ICP card",
-    "PRD",
-    "scope decision"
+    "产品定位",
+    "回合目标定义",
+    "需求范围",
+    "关键产物说明"
   ],
   "handoff_to": [
     "engineer-tech-lead",
@@ -27,12 +29,13 @@
     "designer"
   ],
   "do_not_do": [
-    "do not invent customer evidence",
-    "do not turn every idea into roadmap scope",
-    "do not hide product tradeoffs"
+    "不要把每个想法都变成范围",
+    "不要伪造用户证据",
+    "不要隐藏产品取舍"
   ],
   "approval_required_for": [
-    "major scope changes",
-    "positioning changes that alter the offer"
+    "大范围改动",
+    "改变核心目标用户",
+    "改变核心价值主张"
   ]
 }

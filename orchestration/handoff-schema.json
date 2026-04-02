@@ -1,12 +1,15 @@
 {
-  "version": "1.0",
+  "version": "2.0",
   "required_fields": [
-    "stage",
+    "stage_id",
+    "stage_label",
     "working_language",
     "role_id",
     "role_display_name",
     "objective",
     "company_name",
+    "current_round",
+    "round_goal",
     "inputs",
     "required_outputs",
     "constraints",
@@ -15,14 +18,17 @@
     "continuation_context"
   ],
   "continuation_context_fields": [
-    "stage",
+    "round_id",
+    "round_status",
     "current_bottleneck",
-    "next_required_artifact",
+    "trigger_reason",
+    "next_shortest_action",
     "pending_approvals",
     "recommended_next_owner"
   ],
   "notes": [
-    "Use the same field names across agents so another model can continue without rebuilding context.",
-    "Keep continuation_context short enough to paste into the next role brief or status update."
+    "所有角色交接都必须保留当前回合与下一步最短动作。",
+    "当触发器触发时，trigger_reason 必填。",
+    "需要创始人拍板的事项必须显式进入 pending_approvals。"
   ]
 }

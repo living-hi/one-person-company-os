@@ -1,143 +1,52 @@
 #!/usr/bin/env python3
-"""Build one or more role-agent briefs from the One Person Company OS manifests."""
+"""Build role-agent briefs for One Person Company OS."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
 from pathlib import Path
 from typing import Any
 
-
-def load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def slugify(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-    return slug or "agent-brief"
+from common import (
+    load_json,
+    load_role_specs,
+    load_stage_defaults,
+    normalize_stage,
+    role_display_names,
+    role_spec,
+    stage_label,
+    write_text,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Build role-agent briefs from the one-person-company-os role manifests."
-    )
-    parser.add_argument(
-        "--stage",
-        choices=["Validate", "Build", "Launch", "Operate", "Grow"],
-        required=True,
-        help="Primary company stage for this work packet",
-    )
-    parser.add_argument(
-        "--role",
-        help="Single role id to emit, such as product-strategist or engineer-tech-lead",
-    )
-    parser.add_argument(
-        "--all-stage-roles",
-        action="store_true",
-        help="Emit briefs for the default role set of the stage",
-    )
-    parser.add_argument(
-        "--include-optional",
-        action="store_true",
-        help="When used with --all-stage-roles, also include optional stage roles",
-    )
-    parser.add_argument(
-        "--language",
-        default="same-as-user",
-        help="Working language to encode in the brief, such as zh-CN, en, or bilingual",
-    )
-    parser.add_argument("--company-name", default="Unnamed Company", help="Company name for the brief")
-    parser.add_argument("--objective", default="Clarify and advance the next company milestone", help="Task objective")
-    parser.add_argument(
-        "--current-bottleneck",
-        default="Not specified",
-        help="Current bottleneck or problem this role should address",
-    )
-    parser.add_argument(
-        "--next-required-artifact",
-        default="Not specified",
-        help="Main artifact expected after this role finishes",
-    )
-    parser.add_argument(
-        "--input",
-        action="append",
-        default=[],
-        help="Extra input artifact or context. Repeat for multiple values.",
-    )
-    parser.add_argument(
-        "--artifact",
-        action="append",
-        default=[],
-        help="Override or extend required outputs. Repeat for multiple values.",
-    )
-    parser.add_argument(
-        "--constraint",
-        action="append",
-        default=[],
-        help="Hard constraint to include in the brief. Repeat for multiple values.",
-    )
-    parser.add_argument(
-        "--approval-gate",
-        action="append",
-        default=[],
-        help="Additional approval gate. Repeat for multiple values.",
-    )
-    parser.add_argument(
-        "--pending-approval",
-        action="append",
-        default=[],
-        help="Pending approval that the next role should be aware of. Repeat for multiple values.",
-    )
-    parser.add_argument(
-        "--output-format",
-        choices=["markdown", "json"],
-        default="markdown",
-        help="Brief output format",
-    )
-    parser.add_argument(
-        "--output-dir",
-        help="Write generated briefs to this directory. When omitted, single-role output is printed to stdout.",
-    )
+    parser = argparse.ArgumentParser(description="生成一个或多个角色智能体 brief。")
+    parser.add_argument("--stage", required=True, help="阶段，如 构建期 或 build")
+    parser.add_argument("--role", help="单个角色 id")
+    parser.add_argument("--all-default-roles", action="store_true", help="输出该阶段的默认角色集")
+    parser.add_argument("--include-optional", action="store_true", help="同时包含阶段可选角色")
+    parser.add_argument("--language", default="zh-CN", help="工作语言")
+    parser.add_argument("--company-name", default="未命名公司", help="公司名称")
+    parser.add_argument("--objective", default="推进当前阶段的关键回合", help="当前目标")
+    parser.add_argument("--current-round", default="当前回合待定义", help="当前回合名称")
+    parser.add_argument("--round-goal", default="待定义", help="当前回合目标")
+    parser.add_argument("--current-bottleneck", default="待确认", help="当前瓶颈")
+    parser.add_argument("--trigger-reason", default="无", help="触发原因")
+    parser.add_argument("--next-shortest-action", default="待确认", help="下一步最短动作")
+    parser.add_argument("--input", action="append", default=[], help="补充输入，可重复")
+    parser.add_argument("--artifact", action="append", default=[], help="补充输出，可重复")
+    parser.add_argument("--constraint", action="append", default=[], help="补充约束，可重复")
+    parser.add_argument("--approval-gate", action="append", default=[], help="补充审批点，可重复")
+    parser.add_argument("--pending-approval", action="append", default=[], help="待创始人确认事项")
+    parser.add_argument("--output-format", choices=["markdown", "json"], default="markdown", help="输出格式")
+    parser.add_argument("--output-dir", help="批量写入的目录")
     return parser
 
 
-def resolve_paths() -> tuple[Path, Path, Path]:
-    root = Path(__file__).resolve().parent.parent
-    roles_dir = root / "agents" / "roles"
-    orchestration_dir = root / "orchestration"
-    return root, roles_dir, orchestration_dir
-
-
-def load_role_specs(roles_dir: Path) -> dict[str, dict[str, Any]]:
-    specs: dict[str, dict[str, Any]] = {}
-    for path in sorted(roles_dir.glob("*.json")):
-        spec = load_json(path)
-        specs[spec["role_id"]] = spec
-    return specs
-
-
-def role_ids_for_stage(
-    stage: str,
-    stage_defaults: dict[str, Any],
-    include_optional: bool,
-) -> list[str]:
-    role_ids = list(stage_defaults["stage_defaults"][stage])
-    if include_optional:
-        role_ids.extend(stage_defaults["stage_optional_roles"].get(stage, []))
-    seen: set[str] = set()
-    ordered: list[str] = []
-    for role_id in role_ids:
-        if role_id not in seen:
-            ordered.append(role_id)
-            seen.add(role_id)
-    return ordered
-
-
 def unique(values: list[str]) -> list[str]:
-    seen: set[str] = set()
     result: list[str] = []
+    seen: set[str] = set()
     for value in values:
         if value and value not in seen:
             result.append(value)
@@ -145,154 +54,146 @@ def unique(values: list[str]) -> list[str]:
     return result
 
 
+def role_ids_for_stage(stage_id: str, include_optional: bool) -> list[str]:
+    defaults = load_stage_defaults()
+    role_ids = list(defaults["stage_defaults"][stage_id])
+    if include_optional:
+        role_ids.extend(defaults["stage_optional_roles"].get(stage_id, []))
+    return unique(role_ids)
+
+
 def build_packet(
-    role_spec: dict[str, Any],
+    spec: dict[str, Any],
     *,
-    stage: str,
+    stage_id: str,
+    role_specs: dict[str, dict[str, Any]],
     company_name: str,
     language: str,
     objective: str,
+    current_round: str,
+    round_goal: str,
     current_bottleneck: str,
-    next_required_artifact: str,
+    trigger_reason: str,
+    next_shortest_action: str,
     extra_inputs: list[str],
     extra_artifacts: list[str],
     constraints: list[str],
     extra_approval_gates: list[str],
     pending_approvals: list[str],
 ) -> dict[str, Any]:
-    required_outputs = unique(role_spec["outputs_required"] + extra_artifacts)
-    approval_gates = unique(role_spec["approval_required_for"] + extra_approval_gates)
     return {
-        "stage": stage,
+        "stage_id": stage_id,
+        "stage_label": stage_label(stage_id),
         "working_language": language,
         "company_name": company_name,
-        "role_id": role_spec["role_id"],
-        "role_display_name": role_spec["display_name"],
+        "role_id": spec["role_id"],
+        "role_display_name": spec["display_name"],
         "objective": objective,
-        "mission": role_spec["mission"],
-        "owns": role_spec["owns"],
-        "inputs": unique(role_spec["inputs_required"] + extra_inputs),
-        "required_outputs": required_outputs,
-        "constraints": constraints or ["Respect the founder as final decision-maker."],
-        "approval_gates": approval_gates,
-        "handoff_targets": role_spec["handoff_to"],
-        "guardrails": role_spec["do_not_do"],
+        "current_round": current_round,
+        "round_goal": round_goal,
+        "mission": spec["mission"],
+        "owns": spec["owns"],
+        "inputs": unique(spec["inputs_required"] + extra_inputs),
+        "required_outputs": unique(spec["outputs_required"] + extra_artifacts),
+        "constraints": constraints or ["尊重创始人是最终决策者。"],
+        "approval_gates": unique(spec["approval_required_for"] + extra_approval_gates),
+        "handoff_targets": role_display_names(spec["handoff_to"], role_specs),
+        "guardrails": spec["do_not_do"],
         "continuation_context": {
-            "stage": stage,
+            "round_id": current_round,
+            "round_status": "待确认",
             "current_bottleneck": current_bottleneck,
-            "next_required_artifact": next_required_artifact,
+            "trigger_reason": trigger_reason,
+            "next_shortest_action": next_shortest_action,
             "pending_approvals": pending_approvals,
-            "recommended_next_owner": role_spec["handoff_to"][0] if role_spec["handoff_to"] else "founder-ceo"
-        }
+            "recommended_next_owner": role_display_names(spec["handoff_to"][:1], role_specs)[0]
+            if spec["handoff_to"]
+            else "创始人",
+        },
     }
 
 
-def format_markdown(packet: dict[str, Any], handoff_schema: dict[str, Any]) -> str:
+def format_markdown(packet: dict[str, Any], schema: dict[str, Any]) -> str:
     lines = [
-        f"# Agent Brief: {packet['role_display_name']}",
+        f"# 角色 Brief: {packet['role_display_name']}",
         "",
-        "## Session Frame",
-        f"- Stage: {packet['stage']}",
-        f"- Working language: {packet['working_language']}",
-        f"- Company: {packet['company_name']}",
-        f"- Objective: {packet['objective']}",
+        "## 会话框架",
+        f"- 阶段: {packet['stage_label']}",
+        f"- 工作语言: {packet['working_language']}",
+        f"- 公司: {packet['company_name']}",
+        f"- 当前回合: {packet['current_round']}",
+        f"- 回合目标: {packet['round_goal']}",
+        f"- 当前目标: {packet['objective']}",
         "",
-        "## Role Contract",
-        f"- Role id: {packet['role_id']}",
-        f"- Mission: {packet['mission']}",
+        "## 角色使命",
+        f"- 角色 ID: {packet['role_id']}",
+        f"- 使命: {packet['mission']}",
         "",
-        "## Ownership",
+        "## 负责范围",
     ]
     lines.extend(f"- {item}" for item in packet["owns"])
-    lines.extend([
-        "",
-        "## Inputs",
-    ])
+    lines.extend(["", "## 输入"])
     lines.extend(f"- {item}" for item in packet["inputs"])
-    lines.extend([
-        "",
-        "## Required Outputs",
-    ])
+    lines.extend(["", "## 输出"])
     lines.extend(f"- {item}" for item in packet["required_outputs"])
-    lines.extend([
-        "",
-        "## Constraints",
-    ])
+    lines.extend(["", "## 约束"])
     lines.extend(f"- {item}" for item in packet["constraints"])
-    lines.extend([
-        "",
-        "## Approval Gates",
-    ])
+    lines.extend(["", "## 审批点"])
     lines.extend(f"- {item}" for item in packet["approval_gates"])
-    lines.extend([
-        "",
-        "## Handoff Targets",
-    ])
+    lines.extend(["", "## 默认交接对象"])
     lines.extend(f"- {item}" for item in packet["handoff_targets"])
-    lines.extend([
-        "",
-        "## Guardrails",
-    ])
+    lines.extend(["", "## 不该做的事"])
     lines.extend(f"- {item}" for item in packet["guardrails"])
-    lines.extend([
-        "",
-        "## Continuation Context",
-        f"- Current bottleneck: {packet['continuation_context']['current_bottleneck']}",
-        f"- Next required artifact: {packet['continuation_context']['next_required_artifact']}",
-        f"- Recommended next owner: {packet['continuation_context']['recommended_next_owner']}",
-        "",
-        "## Pending Approvals",
-    ])
-    pending = packet["continuation_context"]["pending_approvals"] or ["None recorded"]
+    lines.extend(
+        [
+            "",
+            "## 延续上下文",
+            f"- 当前瓶颈: {packet['continuation_context']['current_bottleneck']}",
+            f"- 触发原因: {packet['continuation_context']['trigger_reason']}",
+            f"- 下一步最短动作: {packet['continuation_context']['next_shortest_action']}",
+            f"- 推荐下一负责人: {packet['continuation_context']['recommended_next_owner']}",
+            "",
+            "## 待确认事项",
+        ]
+    )
+    pending = packet["continuation_context"]["pending_approvals"] or ["无"]
     lines.extend(f"- {item}" for item in pending)
-    lines.extend([
-        "",
-        "## Handoff Schema",
-        f"- Required fields: {', '.join(handoff_schema['required_fields'])}",
-    ])
+    lines.extend(["", "## Schema", f"- 必填字段: {', '.join(schema['required_fields'])}"])
     return "\n".join(lines) + "\n"
 
 
-def write_packet(
-    packet: dict[str, Any],
-    *,
-    output_format: str,
-    output_dir: Path | None,
-    handoff_schema: dict[str, Any],
-) -> None:
+def write_packet(packet: dict[str, Any], output_format: str, output_dir: Path | None, schema: dict[str, Any]) -> None:
     if output_format == "json":
         rendered = json.dumps(packet, ensure_ascii=False, indent=2) + "\n"
         suffix = ".json"
     else:
-        rendered = format_markdown(packet, handoff_schema)
+        rendered = format_markdown(packet, schema)
         suffix = ".md"
 
     if output_dir is None:
         print(rendered, end="")
         return
 
-    output_dir.mkdir(parents=True, exist_ok=True)
-    path = output_dir / f"{slugify(packet['role_id'])}{suffix}"
-    path.write_text(rendered, encoding="utf-8")
-    print(path)
+    filename = packet["role_display_name"] + suffix
+    write_text(output_dir / filename, rendered)
+    print(output_dir / filename)
 
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
-    if not args.role and not args.all_stage_roles:
-        parser.error("use --role for one brief or --all-stage-roles for the stage default set")
+    if not args.role and not args.all_default_roles:
+        parser.error("use --role or --all-default-roles")
 
-    _, roles_dir, orchestration_dir = resolve_paths()
-    role_specs = load_role_specs(roles_dir)
-    stage_defaults = load_json(orchestration_dir / "stage-defaults.json")
-    handoff_schema = load_json(orchestration_dir / "handoff-schema.json")
+    stage_id = normalize_stage(args.stage)
+    role_specs = load_role_specs()
+    schema = load_json(Path(__file__).resolve().parent.parent / "orchestration" / "handoff-schema.json")
 
     if args.role:
         role_ids = [args.role]
     else:
-        role_ids = role_ids_for_stage(args.stage, stage_defaults, args.include_optional)
+        role_ids = role_ids_for_stage(stage_id, args.include_optional)
 
     missing = [role_id for role_id in role_ids if role_id not in role_specs]
     if missing:
@@ -304,25 +205,24 @@ def main() -> int:
 
     for role_id in role_ids:
         packet = build_packet(
-            role_specs[role_id],
-            stage=args.stage,
+            role_spec(role_id, role_specs),
+            stage_id=stage_id,
+            role_specs=role_specs,
             company_name=args.company_name,
             language=args.language,
             objective=args.objective,
+            current_round=args.current_round,
+            round_goal=args.round_goal,
             current_bottleneck=args.current_bottleneck,
-            next_required_artifact=args.next_required_artifact,
+            trigger_reason=args.trigger_reason,
+            next_shortest_action=args.next_shortest_action,
             extra_inputs=args.input,
             extra_artifacts=args.artifact,
             constraints=args.constraint,
             extra_approval_gates=args.approval_gate,
             pending_approvals=args.pending_approval,
         )
-        write_packet(
-            packet,
-            output_format=args.output_format,
-            output_dir=output_dir,
-            handoff_schema=handoff_schema,
-        )
+        write_packet(packet, args.output_format, output_dir, schema)
     return 0
 
 

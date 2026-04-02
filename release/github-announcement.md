@@ -1,27 +1,22 @@
-# GitHub Announcement Draft
+# GitHub Announcement
 
-I built `one-person-company-os`, an AI-native operating system for solo founders.
+I rebuilt `one-person-company-os`.
 
-The core use case is simple: help a solo SaaS founder run like a real company, not like a pile of disconnected prompts.
+The old shape was closer to a startup operating manual.
+The new shape is a faster AI-native control system for solo companies:
 
-Instead of vague advice, it produces concrete operating artifacts:
+- create the company
+- start a round
+- advance the round
+- calibrate only when triggered
+- transition stages when the bottleneck changes
 
-- company charter
-- ICP card
-- offer sheet
-- PRD or MVP scope
-- launch brief
-- weekly review
+The system is now Chinese-first for Chinese users, including workspace names, role names, and day-to-day operating language.
 
-It also gives the founder a real operating layer:
+This release includes:
 
-- stage-aware workflows for `Validate`, `Build`, `Launch`, `Operate`, and `Grow`
-- explicit AI role ownership across product, engineering, launch, ops, growth, sales, and support
-- one shared company core with localized execution for Chinese and English markets
-- helper scripts for company setup and recurring weekly reviews
-
-The core idea:
-
-`Turn one founder into a functioning AI-native company.`
-
-If you are a solo founder, indie hacker, or independent developer trying to turn a product into an actual business, this is the workflow layer I wished existed earlier.
+- a rewritten `SKILL.md`
+- a Chinese-first workspace
+- a minimal role system with `总控台` at the center
+- round scripts for start, update, calibration, and stage transition
+- updated sample outputs and release materials
