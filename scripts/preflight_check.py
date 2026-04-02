@@ -22,10 +22,10 @@ def main() -> int:
     company_dir = Path(args.company_dir).expanduser().resolve() if args.company_dir else None
 
     print_step(1, 5, "模式判定")
-    print_step(2, 5, "环境检查")
+    print_step(2, 5, "preflight 与保存策略检查")
     status = preflight_status(company_dir)
-    print_step(3, 5, "工作区检查")
-    print_step(4, 5, "保存策略判定")
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（读取当前工作区）")
+    print_step(4, 5, "执行与落盘", status="跳过（本次只做预检与策略判定）")
 
     stage = "未确认"
     round_name = "未确认"
@@ -61,6 +61,19 @@ def main() -> int:
         company_dir=company_dir,
         saved_paths=[],
         unsaved_reason="本次仅执行预检，没有新增落盘",
+        work_scope=[
+            "检查当前环境能不能直接运行脚本。",
+            "判断现在该走脚本执行、手动落盘还是纯对话推进。",
+            "把保存状态和恢复动作翻译成用户可理解的话。",
+        ],
+        non_scope=[
+            "不会在这一步创建新公司文件。",
+            "不会把预检结果冒充成正式执行结果。",
+        ],
+        changes=[
+            f"已确认当前推荐执行模式为 {status['recommended_mode']}。",
+            "本次没有写入新文件，只更新了对环境与保存策略的判断。",
+        ],
     )
     return 0
 

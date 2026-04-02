@@ -1,4 +1,4 @@
 interface:
   display_name: "One Person Company OS"
-  short_description: "面向 AI 一人公司的状态驱动 company operating system"
-  default_prompt: "我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并明确当前保存模式、保存状态和运行状态；我确认后再正式创建。"
+  short_description: "面向 AI 一人公司的可导航、可落盘、可交付 company operating system"
+  default_prompt: "我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并用三层导航条、用户导航版/审计版、保存解释和运行解释告诉我当前状态；我确认后再正式创建。"

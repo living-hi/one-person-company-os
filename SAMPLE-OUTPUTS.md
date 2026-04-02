@@ -2,6 +2,22 @@
 
 These excerpts show the V2 behavior: Chinese-first company setup, current-round control, calibration, and stage transition.
 
+## 交互输出结构
+
+Every major operation now includes:
+
+- `用户导航版`
+  - 三层导航条
+  - 本次会做 / 不会做
+  - 本次变化
+  - 回合仪表盘
+  - 保存解释
+  - 运行解释
+- `审计版`
+  - 状态栏
+  - 保存状态
+  - 运行状态
+
 ## 公司总览
 
 From `assets/examples/zh-round-mode/00-公司总览.md`
@@ -47,8 +63,12 @@ From `assets/examples/zh-round-mode/02-校准记录.md`
   04-当前回合.md
   05-推进规则.md
   06-触发器与校准规则.md
+  07-文档产物规范.md
   角色智能体/
   流程/
+  产物/内部工作稿/
+  产物/标准规范稿/
+  产物/可转DOCX稿/
   记录/
   自动化/
 ```

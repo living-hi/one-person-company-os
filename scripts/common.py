@@ -29,6 +29,7 @@ CORE_WORKSPACE_FILES = (
 REQUIRED_SCRIPT_NAMES = (
     "init_company.py",
     "build_agent_brief.py",
+    "generate_artifact_document.py",
     "start_round.py",
     "update_round.py",
     "calibrate_round.py",
@@ -50,6 +51,43 @@ PYTHON_CANDIDATE_COMMANDS = (
     "python3",
     "python",
 )
+
+STEP_CATALOG = {
+    1: {
+        "system": "模式判定",
+        "human": "先判断这次要进入哪个流程",
+    },
+    2: {
+        "system": "preflight 与保存策略检查",
+        "human": "先确认环境、保存条件和执行方式",
+    },
+    3: {
+        "system": "草案 / 变更提议 / 当前状态装载",
+        "human": "先装载现状，再准备草案或变更",
+    },
+    4: {
+        "system": "执行与落盘",
+        "human": "开始执行，并把结果写入工作区",
+    },
+    5: {
+        "system": "验证与回报",
+        "human": "核对结果、说明变化并给出回报",
+    },
+}
+
+STEP_ALIASES = {
+    "模式判定": 1,
+    "环境检查": 2,
+    "preflight 与保存策略检查": 2,
+    "工作区检查": 3,
+    "组装初始状态": 3,
+    "加载当前状态": 3,
+    "组装角色 Brief": 3,
+    "草案 / 变更提议 / 当前状态装载": 3,
+    "保存策略判定": 4,
+    "执行与落盘": 4,
+    "验证与回报": 5,
+}
 
 STAGE_CONFIG = {
     "validate": {
@@ -124,7 +162,7 @@ def safe_workspace_name(value: str) -> str:
 
 
 def slugify(value: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    slug = re.sub(r"[^\w]+", "-", value.strip().lower(), flags=re.UNICODE).strip("-_")
     return slug or "record"
 
 
@@ -149,6 +187,10 @@ def format_list(items: list[str]) -> str:
 
 def bool_label(value: bool) -> str:
     return "是" if value else "否"
+
+
+def bool_audit_label(value: bool) -> str:
+    return "通过" if value else "未通过"
 
 
 def joined_text(values: Iterable[str]) -> str:
@@ -309,6 +351,10 @@ def ensure_workspace_dirs(company_dir: Path) -> None:
         "",
         "角色智能体",
         "流程",
+        "产物/内部工作稿",
+        "产物/标准规范稿",
+        "产物/可转DOCX稿",
+        "产物/文档模板",
         "产物/产品",
         "产物/增长",
         "产物/运营",
@@ -358,6 +404,10 @@ def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
     required_paths.extend(
         [
             TEMPLATE_DIR / "company-overview-template.md",
+            TEMPLATE_DIR / "artifact-output-guide-template.md",
+            TEMPLATE_DIR / "artifact-internal-draft-template.md",
+            TEMPLATE_DIR / "artifact-standard-spec-template.md",
+            TEMPLATE_DIR / "artifact-docx-ready-template.md",
             ORCHESTRATION_DIR / "stage-defaults.json",
             ORCHESTRATION_DIR / "handoff-schema.json",
         ]
@@ -453,13 +503,133 @@ def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
 
 
 def print_step(step: int, total: int, title: str, *, status: str = "已完成", stream: TextIO = sys.stdout) -> None:
-    print(f"Step {step}/{total} {title}: {status}", file=stream)
+    step_id = STEP_ALIASES.get(title, step)
+    meta = STEP_CATALOG.get(step_id, {"human": title, "system": title})
+    human_label = meta["human"]
+    system_label = meta["system"]
+    if title not in (human_label, system_label):
+        status = f"{status}（{title}）"
+    print(f"Step {step}/{total} {human_label} [{system_label}]: {status}", file=stream)
 
 
 def print_block(title: str, items: list[tuple[str, str]], *, stream: TextIO = sys.stdout) -> None:
     print(f"{title}:", file=stream)
     for label, value in items:
         print(f"- {label}: {value}", file=stream)
+
+
+def step_display(step_number: int, phase: str) -> str:
+    step_id = STEP_ALIASES.get(phase, step_number)
+    meta = STEP_CATALOG.get(step_id, {"human": phase, "system": phase})
+    return f"Step {step_number}/5 {meta['human']} [{meta['system']}]"
+
+
+def explain_save_status(
+    *,
+    saved: bool,
+    save_path: str,
+    filenames: str,
+    save_details: str,
+    unsaved_reason: str,
+    persistence_mode: str,
+) -> list[tuple[str, str]]:
+    if saved:
+        return [
+            ("保存结论", "本次关键内容已经真实写入工作区，不只是停留在聊天里。"),
+            ("你可以去哪里看", save_path),
+            ("这次写入了什么", filenames),
+            ("写入明细", save_details),
+            ("当前保存方式", persistence_mode),
+        ]
+
+    save_next = {
+        "模式 A：脚本执行": "先修复脚本执行问题，再重跑当前步骤。",
+        "模式 A：脚本执行（切换兼容 Python）": "先切换到兼容 Python，再重跑当前步骤。",
+        "模式 B：手动落盘": "当前适合直接手动写入 markdown/json 到工作区。",
+        "模式 C：纯对话推进": "当前只能在对话里推进；如果要落盘，需要先确认创建或恢复写入能力。",
+    }.get(persistence_mode, "先确认是否允许写文件，再决定脚本执行或手动落盘。")
+
+    return [
+        ("保存结论", "本次内容还没有真实写入工作区。"),
+        ("为什么还没保存", unsaved_reason),
+        ("现在内容在哪里", "当前内容只存在于本次输出或标准输出里。"),
+        ("如果你要保存", save_next),
+        ("当前保存方式", persistence_mode),
+    ]
+
+
+def explain_runtime_status(runtime: dict[str, Any]) -> list[tuple[str, str]]:
+    if runtime["runnable"]:
+        runtime_summary = "当前环境可以直接运行脚本，适合走模式 A。"
+    elif runtime["compatible_python_found"]:
+        runtime_summary = "当前解释器不理想，但已经找到可切换的兼容 Python。"
+    elif runtime["writable"]:
+        runtime_summary = "脚本暂时不稳，但当前环境还能直接写文件，适合走手动落盘。"
+    else:
+        runtime_summary = "当前环境既不适合直接跑脚本，也不适合直接写文件，只能先纯对话推进。"
+
+    install_summary = "技能文件齐全，可以继续恢复运行。" if runtime["installed"] else "技能文件还不完整，先补齐缺失文件。"
+    persistence_summary = "当前工作区已经具备核心落盘文件。" if runtime["persisted"] else runtime["unsaved_reason"]
+
+    return [
+        ("运行结论", runtime_summary),
+        ("安装情况", install_summary),
+        ("工作区情况", "目标工作区已存在。" if runtime["workspace_created"] else "目标工作区还没有创建。"),
+        ("落盘情况", persistence_summary),
+        ("Python 兼容", f"当前是 {runtime['current_python_label']}；兼容目标是 Python {runtime['python_minimum']}+。"),
+        ("推荐动作", runtime["agent_action"]),
+    ]
+
+
+def build_round_dashboard(
+    *,
+    company_dir: Optional[Path],
+    stage: str,
+    round_name: str,
+    role: str,
+    artifact: str,
+    next_action: str,
+) -> list[tuple[str, str]]:
+    if company_dir is not None:
+        state_file = state_path(company_dir)
+        if state_file.is_file():
+            state = load_state(company_dir)
+            current_round = state.get("current_round", {})
+            return [
+                ("当前阶段", state.get("stage_label", stage)),
+                ("当前回合", current_round.get("name", round_name)),
+                ("回合状态", current_round.get("status", "待定义")),
+                ("当前负责角色", current_round.get("owner_role_name", role)),
+                ("关键产物", current_round.get("artifact", artifact)),
+                ("当前阻塞", current_round.get("blocker", "无")),
+                ("下一步最短动作", current_round.get("next_action", next_action)),
+                ("完成标准", current_round.get("success_criteria", "待定义")),
+            ]
+
+    return [
+        ("当前阶段", stage),
+        ("当前回合", round_name),
+        ("回合状态", "待确认"),
+        ("当前负责角色", role),
+        ("关键产物", artifact),
+        ("当前阻塞", "待确认"),
+        ("下一步最短动作", next_action),
+        ("完成标准", "待确认"),
+    ]
+
+
+def default_work_scope(artifact: str) -> list[str]:
+    return [
+        f"说明本次与 {artifact} 相关的关键结果。",
+        "明确这次是否真正保存、保存到哪里。",
+        "明确当前环境该继续脚本执行、手动落盘，还是只做对话推进。",
+    ]
+
+
+def default_non_scope(mode: str) -> list[str]:
+    if mode == "创建公司":
+        return ["不会在未确认前假装已经完成正式创建。"]
+    return ["不会把未执行的动作说成已经完成。"]
 
 
 def emit_runtime_report(
@@ -476,6 +646,11 @@ def emit_runtime_report(
     company_dir: Optional[Path],
     saved_paths: list[Path],
     unsaved_reason: str = "无",
+    work_scope: Optional[list[str]] = None,
+    non_scope: Optional[list[str]] = None,
+    changes: Optional[list[str]] = None,
+    output_view: str = "both",
+    step_number: int = 5,
     stream: TextIO = sys.stdout,
 ) -> None:
     runtime = preflight_status(company_dir)
@@ -486,52 +661,107 @@ def emit_runtime_report(
 
     if not saved and unsaved_reason == "无":
         unsaved_reason = runtime["unsaved_reason"]
+    work_scope = work_scope or default_work_scope(artifact)
+    non_scope = non_scope or default_non_scope(mode)
+    changes = changes or (
+        [f"已更新或写入 {joined_text(path.name for path in saved_paths)}。"] if saved_paths else ["本次没有写入新文件。"]
+    )
+    step_label = step_display(step_number, phase)
+    round_dashboard = build_round_dashboard(
+        company_dir=company_dir,
+        stage=stage,
+        round_name=round_name,
+        role=role,
+        artifact=artifact,
+        next_action=next_action,
+    )
+    save_explanation = explain_save_status(
+        saved=saved,
+        save_path=save_path,
+        filenames=filenames,
+        save_details=save_details,
+        unsaved_reason=unsaved_reason,
+        persistence_mode=persistence_mode,
+    )
+    runtime_explanation = explain_runtime_status(runtime)
 
-    print_block(
-        "状态栏",
-        [
-            ("当前模式", mode),
-            ("当前步骤", phase),
-            ("当前阶段", stage),
-            ("当前回合", round_name),
-            ("当前角色", role),
-            ("当前产物", artifact),
-            ("当前保存模式", persistence_mode),
-            ("下一步动作", next_action),
-            ("是否需要确认", needs_confirmation),
-        ],
-        stream=stream,
-    )
-    print_block(
-        "保存状态",
-        [
-            ("是否已保存", bool_label(saved)),
-            ("保存路径", save_path),
-            ("文件名", filenames),
-            ("保存明细", save_details),
-            ("未保存原因", "无" if saved else unsaved_reason),
-        ],
-        stream=stream,
-    )
-    print_block(
-        "运行状态",
-        [
-            ("installed", bool_label(runtime["installed"])),
-            ("runnable", bool_label(runtime["runnable"])),
-            ("python_supported", bool_label(runtime["python_supported"])),
-            ("workspace_created", bool_label(runtime["workspace_created"])),
-            ("persisted", bool_label(runtime["persisted"])),
-            ("writable", bool_label(runtime["writable"])),
-            ("当前 Python", f"{runtime['python_path']} ({runtime['python_version']})"),
-            ("兼容目标", f"Python {runtime['python_minimum']}+"),
-            ("可切换解释器", "无" if not runtime["compatible_python_found"] else f"{runtime['compatible_python_path']} ({runtime['compatible_python_version']})"),
-            ("恢复脚本", runtime["recovery_script"]),
-            ("推荐模式", runtime["recommended_mode"]),
-            ("智能体建议动作", runtime["agent_action"]),
-            ("环境异常", runtime["runtime_error"]),
-        ],
-        stream=stream,
-    )
+    if output_view in ("both", "navigation"):
+        print("用户导航版:", file=stream)
+        print_block(
+            "三层导航条",
+            [
+                ("阶段", stage),
+                ("回合", round_name),
+                ("本次 Step", step_label),
+            ],
+            stream=stream,
+        )
+        print_block(
+            "本次范围",
+            [
+                ("本次会做", joined_text(work_scope)),
+                ("本次不会做", joined_text(non_scope)),
+            ],
+            stream=stream,
+        )
+        print_block(
+            "本次变化",
+            [(f"变化 {index}", value) for index, value in enumerate(changes, start=1)],
+            stream=stream,
+        )
+        print_block("回合仪表盘", round_dashboard, stream=stream)
+        print_block("保存解释", save_explanation, stream=stream)
+        print_block("运行解释", runtime_explanation, stream=stream)
+        if output_view == "both":
+            print("", file=stream)
+
+    if output_view in ("both", "audit"):
+        print("审计版:", file=stream)
+        print_block(
+            "状态栏",
+            [
+                ("当前模式", mode),
+                ("当前步骤", step_label),
+                ("当前阶段", stage),
+                ("当前回合", round_name),
+                ("当前角色", role),
+                ("当前产物", artifact),
+                ("当前保存模式", persistence_mode),
+                ("下一步动作", next_action),
+                ("是否需要确认", needs_confirmation),
+            ],
+            stream=stream,
+        )
+        print_block(
+            "保存状态",
+            [
+                ("是否已保存", bool_label(saved)),
+                ("保存路径", save_path),
+                ("文件名", filenames),
+                ("保存明细", save_details),
+                ("未保存原因", "无" if saved else unsaved_reason),
+            ],
+            stream=stream,
+        )
+        print_block(
+            "运行状态",
+            [
+                ("installed", bool_audit_label(runtime["installed"])),
+                ("runnable", bool_audit_label(runtime["runnable"])),
+                ("python_supported", bool_audit_label(runtime["python_supported"])),
+                ("workspace_created", bool_audit_label(runtime["workspace_created"])),
+                ("persisted", bool_audit_label(runtime["persisted"])),
+                ("writable", bool_audit_label(runtime["writable"])),
+                ("当前 Python", f"{runtime['python_path']} ({runtime['python_version']})"),
+                ("兼容目标", f"Python {runtime['python_minimum']}+"),
+                ("可切换解释器", "无" if not runtime["compatible_python_found"] else f"{runtime['compatible_python_path']} ({runtime['compatible_python_version']})"),
+                ("恢复脚本", runtime["recovery_script"]),
+                ("推荐模式", runtime["recommended_mode"]),
+                ("智能体建议动作", runtime["agent_action"]),
+                ("环境异常", runtime["runtime_error"]),
+            ],
+            stream=stream,
+        )
 
 
 def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
@@ -598,6 +828,7 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text(company_dir / "04-当前回合.md", render_template("current-round-template.md", round_values))
     write_text(company_dir / "05-推进规则.md", render_template("execution-rules-template.md", common_values))
     write_text(company_dir / "06-触发器与校准规则.md", render_template("calibration-rules-template.md", common_values))
+    write_text(company_dir / "07-文档产物规范.md", render_template("artifact-output-guide-template.md", common_values))
 
     write_text(company_dir / "角色智能体" / "角色清单.md", render_template("role-index-template.md", common_values))
     for role_id in active_roles:
@@ -621,3 +852,6 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text(company_dir / "流程" / "阶段切换流程.md", render_template("stage-flow-template.md", common_values))
     write_text(company_dir / "自动化" / "提醒规则.md", render_template("reminder-rules-template.md", common_values))
     write_text(company_dir / "自动化" / "定时任务定义.md", render_template("scheduler-spec-template.md", common_values))
+    write_text(company_dir / "产物" / "文档模板" / "内部工作稿模板.md", render_template("artifact-internal-draft-template.md", common_values))
+    write_text(company_dir / "产物" / "文档模板" / "标准规范稿模板.md", render_template("artifact-standard-spec-template.md", common_values))
+    write_text(company_dir / "产物" / "文档模板" / "可转DOCX稿模板.md", render_template("artifact-docx-ready-template.md", common_values))

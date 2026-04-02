@@ -196,7 +196,7 @@ def main() -> int:
     stage_id = normalize_stage(args.stage)
     output_dir = Path(args.output_dir).expanduser().resolve() if args.output_dir else None
 
-    print_step(2, 5, "环境检查", stream=sys.stderr)
+    print_step(2, 5, "preflight 与保存策略检查", stream=sys.stderr)
     runtime = preflight_status(output_dir)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
@@ -218,7 +218,7 @@ def main() -> int:
     if output_dir is None and len(role_ids) > 1:
         parser.error("multiple briefs require --output-dir")
 
-    print_step(3, 5, "组装角色 Brief", stream=sys.stderr)
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（组装角色 Brief）", stream=sys.stderr)
     saved_paths: list[Path] = []
     print_step(4, 5, "执行与落盘", stream=sys.stderr)
     for role_id in role_ids:
@@ -258,6 +258,20 @@ def main() -> int:
         company_dir=output_dir,
         saved_paths=saved_paths,
         unsaved_reason="当前内容仅输出到标准输出，未指定 --output-dir" if output_dir is None else "无",
+        work_scope=[
+            "基于当前阶段和回合生成角色执行 brief。",
+            "明确角色输入、输出、约束和交接对象。",
+            "说明这些 brief 是否已经落盘。",
+        ],
+        non_scope=[
+            "不会跳过阶段上下文直接生成空白角色模板。",
+            "不会把标准输出误说成已经写入工作区。",
+        ],
+        changes=[
+            f"本次共生成 {len(role_ids)} 份角色 brief。",
+            "已把角色使命、输入输出、审批点和延续上下文整理成标准格式。",
+            "如果未指定输出目录，本次内容仅存在于标准输出。",
+        ],
         stream=sys.stderr,
     )
     return 0

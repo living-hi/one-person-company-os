@@ -40,12 +40,12 @@ def main() -> int:
     company_dir = Path(args.company_dir).expanduser().resolve()
 
     print_step(1, 5, "模式判定")
-    print_step(2, 5, "环境检查")
+    print_step(2, 5, "preflight 与保存策略检查")
     runtime = preflight_status(company_dir)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
 
-    print_step(3, 5, "加载当前状态")
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（加载当前状态）")
     state = load_state(company_dir)
     role_specs = load_role_specs()
     new_stage_id = normalize_stage(args.stage)
@@ -110,6 +110,20 @@ def main() -> int:
             company_dir / "04-当前回合.md",
             record,
             state_path(company_dir),
+        ],
+        work_scope=[
+            "切换公司当前阶段，并刷新默认激活角色。",
+            "如果指定了新阶段首回合，就同步创建首回合定义。",
+            "把阶段切换的理由与结果写入工作区。",
+        ],
+        non_scope=[
+            "不会在没有阶段变更理由的情况下硬切阶段。",
+            "不会保留旧阶段的错误角色配置不更新。",
+        ],
+        changes=[
+            f"已把当前阶段切换为 {state['stage_label']}。",
+            f"当前瓶颈更新为 {args.reason}。",
+            f"当前回合现为 {state['current_round']['name']}。",
         ],
     )
     return 0

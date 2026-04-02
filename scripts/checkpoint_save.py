@@ -26,12 +26,12 @@ def main() -> int:
     company_dir = Path(args.company_dir).expanduser().resolve()
 
     print_step(1, 5, "模式判定")
-    print_step(2, 5, "环境检查")
+    print_step(2, 5, "preflight 与保存策略检查")
     runtime = preflight_status(company_dir)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
 
-    print_step(3, 5, "加载当前状态")
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（加载当前状态）")
     state = load_state(company_dir)
     current_round = state["current_round"]
     artifact = args.artifact or current_round.get("artifact", "待定义")
@@ -80,6 +80,20 @@ def main() -> int:
             checkpoint,
             company_dir / "04-当前回合.md",
             state_path(company_dir),
+        ],
+        work_scope=[
+            "把当前阶段、当前回合和下一步动作保存成一个可恢复检查点。",
+            "把检查点理由与备注写入记录文件。",
+            "确认这次检查点是否需要创始人进一步拍板。",
+        ],
+        non_scope=[
+            "不会只在聊天里说已保存而不落盘。",
+            "不会丢失当前回合的关键上下文。",
+        ],
+        changes=[
+            f"已保存新的检查点，原因是：{args.reason}。",
+            f"检查点覆盖当前关键产物：{artifact}。",
+            f"下一步最短动作记录为：{next_action}。",
         ],
     )
     return 0

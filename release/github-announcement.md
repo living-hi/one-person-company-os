@@ -2,23 +2,26 @@
 
 I upgraded `one-person-company-os` again.
 
-The product itself had already become stronger.
-The remaining problem was that the README still did not explain the product fast enough or professionally enough.
+The previous release made the project easier to understand.
+This release makes it easier to actually operate.
 
-This patch fixes that.
+The main gap was interaction quality during real use:
 
-The repository front page now explains, much more clearly:
+- users could still lose track of the current stage, round, and step
+- save and runtime fields were technically correct, but not always easy to interpret quickly
+- important outputs still leaned too much on chat formatting instead of standard document forms
 
-- what this system is
-- who it is for
-- what architecture it uses
-- why it behaves like an operating system instead of a generic prompt
-- how to install it in one line
-- how to start it in one line
+This release fixes that.
 
 This release includes:
 
-- a full README rewrite
-- explicit architecture framing
-- one-line install and one-line start
-- aligned ClawHub and agent metadata copy
+- a three-layer navigation bar: stage, round, current step
+- dual-labeled steps with natural-language guidance plus system labels
+- `用户导航版` and `审计版` output modes
+- `本次会做 / 不会做`, `本次变化`, and `回合仪表盘`
+- clearer save explanations and runtime explanations
+- a new artifact document generator
+- three standard artifact forms:
+  - internal draft
+  - standard spec
+  - DOCX-ready draft

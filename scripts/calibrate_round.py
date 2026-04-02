@@ -37,12 +37,12 @@ def main() -> int:
     company_dir = Path(args.company_dir).expanduser().resolve()
 
     print_step(1, 5, "模式判定")
-    print_step(2, 5, "环境检查")
+    print_step(2, 5, "preflight 与保存策略检查")
     runtime = preflight_status(company_dir)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
 
-    print_step(3, 5, "加载当前状态")
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（加载当前状态）")
     state = load_state(company_dir)
     role_specs = load_role_specs()
     current_round = state["current_round"]
@@ -94,6 +94,20 @@ def main() -> int:
             company_dir / "04-当前回合.md",
             record,
             state_path(company_dir),
+        ],
+        work_scope=[
+            "记录这次为什么进入校准。",
+            "更新回合状态、负责人和下一步最短动作。",
+            "把校准结论写入工作区，便于后续接力。",
+        ],
+        non_scope=[
+            "不会用长篇空泛建议替代校准结论。",
+            "不会省略是否需要创始人拍板。",
+        ],
+        changes=[
+            f"已记录本次校准原因：{args.reason}。",
+            f"已把下一步最短动作更新为 {args.next_action}。",
+            f"当前是否需要创始人确认：{'是' if args.needs_founder_approval else '否'}。",
         ],
     )
     return 0

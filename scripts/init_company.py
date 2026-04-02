@@ -47,14 +47,14 @@ def main() -> int:
     if company_dir.exists() and not args.force:
         parser.error(f"target already exists: {company_dir}")
 
-    print_step(2, 5, "环境检查")
+    print_step(2, 5, "preflight 与保存策略检查")
     runtime = preflight_status(company_dir)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
     if not runtime["writable"]:
         parser.error(f"target not writable: {runtime['writable_target']}")
 
-    print_step(3, 5, "组装初始状态")
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（组装初始状态）")
     active_roles = default_role_ids_for_stage(stage_id)
     state = {
         "version": "2.1",
@@ -104,8 +104,23 @@ def main() -> int:
         saved_paths=[
             company_dir / "00-公司总览.md",
             company_dir / "04-当前回合.md",
+            company_dir / "07-文档产物规范.md",
             company_dir / "角色智能体" / "角色清单.md",
             state_path(company_dir),
+        ],
+        work_scope=[
+            "创建公司工作区骨架与当前状态文件。",
+            "生成当前阶段、当前回合和文档模板标准件。",
+            "明确这次是否已真实保存以及下一步怎么继续。",
+        ],
+        non_scope=[
+            "不会替创始人自动做高风险商业决策。",
+            "不会跳过确认边界去伪造不存在的角色执行结果。",
+        ],
+        changes=[
+            "已创建公司总览、当前回合、角色清单和当前状态文件。",
+            "已生成文档产物规范与三种文档模板，方便后续直接出稿。",
+            "当前公司已进入可继续启动回合的状态。",
         ],
     )
     return 0

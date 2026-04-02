@@ -1,5 +1,27 @@
 # Release Notes
 
+## v0.4.0 - Navigation UX and Deliverable Document System
+
+This minor release upgrades the product from “state-aware skill” to “navigable and deliverable operating system.”
+
+The main problem was no longer content quality.
+It was that founders could still lose orientation inside a long run, and key artifacts still depended too much on ad hoc chat formatting.
+
+This release closes that gap by adding:
+
+- a three-layer navigation bar with `阶段 / 回合 / 本次 Step`
+- dual-labeled steps with natural-language intent plus system step names
+- a split output contract with `用户导航版` and `审计版`
+- explicit `本次会做 / 不会做`, `本次变化`, and `回合仪表盘` sections
+- user-readable save explanations and runtime explanations instead of terse raw fields alone
+- a new `scripts/generate_artifact_document.py` entry point for artifact generation
+- three standard artifact forms:
+  - `内部工作稿`
+  - `标准规范稿`
+  - `可转 DOCX 稿`
+- built-in workspace templates and a document-output guide so deliverables can be persisted in a standard format
+- updated README, release listing copy, and sample outputs to match the upgraded interaction model
+
 ## v0.3.3 - README Professionalization and Architecture Clarity
 
 This patch release sharpens the public product surface.

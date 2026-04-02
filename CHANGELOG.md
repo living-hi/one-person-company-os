@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.0 - 2026-04-03
+
+- upgraded the interaction contract from plain step reporting to a two-view output system with `用户导航版` and `审计版`
+- added a three-layer navigation bar across the workflow so every major operation now surfaces `阶段 / 回合 / 本次 Step`
+- changed `Step 1/5 -> Step 5/5` from system-only labels to dual labels with natural-language intent plus system step names
+- added explicit `本次会做 / 不会做`, `本次变化`, and `回合仪表盘` sections to the runtime report layer
+- replaced terse save/runtime reporting with user-readable save explanations and runtime explanations
+- added `scripts/generate_artifact_document.py` to generate standard artifact outputs
+- added three standard artifact forms: `内部工作稿`, `标准规范稿`, and `可转 DOCX 稿`
+- added workspace artifact templates and `07-文档产物规范.md` so document delivery is built into the workspace instead of left to ad hoc chat output
+- updated README, release copy, sample outputs, and agent metadata to reflect the new navigation and document model
+
 ## v0.3.3 - 2026-04-02
 
 - rewrote the repository README to explain the product as a professional, state-driven company operating system instead of a generic prompt

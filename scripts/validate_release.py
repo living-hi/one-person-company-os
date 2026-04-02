@@ -91,7 +91,13 @@ def validate_workspace_scripts() -> None:
         workspace = Path(tmp_dir)
 
         ensure_runtime = run(str(SCRIPTS_DIR / "ensure_python_runtime.py"))
-        assert_contains(ensure_runtime.stdout, "Step 5/5 验证与回报", "Python 兼容状态", "安装方案", "执行结果")
+        assert_contains(
+            ensure_runtime.stdout,
+            "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
+            "Python 兼容状态",
+            "安装方案",
+            "执行结果",
+        )
         print(ensure_runtime.stdout.strip())
 
         preflight = run(
@@ -103,7 +109,12 @@ def validate_workspace_scripts() -> None:
         )
         assert_contains(
             preflight.stdout,
-            "Step 5/5 验证与回报",
+            "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
+            "用户导航版:",
+            "三层导航条:",
+            "本次范围:",
+            "回合仪表盘:",
+            "审计版:",
             "保存状态:",
             "运行状态:",
             "模式 A：脚本执行",
@@ -130,13 +141,25 @@ def validate_workspace_scripts() -> None:
             "--product-pitch",
             "一个帮助独立开发者持续推进业务的总控台",
         )
-        assert_contains(init.stdout, "Step 5/5 验证与回报", "保存状态:", "运行状态:", "文件名:")
+        assert_contains(
+            init.stdout,
+            "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
+            "本次变化:",
+            "保存解释:",
+            "运行解释:",
+            "文件名:",
+            "07-文档产物规范.md",
+        )
         print(init.stdout.strip())
 
         company_dir = workspace / "北辰实验室"
         assert_exists(company_dir / "00-公司总览.md")
         assert_exists(company_dir / "04-当前回合.md")
+        assert_exists(company_dir / "07-文档产物规范.md")
         assert_exists(company_dir / "角色智能体" / "角色清单.md")
+        assert_exists(company_dir / "产物" / "文档模板" / "内部工作稿模板.md")
+        assert_exists(company_dir / "产物" / "文档模板" / "标准规范稿模板.md")
+        assert_exists(company_dir / "产物" / "文档模板" / "可转DOCX稿模板.md")
         assert_exists(company_dir / "自动化" / "当前状态.json")
 
         start = run(
@@ -153,7 +176,7 @@ def validate_workspace_scripts() -> None:
             "--next-action",
             "先确定首屏价值主张",
         )
-        assert_contains(start.stdout, "Step 5/5 验证与回报", "启动回合", "保存状态:")
+        assert_contains(start.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "启动回合", "回合仪表盘:")
         print(start.stdout.strip())
 
         update = run(
@@ -168,7 +191,7 @@ def validate_workspace_scripts() -> None:
             "--note",
             "进入执行阶段",
         )
-        assert_contains(update.stdout, "Step 5/5 验证与回报", "推进回合", "运行状态:")
+        assert_contains(update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "推进回合", "运行解释:")
         print(update.stdout.strip())
 
         calibrate = run(
@@ -181,8 +204,47 @@ def validate_workspace_scripts() -> None:
             "--next-action",
             "把目标用户缩小到做 AI SaaS 的独立开发者",
         )
-        assert_contains(calibrate.stdout, "Step 5/5 验证与回报", "校准回合", "保存状态:")
+        assert_contains(calibrate.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "校准回合", "保存解释:")
         print(calibrate.stdout.strip())
+
+        artifact_docs = run(
+            str(SCRIPTS_DIR / "generate_artifact_document.py"),
+            str(company_dir),
+            "--title",
+            "首页首屏规范",
+            "--artifact-type",
+            "产品规范",
+            "--summary",
+            "明确首页首屏的价值主张、结构和 CTA 路径。",
+            "--scope-in",
+            "首页首屏信息结构",
+            "--scope-in",
+            "CTA 与注册入口说明",
+            "--scope-out",
+            "完整站点视觉系统",
+            "--deliverable",
+            "首页首屏内部工作稿",
+            "--deliverable",
+            "首页首屏可转 DOCX 规范稿",
+            "--change",
+            "本次补齐了三种稿型的统一结构",
+            "--decision",
+            "先收敛价值主张再扩展视觉探索",
+            "--risk",
+            "用户价值表达仍需继续校准",
+        )
+        assert_contains(
+            artifact_docs.stdout,
+            "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
+            "生成关键产物文档",
+            "内部工作稿",
+            "标准规范稿",
+            "可转 DOCX 稿",
+        )
+        print(artifact_docs.stdout.strip())
+        assert_exists(company_dir / "产物" / "内部工作稿" / "首页首屏规范-内部工作稿.md")
+        assert_exists(company_dir / "产物" / "标准规范稿" / "首页首屏规范-标准规范稿.md")
+        assert_exists(company_dir / "产物" / "可转DOCX稿" / "首页首屏规范-可转DOCX稿.md")
 
         checkpoint = run(
             str(SCRIPTS_DIR / "checkpoint_save.py"),
@@ -192,7 +254,7 @@ def validate_workspace_scripts() -> None:
             "--note",
             "验证 checkpoint save 能力",
         )
-        assert_contains(checkpoint.stdout, "Step 5/5 验证与回报", "保存检查点", "记录/检查点")
+        assert_contains(checkpoint.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "保存检查点", "记录/检查点")
         print(checkpoint.stdout.strip())
 
         transition = run(
@@ -209,7 +271,7 @@ def validate_workspace_scripts() -> None:
             "--first-round-owner",
             "growth-sales",
         )
-        assert_contains(transition.stdout, "Step 5/5 验证与回报", "切换阶段", "保存状态:")
+        assert_contains(transition.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "切换阶段", "保存状态:")
         print(transition.stdout.strip())
 
         single_brief = run(
@@ -240,7 +302,7 @@ def validate_workspace_scripts() -> None:
             raise ValueError("unexpected stage in single brief validation")
         assert_contains(
             single_brief.stderr,
-            "Step 5/5 验证与回报",
+            "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
             "模式 C：纯对话推进",
             "当前内容仅输出到标准输出，未指定 --output-dir",
         )
@@ -267,7 +329,7 @@ def validate_workspace_scripts() -> None:
             str(output_dir),
         )
         assert_contains(stage_briefs.stdout, "总控台.md", "增长负责人.md")
-        assert_contains(stage_briefs.stderr, "Step 5/5 验证与回报", "模式 A：脚本执行", "保存状态:")
+        assert_contains(stage_briefs.stderr, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "模式 A：脚本执行", "保存状态:")
         print(stage_briefs.stdout.strip())
         assert_exists(output_dir / "总控台.md")
         assert_exists(output_dir / "增长负责人.md")

@@ -39,12 +39,12 @@ def main() -> int:
     company_dir = Path(args.company_dir).expanduser().resolve()
 
     print_step(1, 5, "模式判定")
-    print_step(2, 5, "环境检查")
+    print_step(2, 5, "preflight 与保存策略检查")
     runtime = preflight_status(company_dir)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
 
-    print_step(3, 5, "加载当前状态")
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（加载当前状态）")
     state = load_state(company_dir)
     role_specs = load_role_specs()
 
@@ -102,6 +102,20 @@ def main() -> int:
             company_dir / "04-当前回合.md",
             record,
             state_path(company_dir),
+        ],
+        work_scope=[
+            "定义一个新的当前回合，并把负责人、目标和产物写清楚。",
+            "更新当前回合文件和状态文件。",
+            "给出这回合的下一步最短动作。",
+        ],
+        non_scope=[
+            "不会同时启动多个当前回合。",
+            "不会跳过回合定义直接进入大段泛化建议输出。",
+        ],
+        changes=[
+            f"已启动新回合：{args.round_name}。",
+            f"已把负责人设为 {role_specs[args.owner]['display_name']}，并写入关键产物与下一步动作。",
+            "已新增一条启动回合记录，方便后续审计和接力。",
         ],
     )
     return 0

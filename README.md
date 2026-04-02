@@ -101,46 +101,85 @@ Layer responsibilities:
 
 Every real execution follows the same five-step state machine:
 
-1. `Step 1/5` Mode selection
-2. `Step 2/5` Preflight and persistence strategy check
-3. `Step 3/5` Draft / proposed change / current state load
-4. `Step 4/5` Execution and persistence
-5. `Step 5/5` Verification and reporting
+1. `Step 1/5 Decide which flow this run should enter [Mode selection]`
+2. `Step 2/5 Confirm environment, persistence conditions, and execution path [Preflight and persistence strategy check]`
+3. `Step 3/5 Load current state, then prepare the draft or proposed change [Draft / proposed change / current state load]`
+4. `Step 4/5 Execute and write the result into the workspace [Execution and persistence]`
+5. `Step 5/5 Verify the result, explain changes, and report back [Verification and reporting]`
 
 This is part of the product contract, not presentation fluff.
 
 ## Default Output Contract
 
-Every major operation reports three groups of information.
+Every major operation now reports two views.
 
-### 1. Status
+### 1. User Navigation View
 
-- current mode
-- current step
+- three-layer navigation bar
+  - stage
+  - round
+  - current step
+- what this run will do / will not do
+- what changed this time
+- round dashboard
+- save explanation
+- runtime explanation
+
+### 2. Audit View
+
+- status
+- save status
+- runtime status
+
+This means users can read the system at a glance without losing the deeper technical audit trail.
+
+## Three-Layer Navigation And Round Dashboard
+
+The navigation model is now explicit:
+
+- `Stage`
+  - shows whether the company is in validation, build, launch, operate, or grow
+- `Round`
+  - shows the single current round being advanced
+- `Current Step`
+  - shows whether this output is selecting mode, checking preflight, loading state, writing files, or reporting
+
+The round dashboard always surfaces:
+
 - current stage
 - current round
-- current role
+- round status
+- current owner
 - current artifact
-- persistence mode
-- next action
-- confirmation requirement
+- current blocker
+- shortest next action
+- completion criteria
 
-### 2. Save Status
+## Three Artifact Document Forms
 
-- whether it was saved
-- where it was saved
-- which files were written
-- why it was not saved
+Key artifacts no longer exist as one generic markdown shape.
 
-### 3. Runtime Status
+The system now supports three forms by default:
 
-- `installed`
-- `runnable`
-- `python_supported`
-- `workspace_created`
-- `persisted`
+- `Internal draft`
+  - for fast internal work, open questions, and intermediate thinking
+- `Standard spec`
+  - for review, handoff, reuse, and operational stability
+- `DOCX-ready draft`
+  - for formal sharing, approvals, client-facing documents, and archiving
 
-The goal is simple: users should not need to interrogate the system to understand what happened.
+The workspace now includes:
+
+- `07-文档产物规范.md`
+- `产物/文档模板/内部工作稿模板.md`
+- `产物/文档模板/标准规范稿模板.md`
+- `产物/文档模板/可转DOCX稿模板.md`
+
+To generate artifact documents directly:
+
+```bash
+python3 scripts/generate_artifact_document.py <company-workspace-dir> --title "Artifact Title"
+```
 
 ## Execution Modes
 
@@ -167,6 +206,7 @@ Company/
   04-当前回合.md
   05-推进规则.md
   06-触发器与校准规则.md
+  07-文档产物规范.md
   角色智能体/
   流程/
   产物/
@@ -249,6 +289,7 @@ python3 scripts/ensure_python_runtime.py --apply --run-script scripts/preflight_
 - `scripts/ensure_python_runtime.py`
 - `scripts/init_company.py`
 - `scripts/build_agent_brief.py`
+- `scripts/generate_artifact_document.py`
 - `scripts/start_round.py`
 - `scripts/update_round.py`
 - `scripts/calibrate_round.py`

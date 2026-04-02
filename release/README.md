@@ -1,6 +1,6 @@
 # One Person Company OS
 
-This is not a generic startup prompt. It is a **state-driven company operating system** for founders actively building an AI-native solo company.
+This is not a generic startup prompt. It is a **navigable, persistent, deliverable company operating system** for founders actively building an AI-native solo company.
 
 It unifies four critical objects into one operating layer:
 
@@ -8,6 +8,7 @@ It unifies four critical objects into one operating layer:
 - role structure
 - current round
 - file and runtime state
+- artifact documents
 
 ## One-Line Install
 
@@ -18,7 +19,7 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the current persistence mode, save status, and runtime status before creation.
+I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the three-layer navigation bar, user-navigation view, audit view, save explanation, and runtime explanation before creation.
 ```
 
 ## Best For Founders Who
@@ -37,15 +38,20 @@ I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 
 - a minimal org structure and first active roles
 - a Chinese workspace plan
 - the first executable round
-- explicit state, save, and runtime reporting
+- a three-layer navigation model
+- user-navigation and audit views
+- explicit state, save, and runtime explanations
+- internal draft, standard spec, and DOCX-ready artifact outputs
 
 ## Why It Feels Like A Company OS
 
 - fixed `Step 1/5 -> Step 5/5` execution flow
-- fixed `Status / Save / Runtime` reporting
+- fixed `Stage / Round / Current Step` navigation
+- split user-navigation and audit reporting
 - explicit persistence instead of chat-only output
 - preflight checks plus Python recovery
 - fallback modes for execution, manual persistence, and chat-only operation
+- standard document templates for deliverable output
 
 ## Architecture
 
@@ -68,6 +74,7 @@ python3 scripts/preflight_check.py --mode create-company
 python3 scripts/ensure_python_runtime.py
 python3 scripts/init_company.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
 python3 scripts/start_round.py ./workspace/北辰实验室 --round-name "完成首页首屏" --goal "完成首页首屏结构与注册入口"
+python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "Homepage Hero Spec"
 python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "end of current session"
 python3 scripts/validate_release.py
 ```

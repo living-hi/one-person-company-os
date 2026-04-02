@@ -39,12 +39,12 @@ def main() -> int:
     company_dir = Path(args.company_dir).expanduser().resolve()
 
     print_step(1, 5, "模式判定")
-    print_step(2, 5, "环境检查")
+    print_step(2, 5, "preflight 与保存策略检查")
     runtime = preflight_status(company_dir)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
 
-    print_step(3, 5, "加载当前状态")
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（加载当前状态）")
     state = load_state(company_dir)
     role_specs = load_role_specs()
     current_round = state["current_round"]
@@ -100,6 +100,20 @@ def main() -> int:
             company_dir / "04-当前回合.md",
             record,
             state_path(company_dir),
+        ],
+        work_scope=[
+            "更新当前回合的状态、负责人、阻塞或下一步动作。",
+            "把回合变化真实写回工作区。",
+            "明确这次更新后是否需要创始人确认。",
+        ],
+        non_scope=[
+            "不会重建整套公司设计。",
+            "不会把旧状态留在工作区里不更新。",
+        ],
+        changes=[
+            f"已把当前回合状态更新为 {current_round['status']}。",
+            f"当前阻塞为 {current_round['blocker']}。",
+            f"下一步最短动作已更新为 {current_round['next_action']}。",
         ],
     )
     return 0
