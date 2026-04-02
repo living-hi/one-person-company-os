@@ -4,17 +4,52 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import shutil
+import subprocess
+import sys
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, TextIO
 
 
 ROOT = Path(__file__).resolve().parent.parent
+SCRIPT_DIR = ROOT / "scripts"
 TEMPLATE_DIR = ROOT / "assets" / "templates"
 ROLE_DIR = ROOT / "agents" / "roles"
 ORCHESTRATION_DIR = ROOT / "orchestration"
 STATE_PATH_PARTS = ("自动化", "当前状态.json")
+CORE_WORKSPACE_FILES = (
+    "00-公司总览.md",
+    "04-当前回合.md",
+    "自动化/当前状态.json",
+)
+REQUIRED_SCRIPT_NAMES = (
+    "init_company.py",
+    "build_agent_brief.py",
+    "start_round.py",
+    "update_round.py",
+    "calibrate_round.py",
+    "transition_stage.py",
+    "preflight_check.py",
+    "ensure_python_runtime.py",
+    "checkpoint_save.py",
+    "validate_release.py",
+)
+MIN_SUPPORTED_PYTHON = (3, 7)
+PYTHON_CANDIDATE_COMMANDS = (
+    "python3.13",
+    "python3.12",
+    "python3.11",
+    "python3.10",
+    "python3.9",
+    "python3.8",
+    "python3.7",
+    "python3",
+    "python",
+)
 
 STAGE_CONFIG = {
     "validate": {
@@ -112,6 +147,127 @@ def format_list(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items) if items else "- 无"
 
 
+def bool_label(value: bool) -> str:
+    return "是" if value else "否"
+
+
+def joined_text(values: Iterable[str]) -> str:
+    cleaned = [value for value in values if value]
+    return "；".join(cleaned) if cleaned else "无"
+
+
+def display_path(path: Path, root: Optional[Path] = None) -> str:
+    if root is not None:
+        try:
+            return str(path.relative_to(root))
+        except ValueError:
+            pass
+    return str(path)
+
+
+def version_text(version: tuple[int, ...]) -> str:
+    return ".".join(str(part) for part in version)
+
+
+def python_compatibility_label(version: tuple[int, ...]) -> str:
+    return f"Python {version_text(version)}"
+
+
+def is_python_version_supported(version: tuple[int, ...]) -> bool:
+    return version >= MIN_SUPPORTED_PYTHON
+
+
+def probe_python(executable: str) -> Optional[dict[str, Any]]:
+    command = [executable, "-c", "import json, sys; print(json.dumps({'executable': sys.executable, 'version': list(sys.version_info[:3])}, ensure_ascii=False))"]
+    try:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+    except (FileNotFoundError, subprocess.CalledProcessError, OSError):
+        return None
+    try:
+        payload = json.loads(result.stdout.strip())
+    except json.JSONDecodeError:
+        return None
+
+    version = tuple(int(part) for part in payload.get("version", [])[:3])
+    executable_path = str(payload.get("executable", executable))
+    if len(version) < 3 or not executable_path:
+        return None
+
+    return {
+        "executable": executable_path,
+        "version": version,
+        "supported": is_python_version_supported(version),
+    }
+
+
+def discover_python_runtimes() -> list[dict[str, Any]]:
+    candidates = [sys.executable]
+    candidates.extend(PYTHON_CANDIDATE_COMMANDS)
+
+    runtimes: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        resolved = candidate
+        if not os.path.isabs(candidate):
+            located = shutil.which(candidate)
+            if not located:
+                continue
+            resolved = located
+
+        probe = probe_python(resolved)
+        if not probe:
+            continue
+
+        executable = probe["executable"]
+        if executable in seen:
+            continue
+        seen.add(executable)
+        runtimes.append(probe)
+    return runtimes
+
+
+def choose_compatible_runtime(runtimes: list[dict[str, Any]]) -> Optional[dict[str, Any]]:
+    current = os.path.realpath(sys.executable)
+    compatible = [
+        runtime
+        for runtime in runtimes
+        if runtime["supported"] and os.path.realpath(runtime["executable"]) != current
+    ]
+    if not compatible:
+        return None
+    compatible.sort(key=lambda runtime: runtime["version"], reverse=True)
+    return compatible[0]
+
+
+def build_agent_action(
+    *,
+    current_supported: bool,
+    compatible_runtime: Optional[dict[str, Any]],
+    writable: bool,
+) -> str:
+    if current_supported:
+        return "优先在 OpenClaw 中继续执行当前脚本；若脚本失败，再由智能体切到手动落盘模式。"
+
+    minimum = version_text(MIN_SUPPORTED_PYTHON)
+    if compatible_runtime:
+        return (
+            "优先让 OpenClaw 智能体运行 `scripts/ensure_python_runtime.py --run-script <目标脚本>`，改用兼容解释器 "
+            f"{compatible_runtime['executable']} ({python_compatibility_label(compatible_runtime['version'])}) 重跑脚本；"
+            "若切换失败，再由智能体手动完成脚本任务。"
+        )
+
+    if writable:
+        return (
+            f"优先让 OpenClaw 智能体运行 `scripts/ensure_python_runtime.py --apply` 安装兼容解释器（目标 {minimum}+）；"
+            "若当前环境不便安装，则由智能体直接完成脚本任务并手动落盘。"
+        )
+
+    return (
+        f"优先让 OpenClaw 智能体在宿主环境运行 `scripts/ensure_python_runtime.py --apply` 安装兼容解释器（目标 {minimum}+）；"
+        "若仍无法写文件，只能由智能体继续纯对话推进并明确未保存。"
+    )
+
+
 def render_template(template_name: str, values: dict[str, str]) -> str:
     template = (TEMPLATE_DIR / template_name).read_text(encoding="utf-8")
     rendered = template
@@ -144,6 +300,10 @@ def state_path(company_dir: Path) -> Path:
     return company_dir.joinpath(*STATE_PATH_PARTS)
 
 
+def workspace_core_paths(company_dir: Path) -> list[Path]:
+    return [company_dir / relative for relative in CORE_WORKSPACE_FILES]
+
+
 def ensure_workspace_dirs(company_dir: Path) -> None:
     for relative in [
         "",
@@ -155,6 +315,7 @@ def ensure_workspace_dirs(company_dir: Path) -> None:
         "记录/推进日志",
         "记录/决策记录",
         "记录/校准记录",
+        "记录/检查点",
         "自动化",
     ]:
         (company_dir / relative).mkdir(parents=True, exist_ok=True)
@@ -185,6 +346,192 @@ def write_record(company_dir: Path, subdir: str, suffix: str, title: str, lines:
     content = "\n".join([f"# {title}", "", *lines]) + "\n"
     write_text(path, content)
     return path
+
+
+def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
+    current_version = tuple(sys.version_info[:3])
+    current_supported = is_python_version_supported(current_version)
+    runtimes = discover_python_runtimes()
+    compatible_runtime = choose_compatible_runtime(runtimes)
+
+    required_paths = [SCRIPT_DIR / name for name in REQUIRED_SCRIPT_NAMES]
+    required_paths.extend(
+        [
+            TEMPLATE_DIR / "company-overview-template.md",
+            ORCHESTRATION_DIR / "stage-defaults.json",
+            ORCHESTRATION_DIR / "handoff-schema.json",
+        ]
+    )
+    missing = [display_path(path, ROOT) for path in required_paths if not path.exists()]
+    installed = ROLE_DIR.is_dir() and not missing
+
+    runtime_error = "无"
+    runnable = False
+
+    if company_dir is None:
+        writable_target = ROOT
+    elif company_dir.exists():
+        writable_target = company_dir
+    else:
+        writable_target = company_dir.parent
+    writable = writable_target.exists() and os.access(writable_target, os.W_OK)
+
+    if not current_supported:
+        minimum = version_text(MIN_SUPPORTED_PYTHON)
+        if compatible_runtime:
+            runtime_error = (
+                f"当前解释器 {python_compatibility_label(current_version)} 不在兼容范围内；"
+                f"可改用 {compatible_runtime['executable']} ({python_compatibility_label(compatible_runtime['version'])})。"
+            )
+        else:
+            runtime_error = (
+                f"当前解释器 {python_compatibility_label(current_version)} 不在兼容范围内；"
+                f"未发现可直接切换的 Python {minimum}+。"
+            )
+    elif installed:
+        try:
+            load_stage_defaults()
+            load_role_specs()
+            render_template("company-overview-template.md", {"COMPANY_NAME": "预检"})
+        except Exception as exc:
+            runtime_error = f"{type(exc).__name__}: {exc}"
+        else:
+            runnable = True
+    else:
+        runtime_error = f"缺少文件: {joined_text(missing)}"
+
+    workspace_created = bool(company_dir and company_dir.exists())
+    persisted = bool(company_dir and all(path.is_file() for path in workspace_core_paths(company_dir)))
+
+    if runnable and writable:
+        recommended_mode = "模式 A：脚本执行"
+    elif compatible_runtime and installed and writable:
+        recommended_mode = "模式 A：脚本执行（切换兼容 Python）"
+    elif writable:
+        recommended_mode = "模式 B：手动落盘"
+    else:
+        recommended_mode = "模式 C：纯对话推进"
+
+    if company_dir is None:
+        unsaved_reason = "尚未指定目标工作区"
+    elif not workspace_created:
+        unsaved_reason = "目标工作区尚未创建"
+    elif not persisted:
+        unsaved_reason = "工作区已存在，但关键文件未全部落盘"
+    else:
+        unsaved_reason = "无"
+
+    return {
+        "installed": installed,
+        "runnable": runnable,
+        "python_supported": current_supported,
+        "python_minimum": version_text(MIN_SUPPORTED_PYTHON),
+        "current_python_version": version_text(current_version),
+        "current_python_label": python_compatibility_label(current_version),
+        "compatible_python_found": compatible_runtime is not None,
+        "compatible_python_path": compatible_runtime["executable"] if compatible_runtime else "无",
+        "compatible_python_version": version_text(compatible_runtime["version"]) if compatible_runtime else "无",
+        "recovery_script": "scripts/ensure_python_runtime.py",
+        "agent_action": build_agent_action(
+            current_supported=current_supported,
+            compatible_runtime=compatible_runtime,
+            writable=writable,
+        ),
+        "workspace_created": workspace_created,
+        "persisted": persisted,
+        "writable": writable,
+        "writable_target": str(writable_target),
+        "python_path": sys.executable,
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        "recommended_mode": recommended_mode,
+        "runtime_error": f"{runtime_error} 建议动作: {build_agent_action(current_supported=current_supported, compatible_runtime=compatible_runtime, writable=writable)}"
+        if runtime_error != "无"
+        else runtime_error,
+        "missing_files": joined_text(missing),
+        "unsaved_reason": unsaved_reason,
+    }
+
+
+def print_step(step: int, total: int, title: str, *, status: str = "已完成", stream: TextIO = sys.stdout) -> None:
+    print(f"Step {step}/{total} {title}: {status}", file=stream)
+
+
+def print_block(title: str, items: list[tuple[str, str]], *, stream: TextIO = sys.stdout) -> None:
+    print(f"{title}:", file=stream)
+    for label, value in items:
+        print(f"- {label}: {value}", file=stream)
+
+
+def emit_runtime_report(
+    *,
+    mode: str,
+    phase: str,
+    stage: str,
+    round_name: str,
+    role: str,
+    artifact: str,
+    next_action: str,
+    needs_confirmation: str,
+    persistence_mode: str,
+    company_dir: Optional[Path],
+    saved_paths: list[Path],
+    unsaved_reason: str = "无",
+    stream: TextIO = sys.stdout,
+) -> None:
+    runtime = preflight_status(company_dir)
+    saved = bool(saved_paths) and all(path.exists() for path in saved_paths)
+    save_path = str(company_dir) if company_dir is not None else "未指定"
+    save_details = joined_text(display_path(path, company_dir) for path in saved_paths)
+    filenames = joined_text(path.name for path in saved_paths)
+
+    if not saved and unsaved_reason == "无":
+        unsaved_reason = runtime["unsaved_reason"]
+
+    print_block(
+        "状态栏",
+        [
+            ("当前模式", mode),
+            ("当前步骤", phase),
+            ("当前阶段", stage),
+            ("当前回合", round_name),
+            ("当前角色", role),
+            ("当前产物", artifact),
+            ("当前保存模式", persistence_mode),
+            ("下一步动作", next_action),
+            ("是否需要确认", needs_confirmation),
+        ],
+        stream=stream,
+    )
+    print_block(
+        "保存状态",
+        [
+            ("是否已保存", bool_label(saved)),
+            ("保存路径", save_path),
+            ("文件名", filenames),
+            ("保存明细", save_details),
+            ("未保存原因", "无" if saved else unsaved_reason),
+        ],
+        stream=stream,
+    )
+    print_block(
+        "运行状态",
+        [
+            ("installed", bool_label(runtime["installed"])),
+            ("runnable", bool_label(runtime["runnable"])),
+            ("python_supported", bool_label(runtime["python_supported"])),
+            ("workspace_created", bool_label(runtime["workspace_created"])),
+            ("persisted", bool_label(runtime["persisted"])),
+            ("writable", bool_label(runtime["writable"])),
+            ("当前 Python", f"{runtime['python_path']} ({runtime['python_version']})"),
+            ("兼容目标", f"Python {runtime['python_minimum']}+"),
+            ("可切换解释器", "无" if not runtime["compatible_python_found"] else f"{runtime['compatible_python_path']} ({runtime['compatible_python_version']})"),
+            ("恢复脚本", runtime["recovery_script"]),
+            ("推荐模式", runtime["recommended_mode"]),
+            ("智能体建议动作", runtime["agent_action"]),
+            ("环境异常", runtime["runtime_error"]),
+        ],
+        stream=stream,
+    )
 
 
 def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:

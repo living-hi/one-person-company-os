@@ -5,14 +5,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from common import (
+    emit_runtime_report,
     load_json,
     load_role_specs,
     load_stage_defaults,
     normalize_stage,
+    preflight_status,
+    print_step,
     role_display_names,
     role_spec,
     stage_label,
@@ -162,7 +166,7 @@ def format_markdown(packet: dict[str, Any], schema: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def write_packet(packet: dict[str, Any], output_format: str, output_dir: Path | None, schema: dict[str, Any]) -> None:
+def write_packet(packet: dict[str, Any], output_format: str, output_dir: Optional[Path], schema: dict[str, Any]) -> Optional[Path]:
     if output_format == "json":
         rendered = json.dumps(packet, ensure_ascii=False, indent=2) + "\n"
         suffix = ".json"
@@ -172,21 +176,33 @@ def write_packet(packet: dict[str, Any], output_format: str, output_dir: Path | 
 
     if output_dir is None:
         print(rendered, end="")
-        return
+        return None
 
     filename = packet["role_display_name"] + suffix
-    write_text(output_dir / filename, rendered)
-    print(output_dir / filename)
+    path = output_dir / filename
+    write_text(path, rendered)
+    print(path)
+    return path
 
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
+    print_step(1, 5, "模式判定", stream=sys.stderr)
     if not args.role and not args.all_default_roles:
         parser.error("use --role or --all-default-roles")
 
     stage_id = normalize_stage(args.stage)
+    output_dir = Path(args.output_dir).expanduser().resolve() if args.output_dir else None
+
+    print_step(2, 5, "环境检查", stream=sys.stderr)
+    runtime = preflight_status(output_dir)
+    if not runtime["runnable"]:
+        parser.error(f"runtime not runnable: {runtime['runtime_error']}")
+    if output_dir is not None and not runtime["writable"]:
+        parser.error(f"target not writable: {runtime['writable_target']}")
+
     role_specs = load_role_specs()
     schema = load_json(Path(__file__).resolve().parent.parent / "orchestration" / "handoff-schema.json")
 
@@ -199,10 +215,12 @@ def main() -> int:
     if missing:
         parser.error(f"unknown role ids: {', '.join(missing)}")
 
-    output_dir = Path(args.output_dir).expanduser().resolve() if args.output_dir else None
     if output_dir is None and len(role_ids) > 1:
         parser.error("multiple briefs require --output-dir")
 
+    print_step(3, 5, "组装角色 Brief", stream=sys.stderr)
+    saved_paths: list[Path] = []
+    print_step(4, 5, "执行与落盘", stream=sys.stderr)
     for role_id in role_ids:
         packet = build_packet(
             role_spec(role_id, role_specs),
@@ -222,7 +240,26 @@ def main() -> int:
             extra_approval_gates=args.approval_gate,
             pending_approvals=args.pending_approval,
         )
-        write_packet(packet, args.output_format, output_dir, schema)
+        written = write_packet(packet, args.output_format, output_dir, schema)
+        if written is not None:
+            saved_paths.append(written)
+
+    print_step(5, 5, "验证与回报", stream=sys.stderr)
+    emit_runtime_report(
+        mode="生成角色 Brief",
+        phase="验证与回报",
+        stage=stage_label(stage_id),
+        round_name=args.current_round,
+        role="、".join(role_specs[role_id]["display_name"] for role_id in role_ids),
+        artifact="角色智能体 brief",
+        next_action="把 brief 交给对应角色或继续启动回合",
+        needs_confirmation="否",
+        persistence_mode="模式 A：脚本执行" if output_dir is not None else "模式 C：纯对话推进",
+        company_dir=output_dir,
+        saved_paths=saved_paths,
+        unsaved_reason="当前内容仅输出到标准输出，未指定 --output-dir" if output_dir is None else "无",
+        stream=sys.stderr,
+    )
     return 0
 
 

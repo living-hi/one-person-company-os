@@ -6,7 +6,18 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from common import load_role_specs, load_state, now_string, render_workspace, save_state, write_record
+from common import (
+    emit_runtime_report,
+    load_role_specs,
+    load_state,
+    now_string,
+    preflight_status,
+    print_step,
+    render_workspace,
+    save_state,
+    state_path,
+    write_record,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,6 +37,14 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     company_dir = Path(args.company_dir).expanduser().resolve()
+
+    print_step(1, 5, "模式判定")
+    print_step(2, 5, "环境检查")
+    runtime = preflight_status(company_dir)
+    if not runtime["runnable"]:
+        parser.error(f"runtime not runnable: {runtime['runtime_error']}")
+
+    print_step(3, 5, "加载当前状态")
     state = load_state(company_dir)
     role_specs = load_role_specs()
     current_round = state["current_round"]
@@ -50,6 +69,7 @@ def main() -> int:
     if args.blocker:
         state["current_bottleneck"] = args.blocker
 
+    print_step(4, 5, "执行与落盘")
     save_state(company_dir, state)
     render_workspace(company_dir, state)
 
@@ -63,8 +83,25 @@ def main() -> int:
     if args.note:
         lines.append(f"- 更新说明: {args.note}")
     record = write_record(company_dir, "推进日志", "回合更新", f"回合更新 {current_round['name']}", lines)
-    print(company_dir / "04-当前回合.md")
-    print(record)
+
+    print_step(5, 5, "验证与回报")
+    emit_runtime_report(
+        mode="推进回合",
+        phase="验证与回报",
+        stage=state["stage_label"],
+        round_name=current_round["name"],
+        role=current_round["owner_role_name"],
+        artifact=current_round["artifact"],
+        next_action=current_round["next_action"],
+        needs_confirmation="是" if current_round["status"] == "待决策" else "否",
+        persistence_mode="模式 A：脚本执行",
+        company_dir=company_dir,
+        saved_paths=[
+            company_dir / "04-当前回合.md",
+            record,
+            state_path(company_dir),
+        ],
+    )
     return 0
 
 

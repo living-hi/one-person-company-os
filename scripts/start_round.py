@@ -6,7 +6,19 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from common import load_role_specs, load_state, now_string, render_workspace, round_id_now, save_state, write_record
+from common import (
+    emit_runtime_report,
+    load_role_specs,
+    load_state,
+    now_string,
+    preflight_status,
+    print_step,
+    render_workspace,
+    round_id_now,
+    save_state,
+    state_path,
+    write_record,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -25,6 +37,14 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     company_dir = Path(args.company_dir).expanduser().resolve()
+
+    print_step(1, 5, "模式判定")
+    print_step(2, 5, "环境检查")
+    runtime = preflight_status(company_dir)
+    if not runtime["runnable"]:
+        parser.error(f"runtime not runnable: {runtime['runtime_error']}")
+
+    print_step(3, 5, "加载当前状态")
     state = load_state(company_dir)
     role_specs = load_role_specs()
 
@@ -47,6 +67,8 @@ def main() -> int:
         "updated_at": now_string(),
     }
     state["current_bottleneck"] = args.goal
+
+    print_step(4, 5, "执行与落盘")
     save_state(company_dir, state)
     render_workspace(company_dir, state)
 
@@ -63,8 +85,25 @@ def main() -> int:
             f"- 下一步最短动作: {args.next_action}",
         ],
     )
-    print(company_dir / "04-当前回合.md")
-    print(record)
+
+    print_step(5, 5, "验证与回报")
+    emit_runtime_report(
+        mode="启动回合",
+        phase="验证与回报",
+        stage=state["stage_label"],
+        round_name=args.round_name,
+        role=role_specs[args.owner]["display_name"],
+        artifact=args.artifact,
+        next_action=args.next_action,
+        needs_confirmation="否",
+        persistence_mode="模式 A：脚本执行",
+        company_dir=company_dir,
+        saved_paths=[
+            company_dir / "04-当前回合.md",
+            record,
+            state_path(company_dir),
+        ],
+    )
     return 0
 
 

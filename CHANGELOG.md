@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.3.2 - 2026-04-02
+
+- added fixed `Step 1/5 -> Step 5/5` progress reporting plus default `状态栏 / 保存状态 / 运行状态` output across the workflow
+- made persistence explicit by reporting whether artifacts were saved, where they were saved, and why they were not saved
+- introduced `scripts/preflight_check.py` for environment checks and clearer separation between `installed`, `runnable`, `workspace_created`, and `persisted`
+- introduced `scripts/checkpoint_save.py` for explicit checkpoint persistence during live company operation
+- introduced `scripts/ensure_python_runtime.py` to detect compatible runtimes, generate install plans, and let OpenClaw recover from Python incompatibility
+- widened helper-script compatibility to older Python environments by removing newer union syntax from runtime-critical paths
+- rewrote the main README and release-facing copy to target founders actively building AI-native solo companies instead of generic startup readers
+
 ## v0.3.0 - 2026-04-02
 
 - rebuilt the skill around `创建公司 -> 启动回合 -> 推进回合 -> 校准 -> 切阶段`

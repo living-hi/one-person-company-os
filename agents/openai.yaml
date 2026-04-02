@@ -1,4 +1,4 @@
 interface:
   display_name: "One Person Company OS"
-  short_description: "先产出公司创建草案，再按回合推进一人公司"
-  default_prompt: "我想围绕一个 AI 产品创建一间一人公司，请帮我调用 one-person-company-os。先给我公司创建草案，包括建议阶段、最小角色、中文工作区和首个推进回合；我确认后再正式创建。"
+  short_description: "把 AI 产品想法变成可持续推进的一人公司执行系统"
+  default_prompt: "我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并明确当前保存模式、保存状态和运行状态；我确认后再正式创建。"

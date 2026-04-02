@@ -1,5 +1,19 @@
 # Release Notes
 
+## v0.3.2 - State Transparency and Runtime Recovery
+
+This patch release makes the skill behave more like a real company operating system and less like an endless advisory prompt.
+
+This release includes:
+
+- fixed `Step 1/5 -> Step 5/5` execution reporting across preflight, workspace creation, round start, round update, calibration, checkpoint save, and stage transition
+- explicit save reporting that states whether content was saved, where it was saved, which files were written, and why content remained chat-only
+- a new `scripts/preflight_check.py` entry point for environment checks and mode selection
+- a new `scripts/checkpoint_save.py` entry point for saving recoverable company checkpoints
+- a new `scripts/ensure_python_runtime.py` entry point for Python runtime discovery, install planning, and interpreter switching
+- updated runtime reporting that distinguishes `installed`, `runnable`, `python_supported`, `workspace_created`, and `persisted`
+- a homepage rewrite and release-copy rewrite that target founders actively building AI-native solo companies
+
 ## v0.3.0 - Round-Based Solo Company OS
 
 This release is a full V2 rewrite of the skill.

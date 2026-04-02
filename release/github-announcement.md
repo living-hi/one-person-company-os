@@ -1,22 +1,19 @@
 # GitHub Announcement
 
-I rebuilt `one-person-company-os`.
+I upgraded `one-person-company-os` again.
 
-The old shape was closer to a startup operating manual.
-The new shape is a faster AI-native control system for solo companies:
+The previous V2 release already shifted the product from a startup manual to a round-based company OS.
+This patch makes the runtime and delivery behavior much more trustworthy.
 
-- create the company
-- start a round
-- advance the round
-- calibrate only when triggered
-- transition stages when the bottleneck changes
+It now reports exactly where it is in the flow, whether outputs were really saved, and what to do when the local Python environment is not compatible.
 
-The system is now Chinese-first for Chinese users, including workspace names, role names, and day-to-day operating language.
+The system remains Chinese-first for Chinese users, including workspace names, role names, and day-to-day operating language.
 
 This release includes:
 
-- a rewritten `SKILL.md`
-- a Chinese-first workspace
-- a minimal role system with `总控台` at the center
-- round scripts for start, update, calibration, and stage transition
-- updated sample outputs and release materials
+- fixed `Step 1/5 -> Step 5/5` progress reporting
+- explicit save status and runtime status in the workflow output
+- a new preflight command for environment checks and mode selection
+- a checkpoint save command for real operating handoffs
+- a Python runtime recovery command that prefers OpenClaw-managed recovery
+- rewritten README and release copy aimed at founders actively building AI-native solo companies

@@ -42,7 +42,7 @@
 - 下一步最短动作
 - 是否需要创始人确认
 
-以 [orchestration/handoff-schema.json](/home/living/.openclaw/workspace/one-person-company/orchestration/handoff-schema.json) 为准。
+以 [orchestration/handoff-schema.json](/home/living/.openclaw/workspace/one-person-company-os/orchestration/handoff-schema.json) 为准。
 
 ## 推荐执行顺序
 
@@ -53,6 +53,12 @@
 5. 启动首个回合
 6. 仅在触发器出现时进入校准
 7. 回合完成后再判断是否切换阶段
+
+## 运行时恢复
+
+- 如果当前 Python 不兼容，优先让 OpenClaw 智能体切换到本机已有兼容解释器
+- 如果没有兼容解释器，优先运行 `scripts/ensure_python_runtime.py --apply`
+- 如果仍不适合安装，再由智能体直接完成脚本任务并手动落盘
 
 ## 不该做的事
 

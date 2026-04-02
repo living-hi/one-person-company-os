@@ -1,27 +1,18 @@
 # One Person Company OS
 
-One Person Company OS is a Chinese-first control tower for AI-native solo companies.
+This is not a generic startup prompt. It is a company operating system for founders actively building an AI-native solo company.
 
-Start with one product idea. It first gives you a company setup draft, then after founder confirmation it creates the workspace, core role briefs, and the first execution round.
+One Person Company OS starts with a company setup draft, then after founder confirmation it creates the workspace, minimal role system, current round, and the follow-up operating loop.
 
-The product loop is simple:
+## Best For Founders Who
 
-- create the company
-- start a round
-- advance the round
-- calibrate only when triggered
-- transition stages when the bottleneck changes
+- have an AI product direction but no clear company structure yet
+- keep losing state across long chat threads
+- want real persistence instead of advisory-only output
+- need one current round, one blocker, and one shortest next move
+- want OpenClaw to recover when local scripts or Python versions get in the way
 
-## What It Helps You Do
-
-- turn an idea into an executable solo-company setup
-- keep one clear current stage, current round, current blocker, and shortest next move
-- move with a minimal role system instead of management overhead
-- calibrate only when blocked, drifting, finishing key outputs, or preparing a stage transition
-
-## First-Run Promise
-
-The first serious run should produce:
+## What You Get
 
 - a company setup draft
 - 3 to 5 company name options
@@ -29,16 +20,27 @@ The first serious run should produce:
 - a minimal org structure and first active roles
 - a Chinese workspace plan
 - the first executable round
-- explicit founder approval items
+- explicit state, save, and runtime reporting
+
+## Why It Feels Like A Company OS
+
+- fixed `Step 1/5 -> Step 5/5` execution flow
+- fixed `Status / Save / Runtime` reporting
+- explicit persistence instead of chat-only output
+- preflight checks plus Python recovery
+- fallback modes for execution, manual persistence, and chat-only operation
 
 ## Local Workflow
 
 ```bash
+python3 scripts/preflight_check.py --mode create-company
+python3 scripts/ensure_python_runtime.py
 python3 scripts/init_company.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
 python3 scripts/start_round.py ./workspace/北辰实验室 --round-name "完成首页首屏" --goal "完成首页首屏结构与注册入口"
+python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "end of current session"
 python3 scripts/validate_release.py
 ```
 
 ## Core Positioning
 
-Turn one founder into a fast-moving AI-native solo company.
+Turn a founder into a fast-moving AI-native solo company operating system.

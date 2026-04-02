@@ -8,11 +8,15 @@ from pathlib import Path
 
 from common import (
     default_role_ids_for_stage,
+    emit_runtime_report,
     normalize_stage,
     now_string,
+    preflight_status,
+    print_step,
     render_workspace,
     safe_workspace_name,
     save_state,
+    state_path,
     stage_label,
 )
 
@@ -36,15 +40,24 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
+    print_step(1, 5, "模式判定")
     stage_id = normalize_stage(args.stage)
     root = Path(args.path).expanduser().resolve()
     company_dir = root / safe_workspace_name(args.company_name)
     if company_dir.exists() and not args.force:
         parser.error(f"target already exists: {company_dir}")
 
+    print_step(2, 5, "环境检查")
+    runtime = preflight_status(company_dir)
+    if not runtime["runnable"]:
+        parser.error(f"runtime not runnable: {runtime['runtime_error']}")
+    if not runtime["writable"]:
+        parser.error(f"target not writable: {runtime['writable_target']}")
+
+    print_step(3, 5, "组装初始状态")
     active_roles = default_role_ids_for_stage(stage_id)
     state = {
-        "version": "2.0",
+        "version": "2.1",
         "language": "zh-CN",
         "company_name": args.company_name,
         "product_name": args.product_name,
@@ -72,14 +85,29 @@ def main() -> int:
         },
     }
 
+    print_step(4, 5, "执行与落盘")
     save_state(company_dir, state)
     render_workspace(company_dir, state)
 
-    print(f"Created company workspace: {company_dir}")
-    print("00-公司总览.md")
-    print("04-当前回合.md")
-    print("角色智能体/角色清单.md")
-    print("自动化/当前状态.json")
+    print_step(5, 5, "验证与回报")
+    emit_runtime_report(
+        mode="创建公司",
+        phase="验证与回报",
+        stage=stage_label(stage_id),
+        round_name=state["current_round"]["name"],
+        role="总控台",
+        artifact="公司工作区骨架",
+        next_action="确认首个推进回合或继续生成角色 brief",
+        needs_confirmation="否",
+        persistence_mode="模式 A：脚本执行",
+        company_dir=company_dir,
+        saved_paths=[
+            company_dir / "00-公司总览.md",
+            company_dir / "04-当前回合.md",
+            company_dir / "角色智能体" / "角色清单.md",
+            state_path(company_dir),
+        ],
+    )
     return 0
 
 
