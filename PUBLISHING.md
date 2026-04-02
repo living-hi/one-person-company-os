@@ -31,7 +31,7 @@ python3 scripts/validate_release.py
 git init
 git checkout -b main
 git add .
-git commit -m "release: publish one-person-company-os v0.3.2"
+git commit -m "release: publish one-person-company-os v0.3.3"
 git remote add origin <YOUR_GITHUB_REPO_URL>
 git push -u origin main
 ```
@@ -56,8 +56,8 @@ git push origin main
 clawhub publish /home/living/.openclaw/workspace/one-person-company-os \
   --slug one-person-company-os \
   --name "One Person Company OS" \
-  --version 0.3.2 \
-  --changelog "Improve state transparency, Python runtime recovery, and founder-facing positioning."
+  --version 0.3.3 \
+  --changelog "Improve README professionalism, architecture clarity, and one-line onboarding."
 ```
 
 Replace the staged files, commit message, version, and changelog as needed.
@@ -72,9 +72,9 @@ Replace the staged files, commit message, version, and changelog as needed.
 
 ## Suggested Current Release
 
-- tag: `v0.3.2`
-- title: `v0.3.2: state transparency and runtime recovery`
-- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.3.2-github-release.md`
+- tag: `v0.3.3`
+- title: `v0.3.3: README professionalization and architecture clarity`
+- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.3.3-github-release.md`
 
 ## ClawHub Submission Prep
 
@@ -95,10 +95,10 @@ Use the materials in `release/`:
 - After any timeout, verify with the download endpoint before retrying:
 
 ```bash
-curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=0.3.2" -o /tmp/one-person-company-os-0.3.2.zip
-unzip -p /tmp/one-person-company-os-0.3.2.zip README.zh-CN.md | sed -n '1,80p'
-unzip -p /tmp/one-person-company-os-0.3.2.zip agents/openai.yaml
-unzip -p /tmp/one-person-company-os-0.3.2.zip scripts/ensure_python_runtime.py | sed -n '1,80p'
+curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=0.3.3" -o /tmp/one-person-company-os-0.3.3.zip
+unzip -p /tmp/one-person-company-os-0.3.3.zip README.zh-CN.md | sed -n '1,80p'
+unzip -p /tmp/one-person-company-os-0.3.3.zip agents/openai.yaml
+unzip -p /tmp/one-person-company-os-0.3.3.zip scripts/ensure_python_runtime.py | sed -n '1,80p'
 ```
 
 - The public listing page may lag behind the downloadable package version. Trust the download endpoint first.

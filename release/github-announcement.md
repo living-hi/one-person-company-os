@@ -2,18 +2,23 @@
 
 I upgraded `one-person-company-os` again.
 
-The previous V2 release already shifted the product from a startup manual to a round-based company OS.
-This patch makes the runtime and delivery behavior much more trustworthy.
+The product itself had already become stronger.
+The remaining problem was that the README still did not explain the product fast enough or professionally enough.
 
-It now reports exactly where it is in the flow, whether outputs were really saved, and what to do when the local Python environment is not compatible.
+This patch fixes that.
 
-The system remains Chinese-first for Chinese users, including workspace names, role names, and day-to-day operating language.
+The repository front page now explains, much more clearly:
+
+- what this system is
+- who it is for
+- what architecture it uses
+- why it behaves like an operating system instead of a generic prompt
+- how to install it in one line
+- how to start it in one line
 
 This release includes:
 
-- fixed `Step 1/5 -> Step 5/5` progress reporting
-- explicit save status and runtime status in the workflow output
-- a new preflight command for environment checks and mode selection
-- a checkpoint save command for real operating handoffs
-- a Python runtime recovery command that prefers OpenClaw-managed recovery
-- rewritten README and release copy aimed at founders actively building AI-native solo companies
+- a full README rewrite
+- explicit architecture framing
+- one-line install and one-line start
+- aligned ClawHub and agent metadata copy

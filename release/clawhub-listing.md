@@ -6,7 +6,7 @@ One Person Company OS
 
 ## Short Description
 
-把 AI 产品想法变成可持续推进的一人公司执行系统
+面向 AI 一人公司的状态驱动 company operating system
 
 ## Tagline Options
 
@@ -18,11 +18,14 @@ One Person Company OS
 
 One Person Company OS is for founders actively building an AI-native solo company.
 
+It is designed as a state-driven operating layer, not as a generic advisory prompt.
+
 It starts by turning one product idea into a founder-reviewable company setup draft with a suggested stage, minimal role structure, workspace plan, and the first executable round.
 
 After founder confirmation, it keeps the company moving with:
 
 - Chinese-first workspace creation
+- explicit architecture and operating model
 - fixed step-by-step progress reporting
 - explicit save and runtime status
 - minimal role activation
@@ -46,6 +49,7 @@ The first serious run should produce:
 
 ## Quick Start Prompts
 
+- `clawhub install one-person-company-os`
 - `我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并明确当前保存模式、保存状态和运行状态；我确认后再正式创建。`
 - `帮我启动当前阶段的第一个推进回合。`
 - `继续推进当前回合，告诉我现在最短路径怎么走。`

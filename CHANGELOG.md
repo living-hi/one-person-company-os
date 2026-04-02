@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.3 - 2026-04-02
+
+- rewrote the repository README to explain the product as a professional, state-driven company operating system instead of a generic prompt
+- added explicit architecture framing so users can immediately understand the system layers and operating model
+- added one-line install and one-line start entry points for faster onboarding
+- aligned release READMEs, ClawHub listing copy, and agent metadata with the sharper positioning
+
 ## v0.3.2 - 2026-04-02
 
 - added fixed `Step 1/5 -> Step 5/5` progress reporting plus default `状态栏 / 保存状态 / 运行状态` output across the workflow

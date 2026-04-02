@@ -1,5 +1,25 @@
 # Release Notes
 
+## v0.3.3 - README Professionalization and Architecture Clarity
+
+This patch release sharpens the public product surface.
+
+The goal is simple: a founder should be able to open the README and understand in under a minute:
+
+- what this system is
+- what architecture it uses
+- why it is more professional than a generic startup prompt
+- how to install it in one line
+- how to start it in one line
+
+This release includes:
+
+- a full rewrite of the main README information architecture
+- a clearer architecture section for the system layers
+- a stronger, more professional product definition
+- one-line install and one-line start sections
+- aligned release README, ClawHub listing, and agent metadata
+
 ## v0.3.2 - State Transparency and Runtime Recovery
 
 This patch release makes the skill behave more like a real company operating system and less like an endless advisory prompt.

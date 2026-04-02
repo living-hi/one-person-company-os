@@ -1,8 +1,25 @@
 # One Person Company OS
 
-This is not a generic startup prompt. It is a company operating system for founders actively building an AI-native solo company.
+This is not a generic startup prompt. It is a **state-driven company operating system** for founders actively building an AI-native solo company.
 
-One Person Company OS starts with a company setup draft, then after founder confirmation it creates the workspace, minimal role system, current round, and the follow-up operating loop.
+It unifies four critical objects into one operating layer:
+
+- company definition
+- role structure
+- current round
+- file and runtime state
+
+## One-Line Install
+
+```bash
+clawhub install one-person-company-os
+```
+
+## One-Line Start
+
+```text
+I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the current persistence mode, save status, and runtime status before creation.
+```
 
 ## Best For Founders Who
 
@@ -29,6 +46,20 @@ One Person Company OS starts with a company setup draft, then after founder conf
 - explicit persistence instead of chat-only output
 - preflight checks plus Python recovery
 - fallback modes for execution, manual persistence, and chat-only operation
+
+## Architecture
+
+```text
+Founder
+  ↓
+Control Tower / Skill Protocol
+  ↓
+Round Engine
+  ↓
+Workspace Persistence Layer
+  ↓
+Runtime Recovery Layer
+```
 
 ## Local Workflow
 
