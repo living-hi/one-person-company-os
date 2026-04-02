@@ -6,6 +6,8 @@ One Person Company OS 帮一个 solo founder 把 solo SaaS 经营得像一家真
 
 它不是一堆 Prompt，也不是泛泛的创业建议，而是一层可执行的公司操作系统：角色分工、阶段化工作流、可复用文档、周复盘节奏，以及清晰的审批边界。
 
+如果你想先用通俗语言理解它怎么用、有什么作用、底层怎么组织，可以先看 [通俗指南](./GUIDE.zh-CN.md)。
+
 这个仓库包含技能本体：可发布的 `SKILL.md`、参考资料、模板、辅助脚本和示例资产。
 
 ## 核心承诺
@@ -63,6 +65,7 @@ Use $one-person-company-os to run my weekly review. Summarize wins, losses, metr
 ## 仓库包含什么
 
 - `SKILL.md`：技能行为和操作规则
+- `GUIDE.zh-CN.md`：面向初次使用者的中文通俗指南
 - `CLAUDE.md`：给 Claude Code 一类终端智能体看的运行入口
 - `AGENTS.md`：宿主无关的 role-agent 编排说明
 - `LICENSE`：MIT 许可证
