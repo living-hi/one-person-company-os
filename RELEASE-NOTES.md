@@ -1,5 +1,22 @@
 # Release Notes
 
+## v0.5.3 - English-First Storefront Polish
+
+This patch release improves the public-facing storefront for both GitHub and ClawHub.
+
+The runtime and generated materials were already bilingual.
+The remaining weak point was presentation:
+
+- the English README still showed too many raw Chinese workspace paths without enough English framing
+- the public `SKILL.md` still read like an internal Chinese-first spec instead of a storefront that English users could scan quickly
+- ClawHub-facing copy still exposed Chinese before English in places where English readers were likely to bounce
+
+This release closes that gap by:
+
+- rewriting the GitHub English README sections that describe canonical workspace files
+- turning `SKILL.md` into an English-first bilingual storefront while preserving the same operating rules
+- reordering ClawHub listing copy and prompts so English users see an immediately understandable product surface
+
 ## v0.5.2 - Bilingual Listing Metadata Polish
 
 This patch release fixes the remaining public-surface mismatch after the bilingual runtime upgrade.

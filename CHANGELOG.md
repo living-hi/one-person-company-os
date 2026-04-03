@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.3 - 2026-04-03
+
+- polished the GitHub English README so canonical Chinese workspace paths are explained with English-first labels instead of looking like untranslated product copy
+- rewrote `SKILL.md` into an English-first bilingual storefront so ClawHub readers can understand the product, entry points, runtime model, and trust boundaries immediately
+- reordered ClawHub-facing copy so English-facing summaries and prompts lead, while still keeping Chinese support visible
+
 ## v0.5.2 - 2026-04-03
 
 - updated `SKILL.md` metadata so the public ClawHub summary is readable for both Chinese and English users

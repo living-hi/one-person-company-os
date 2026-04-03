@@ -10,9 +10,10 @@ A navigable, persistent, bilingual company operating system for AI-native solo f
 
 ## Tagline Options
 
-- 给正在创立 AI 一人公司的创始人，一个真正能落盘、能推进、能恢复的 company OS。
 - Create the company, run the round, save the state, recover the runtime.
+- Give AI-native solo founders a real company OS that persists work, advances execution, and recovers runtime.
 - 不只是给建议，而是把一人公司从草案推进到真实执行。
+- 给正在创立 AI 一人公司的创始人，一个真正能落盘、能推进、能恢复的 company OS。
 
 ## Primary Pitch
 
@@ -54,14 +55,14 @@ The first serious run should produce:
 ## Quick Start Prompts
 
 - `clawhub install one-person-company-os`
-- `我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并用三层导航条、用户导航版/审计版、保存解释和运行解释告诉我当前状态；我确认后再正式创建。`
 - `I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the three-layer navigation bar, user-navigation view, audit view, save explanation, and runtime explanation before creation.`
-- `帮我启动当前阶段的第一个推进回合。`
 - `Start the first active round for the current stage.`
-- `继续推进当前回合，告诉我现在最短路径怎么走。`
 - `Keep advancing the current round and tell me the shortest next path.`
-- `我卡住了，帮我进入校准回合。`
 - `I am blocked. Move me into a calibration round.`
+- `我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并用三层导航条、用户导航版/审计版、保存解释和运行解释告诉我当前状态；我确认后再正式创建。`
+- `帮我启动当前阶段的第一个推进回合。`
+- `继续推进当前回合，告诉我现在最短路径怎么走。`
+- `我卡住了，帮我进入校准回合。`
 
 ## What Users Get
 
@@ -80,6 +81,6 @@ This skill drafts first and still requires explicit founder approval before laun
 
 ## Default Prompt
 
-我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并用三层导航条、用户导航版/审计版、保存解释和运行解释告诉我当前状态；我确认后再正式创建。
-
 I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the three-layer navigation bar, user-navigation view, audit view, save explanation, and runtime explanation before creation.
+
+我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并用三层导航条、用户导航版/审计版、保存解释和运行解释告诉我当前状态；我确认后再正式创建。

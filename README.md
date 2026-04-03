@@ -163,19 +163,21 @@ Key artifacts no longer exist as loose markdown drafts.
 
 The default contract is now:
 
-- every formal artifact inside `产物/` is a numbered `.docx`
+- every formal artifact inside the canonical `产物/` (`Artifacts`) directory is a numbered `.docx`
 - software work must leave real code, config, script, interface, or automation evidence
 - non-software work must leave real deliverables instead of chat-only summaries
 - launch and post-launch stages must include deployment and production materials
 
-The workspace now includes:
+For English users, the content and runtime output switch to English, but the on-disk canonical filenames stay stable for automation.
 
-- `07-文档产物规范.md`
-- `08-阶段角色与交付矩阵.md`
-- `09-当前阶段交付要求.md`
-- `产物/00-交付模板/01-正式交付文档模板.docx`
-- `产物/01-实际交付/01-实际产出总表.docx`
-- `产物/04-部署与生产/01-部署与回滚清单.docx` when the stage requires it
+The workspace now includes these canonical files:
+
+- artifact output spec: `07-文档产物规范.md`
+- stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
+- current-stage delivery requirements: `09-当前阶段交付要求.md`
+- formal deliverable template: `产物/00-交付模板/01-正式交付文档模板.docx`
+- actual deliverables index: `产物/01-实际交付/01-实际产出总表.docx`
+- deployment and rollback checklist: `产物/04-部署与生产/01-部署与回滚清单.docx` when the stage requires it
 
 To generate artifact documents directly:
 
@@ -201,22 +203,26 @@ Default downgrade path:
 
 ```text
 Company/
-  00-公司总览.md
-  01-产品定位.md
-  02-当前阶段.md
-  03-组织架构.md
-  04-当前回合.md
-  05-推进规则.md
-  06-触发器与校准规则.md
-  07-文档产物规范.md
-  08-阶段角色与交付矩阵.md
-  09-当前阶段交付要求.md
-  角色智能体/
-  流程/
-  产物/
-  记录/
-  自动化/
+  core overview docs
+  role agents/
+  process guides/
+  artifacts/
+  records/
+  automation/
 ```
+
+Canonical root files on disk remain:
+
+- company overview: `00-公司总览.md`
+- product positioning: `01-产品定位.md`
+- current stage: `02-当前阶段.md`
+- org structure: `03-组织架构.md`
+- current round: `04-当前回合.md`
+- execution rules: `05-推进规则.md`
+- trigger and calibration rules: `06-触发器与校准规则.md`
+- artifact output spec: `07-文档产物规范.md`
+- stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
+- current-stage delivery requirements: `09-当前阶段交付要求.md`
 
 Core design rules:
 
