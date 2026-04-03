@@ -6,7 +6,7 @@ One Person Company OS
 
 ## Short Description
 
-A navigable, persistent, bilingual company operating system for AI-native solo founders
+Run an AI-native solo company with rounds, role briefs, and persistent workspace
 
 ## Tagline Options
 

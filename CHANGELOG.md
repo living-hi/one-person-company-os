@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.4 - 2026-04-03
+
+- shortened the public ClawHub summary so the English hook is tighter and more of the Chinese summary fits on the listing card
+- aligned the ClawHub listing short description with the new concise storefront summary
+
 ## v0.5.3 - 2026-04-03
 
 - polished the GitHub English README so canonical Chinese workspace paths are explained with English-first labels instead of looking like untranslated product copy

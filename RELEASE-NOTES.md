@@ -1,5 +1,18 @@
 # Release Notes
 
+## v0.5.4 - ClawHub Summary Compression
+
+This patch release shortens the public storefront summary.
+
+The product surface was already in the right order, with English first and Chinese second.
+The remaining issue was card-level length: the English sentence still took too much room, so the Chinese half was cut off too early in ClawHub previews.
+
+This release fixes that by:
+
+- replacing the long storefront summary with a shorter English hook
+- keeping the same Chinese value proposition in a more compact form
+- aligning the ClawHub listing short description with the new compressed summary
+
 ## v0.5.3 - English-First Storefront Polish
 
 This patch release improves the public-facing storefront for both GitHub and ClawHub.

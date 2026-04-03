@@ -1,6 +1,6 @@
 ---
 name: one-person-company-os
-description: Build and run an AI-native solo company with language-aware workspace, role briefs, rounds, calibration, and persistent operating rhythm. / 帮用户创建并推进一间 AI 原生一人公司，提供语言感知工作区、角色 brief、回合推进、校准与持久化运行节奏。
+description: Run an AI-native solo company with rounds, role briefs, and persistent workspace. / 帮用户搭建并推进 AI 原生一人公司，提供回合推进、角色 brief 与持久化工作区。
 ---
 
 # One Person Company OS

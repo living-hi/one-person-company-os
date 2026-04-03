@@ -72,9 +72,9 @@ Replace the staged files, commit message, version, and changelog as needed.
 
 ## Suggested Current Release
 
-- tag: `v0.5.3`
-- title: `v0.5.3: english-first storefront polish`
-- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.5.3-github-release.md`
+- tag: `v0.5.4`
+- title: `v0.5.4: clawhub summary compression`
+- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.5.4-github-release.md`
 
 ## ClawHub Submission Prep
 
