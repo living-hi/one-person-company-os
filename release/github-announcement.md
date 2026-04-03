@@ -3,22 +3,20 @@
 I upgraded `one-person-company-os` again.
 
 The previous release made the project easier to understand.
-This release makes it easier to actually operate.
+This release makes the product easier to start and easier to inspect during real execution.
 
-The main gap was no longer navigation.
-It was delivery discipline during real use:
+The main gaps were:
 
-- important outputs could still sprawl across too many draft shapes
-- software and non-software runs could look productive without leaving auditable deliverables
-- launch-stage work could still miss deployment and production materials
+- first-run interaction still asked too much of founders
+- users still could not see pending vs completed deliverables clearly enough
+- formal outputs were more standardized, but not yet visible enough as a working board
 
 This release fixes that.
 
 This release includes:
 
-- language-aware runtime reports and generated materials for both Chinese and English founders
-- numbered `.docx` artifact outputs only
-- real output packs for software, non-software, deployment, and production materials
-- explicit stage-role and deliverable requirements
-- stronger launch defaults with `运维保障` and `用户运营`
-- validation that now checks ops materials as part of release readiness
+- proactive one-line founder intake with direction suggestions
+- a new founder start card and a new deliverable-status overview inside the workspace
+- placeholder starter deliverables marked `[待生成]` and automatic promotion to `[已生成]`
+- runtime reports that now always tell users where to look next and how to ask for tighter changes
+- validation that now checks the pending/completed deliverable lifecycle

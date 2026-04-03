@@ -19,7 +19,7 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the three-layer navigation bar, user-navigation view, audit view, save explanation, and runtime explanation before creation.
+I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
 ```
 
 ## Best For Founders Who
@@ -33,6 +33,8 @@ I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 
 ## What You Get
 
 - a company setup draft
+- lightweight founder intake from a single sentence
+- startup direction suggestions when the founder is still undecided
 - 3 to 5 company name options
 - a suggested stage
 - a minimal org structure and first active roles
@@ -41,7 +43,7 @@ I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 
 - a three-layer navigation model
 - user-navigation and audit views
 - explicit state, save, and runtime explanations
-- numbered DOCX deliverables with software/non-software evidence and post-launch deployment materials
+- status-marked placeholder DOCX deliverables plus software/non-software evidence and post-launch deployment materials
 
 ## Language Behavior
 
@@ -57,7 +59,7 @@ I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 
 - explicit persistence instead of chat-only output
 - preflight checks plus Python recovery
 - fallback modes for execution, manual persistence, and chat-only operation
-- standard document templates for deliverable output
+- standard document templates plus a visible pending/completed deliverable map
 
 ## Architecture
 

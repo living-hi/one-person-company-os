@@ -152,6 +152,7 @@ def validate_workspace_scripts() -> None:
             init.stdout,
             "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
             "本次变化:",
+            "查看与改进:",
             "保存解释:",
             "运行解释:",
             "文件名:",
@@ -165,19 +166,29 @@ def validate_workspace_scripts() -> None:
         assert_exists(company_dir / "07-文档产物规范.md")
         assert_exists(company_dir / "08-阶段角色与交付矩阵.md")
         assert_exists(company_dir / "09-当前阶段交付要求.md")
+        assert_exists(company_dir / "10-创始人启动卡.md")
+        assert_exists(company_dir / "11-交付状态总览.md")
         assert_exists(company_dir / "角色智能体" / "角色清单.md")
-        assert_exists(company_dir / "产物" / "00-交付模板" / "01-正式交付文档模板.docx")
-        assert_exists(company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx")
-        assert_exists(company_dir / "产物" / "02-软件与代码" / "01-代码与功能交付清单.docx")
-        assert_exists(company_dir / "产物" / "03-非软件与业务" / "01-非软件交付清单.docx")
+        assert_exists(company_dir / "产物" / "00-交付模板" / "01-[待生成]正式交付文档模板.docx")
+        assert_exists(company_dir / "产物" / "01-实际交付" / "01-[待生成]实际产出总表.docx")
+        assert_exists(company_dir / "产物" / "02-软件与代码" / "01-[待生成]代码与功能交付清单.docx")
+        assert_exists(company_dir / "产物" / "02-软件与代码" / "02-[待生成]测试与验收记录.docx")
+        assert_exists(company_dir / "产物" / "03-非软件与业务" / "01-[待生成]非软件交付清单.docx")
         assert_exists(company_dir / "自动化" / "当前状态.json")
+        if (company_dir / "产物" / "产品").exists() or (company_dir / "产物" / "增长").exists() or (company_dir / "产物" / "运营").exists():
+            raise AssertionError("legacy unnumbered artifact directories should not be created")
         artifact_md_files = list((company_dir / "产物").rglob("*.md"))
         if artifact_md_files:
             raise AssertionError(f"expected only docx files under artifacts, found markdown: {artifact_md_files}")
         assert_contains(
-            read_docx_text(company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx"),
+            read_docx_text(company_dir / "产物" / "01-实际交付" / "01-[待生成]实际产出总表.docx"),
             "实际产出总表",
-            "真实产出",
+            "待生成",
+        )
+        assert_contains(
+            (company_dir / "11-交付状态总览.md").read_text(encoding="utf-8"),
+            "01-[待生成]实际产出总表.docx",
+            "02-[待生成]测试与验收记录.docx",
         )
 
         start = run(
@@ -190,7 +201,7 @@ def validate_workspace_scripts() -> None:
             "--owner",
             "product-strategist",
             "--artifact",
-            "产物/产品/首页首屏草稿.md",
+            "产物/02-软件与代码/03-[待生成]首页首屏规范.docx",
             "--next-action",
             "先确定首屏价值主张",
         )
@@ -267,9 +278,14 @@ def validate_workspace_scripts() -> None:
             ".docx",
         )
         print(artifact_docs.stdout.strip())
-        generated_docx = company_dir / "产物" / "02-软件与代码" / "03-首页首屏规范.docx"
+        generated_docx = company_dir / "产物" / "02-软件与代码" / "03-[已生成]首页首屏规范.docx"
         assert_exists(generated_docx)
-        assert_contains(read_docx_text(generated_docx), "首页首屏规范", "实际软件与代码产出", "证据与验收路径")
+        assert_contains(read_docx_text(generated_docx), "首页首屏规范", "实际软件与代码产出", "证据与验收路径", "已生成")
+        assert_contains(
+            (company_dir / "11-交付状态总览.md").read_text(encoding="utf-8"),
+            "03-[已生成]首页首屏规范.docx",
+            "状态: 已完成",
+        )
 
         checkpoint = run(
             str(SCRIPTS_DIR / "checkpoint_save.py"),
@@ -298,6 +314,9 @@ def validate_workspace_scripts() -> None:
         )
         assert_contains(transition.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "切换阶段", "保存状态:")
         print(transition.stdout.strip())
+        assert_exists(company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx")
+        assert_exists(company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx")
+        assert_exists(company_dir / "产物" / "05-上线与增长" / "01-[待生成]上线公告与反馈回收清单.docx")
 
         single_brief = run(
             str(SCRIPTS_DIR / "build_agent_brief.py"),
@@ -361,8 +380,8 @@ def validate_workspace_scripts() -> None:
         assert_exists(output_dir / "增长负责人.md")
         assert_exists(output_dir / "运维保障.md")
         assert_exists(output_dir / "用户运营.md")
-        assert_exists(company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx")
-        assert_exists(company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx")
+        assert_exists(company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx")
+        assert_exists(company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx")
         assert_exists(next((company_dir / "记录" / "检查点").glob("*-检查点.md")))
 
         english_preflight = run(
@@ -425,9 +444,9 @@ def validate_workspace_scripts() -> None:
             "Generated a numbered DOCX",
             "Mode A: Script Execution",
         )
-        english_generated_docx = english_company_dir / "产物" / "02-软件与代码" / "03-Homepage-Hero-Spec.docx"
+        english_generated_docx = english_company_dir / "产物" / "02-软件与代码" / "03-[已生成]Homepage-Hero-Spec.docx"
         assert_exists(english_generated_docx)
-        assert_contains(read_docx_text(english_generated_docx), "Homepage Hero Spec", "Evidence And Acceptance Paths")
+        assert_contains(read_docx_text(english_generated_docx), "Homepage Hero Spec", "Evidence And Acceptance Paths", "Generated")
 
         english_brief = run(
             str(SCRIPTS_DIR / "build_agent_brief.py"),

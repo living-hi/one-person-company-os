@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.5.6 - 2026-04-04
+
+- upgraded the first-run contract so the system now actively asks for a one-line founder idea or offers 3 to 4 startup directions instead of front-loading heavy input
+- added `10-创始人启动卡.md` and `11-交付状态总览.md` so founders can immediately see how to start and which formal deliverables are still pending vs completed
+- changed starter artifact generation from plain fixed DOCX files to status-marked placeholder files such as `[待生成]` and automatic promotion to `[已生成]`
+- added review-path and improvement reminders to every runtime report so users always know where to inspect the latest output and how to request changes
+- tightened validation to check the new placeholder naming, status overview, removal of legacy unnumbered artifact folders, and placeholder-to-completed promotion flow
+
 ## v0.5.5 - 2026-04-03
 
 - upgraded the ClawHub storefront summary from descriptive to outcome-driven so the first line feels more compelling to new users

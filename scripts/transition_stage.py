@@ -91,9 +91,33 @@ def main() -> int:
         company_dir / "04-当前回合.md",
         company_dir / "08-阶段角色与交付矩阵.md",
         company_dir / "09-当前阶段交付要求.md",
+        company_dir / "11-交付状态总览.md",
     ]
-    if new_stage_id in {"launch", "operate", "grow"}:
-        stage_saved_paths.append(company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx")
+    if new_stage_id == "launch":
+        stage_saved_paths.extend(
+            [
+                company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx",
+                company_dir / "产物" / "05-上线与增长" / "01-[待生成]上线公告与反馈回收清单.docx",
+            ]
+        )
+    elif new_stage_id == "operate":
+        stage_saved_paths.extend(
+            [
+                company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "03-[待生成]事故响应与复盘记录.docx",
+                company_dir / "产物" / "05-上线与增长" / "01-[待生成]上线公告与反馈回收清单.docx",
+            ]
+        )
+    elif new_stage_id == "grow":
+        stage_saved_paths.extend(
+            [
+                company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx",
+                company_dir / "产物" / "05-上线与增长" / "01-[待生成]增长实验与经营复盘.docx",
+            ]
+        )
 
     record = write_record(
         company_dir,

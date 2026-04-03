@@ -512,32 +512,40 @@ Updated At: {{UPDATED_AT}}
 - Product: {{PRODUCT_NAME}}
 - Stage: {{STAGE_LABEL}}
 - Current Round: {{CURRENT_ROUND_NAME}}
-- Round Goal: {{ROUND_GOAL}}
-- Round Status: {{ROUND_STATUS}}
+- Status: {{ARTIFACT_STATUS}}
+- File Path: {{ARTIFACT_FILE_PATH}}
 
-## Deliverable Summary
+## Progress Summary
 
-- Artifact Type: {{ARTIFACT_TYPE}}
-- Owner: {{ARTIFACT_OWNER}}
-- Objective: {{ARTIFACT_OBJECTIVE}}
-- Summary: {{ARTIFACT_SUMMARY}}
-- Next Action: {{ARTIFACT_NEXT_ACTION}}
+- {{ARTIFACT_PROGRESS_SUMMARY}}
 
-## Real Deliverables
+## Required Outputs For This Stage
 
-{{ARTIFACT_DELIVERABLES}}
+{{CURRENT_STAGE_REQUIRED_OUTPUTS}}
 
-## Software Outputs
+## Registry Rules
 
-{{ARTIFACT_SOFTWARE_OUTPUTS}}
+- Formal deliverables use a two-digit numbered `.docx` file name.
+- Placeholder files are marked `[待生成]`, and completed files move to `[已生成]`.
+- Do not mark a deliverable complete without a file path, repository link, demo link, or acceptance evidence.
 
-## Non-Software Outputs
+## Suggested Registry Fields
 
-{{ARTIFACT_NON_SOFTWARE_OUTPUTS}}
+- Deliverable ID
+- Deliverable Name
+- Deliverable Type
+- File Path Or Link
+- Owner
+- Status
+- Acceptance Result
 
-## Evidence And Acceptance Paths
+## Current Gaps
 
-{{ARTIFACT_EVIDENCE}}
+{{ARTIFACT_MISSING_ITEMS}}
+
+## Next Action
+
+- {{ARTIFACT_NEXT_ACTION}}
 """,
     "artifact-deployment-template.md": """# {{ARTIFACT_TITLE}}
 
@@ -583,6 +591,16 @@ Updated At: {{UPDATED_AT}}
 - Round Status: {{ROUND_STATUS}}
 - Artifact Type: {{ARTIFACT_TYPE}}
 - Owner: {{ARTIFACT_OWNER}}
+- Status: {{ARTIFACT_STATUS}}
+- File Path: {{ARTIFACT_FILE_PATH}}
+
+## Progress Summary
+
+- {{ARTIFACT_PROGRESS_SUMMARY}}
+
+## Missing Items
+
+{{ARTIFACT_MISSING_ITEMS}}
 
 ## Objective
 
@@ -751,6 +769,12 @@ Updated At: {{UPDATED_AT}}
 - Stage: {{STAGE_LABEL}}
 - Current Round: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
+- Status: {{ARTIFACT_STATUS}}
+- File Path: {{ARTIFACT_FILE_PATH}}
+
+## Progress Summary
+
+- {{ARTIFACT_PROGRESS_SUMMARY}}
 
 ## Objective
 
@@ -773,6 +797,10 @@ Updated At: {{UPDATED_AT}}
 {{ARTIFACT_CHANGES}}
 
 {{ARTIFACT_DECISIONS}}
+
+## Missing Items
+
+{{ARTIFACT_MISSING_ITEMS}}
 
 ## Next Action
 
@@ -819,11 +847,17 @@ Updated At: {{UPDATED_AT}}
 - Stage: {{STAGE_LABEL}}
 - Current Round: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
+- Status: {{ARTIFACT_STATUS}}
+- File Path: {{ARTIFACT_FILE_PATH}}
 
 ## Production Objective
 
 - Objective: {{ARTIFACT_OBJECTIVE}}
 - Summary: {{ARTIFACT_SUMMARY}}
+
+## Progress Summary
+
+- {{ARTIFACT_PROGRESS_SUMMARY}}
 
 ## Production Checklist
 
@@ -837,6 +871,10 @@ Updated At: {{UPDATED_AT}}
 
 {{ARTIFACT_RISKS}}
 
+## Missing Items
+
+{{ARTIFACT_MISSING_ITEMS}}
+
 ## Next Action
 
 - {{ARTIFACT_NEXT_ACTION}}
@@ -849,11 +887,17 @@ Updated At: {{UPDATED_AT}}
 - Stage: {{STAGE_LABEL}}
 - Current Round: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
+- Status: {{ARTIFACT_STATUS}}
+- File Path: {{ARTIFACT_FILE_PATH}}
 
 ## Quality Objective
 
 - Objective: {{ARTIFACT_OBJECTIVE}}
 - Summary: {{ARTIFACT_SUMMARY}}
+
+## Progress Summary
+
+- {{ARTIFACT_PROGRESS_SUMMARY}}
 
 ## Deliverables
 
@@ -866,6 +910,10 @@ Updated At: {{UPDATED_AT}}
 ## Risks
 
 {{ARTIFACT_RISKS}}
+
+## Missing Items
+
+{{ARTIFACT_MISSING_ITEMS}}
 
 ## Next Action
 
@@ -880,6 +928,12 @@ Updated At: {{UPDATED_AT}}
 - Stage: {{STAGE_LABEL}}
 - Current Round: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
+- Status: {{ARTIFACT_STATUS}}
+- File Path: {{ARTIFACT_FILE_PATH}}
+
+## Progress Summary
+
+- {{ARTIFACT_PROGRESS_SUMMARY}}
 
 ## Objective
 
@@ -896,6 +950,10 @@ Updated At: {{UPDATED_AT}}
 ## Evidence
 
 {{ARTIFACT_EVIDENCE}}
+
+## Missing Items
+
+{{ARTIFACT_MISSING_ITEMS}}
 
 ## Next Action
 
@@ -963,11 +1021,12 @@ Updated At: {{UPDATED_AT}}
 """,
     "bootstrap-flow-template.md": """# Company Creation Flow
 
-1. Confirm the founder objective and target user
-2. Propose the company setup draft
-3. Wait for founder approval
-4. Create the workspace
-5. Generate the starter role set and formal deliverable pack
+1. Ask for the founder idea in one sentence, or let the founder pick a direction
+2. Turn that lightweight input into a proposed company direction, stage, and first round
+3. Keep the reply burden low and the output easy to scan
+4. Wait for founder approval
+5. Create the standardized workspace and starter deliverable pack
+6. Generate the starter role set and launch the first round
 """,
     "calibration-flow-template.md": """# Calibration Flow
 
@@ -1015,6 +1074,12 @@ Updated At: {{UPDATED_AT}}
 - Advance only around the current round
 - Enter calibration only when a trigger appears
 - Ask the founder for approval on budget, launch, customer-facing, or compliance-sensitive actions
+
+## Quick Paths
+
+- Founder Start Card: `10-创始人启动卡.md`
+- Deliverable Status Overview: `11-交付状态总览.md`
+- Formal Deliverables: `产物/`
 """,
     "current-round-template.md": """# Current Round
 
@@ -1045,6 +1110,12 @@ Updated At: {{UPDATED_AT}}
 
 {{CURRENT_STAGE_REQUIRED_OUTPUTS}}
 
+## Review Order
+
+- Read `10-创始人启动卡.md` first for direction and minimum input.
+- Read `11-交付状态总览.md` next to see which DOCX files are completed and which are still placeholders.
+- Then complete the matching files under `产物/`.
+
 ## Risks
 
 {{STAGE_RISKS}}
@@ -1052,6 +1123,13 @@ Updated At: {{UPDATED_AT}}
 ## Next-Stage Readiness
 
 - {{NEXT_STAGE_REQUIREMENTS}}
+
+## Deliverable Rules
+
+- Formal files under `产物/` use numbered `.docx` names.
+- Placeholder files may start as `[待生成]` and should switch to `[已生成]` when formally produced.
+- Software work must leave real code, scripts, interfaces, config, or automation outputs.
+- Non-software work must leave formal business deliverables instead of chat-only summaries.
 """,
     "current-stage-template.md": """# Current Stage
 

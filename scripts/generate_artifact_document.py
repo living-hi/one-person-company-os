@@ -7,14 +7,20 @@ import argparse
 from pathlib import Path
 
 from common import (
+    artifact_status_summary_markdown,
+    display_path,
     emit_runtime_report,
     load_state,
-    next_numbered_index,
-    numbered_name,
+    now_string,
+    planned_docx_path,
     preflight_status,
     print_step,
+    render_workspace,
     render_template,
+    safe_document_name,
+    save_state,
     stage_label,
+    write_text,
     write_docx,
     write_record,
 )
@@ -146,15 +152,33 @@ def main() -> int:
         "ARTIFACT_DECISIONS": to_bullets(args.decision, pick_text(language, "待补充关键决策", "Add the key decisions")),
         "ARTIFACT_RISKS": to_bullets(args.risk, pick_text(language, "待补充风险与待确认事项", "Add risks and pending confirmations")),
         "ARTIFACT_NEXT_ACTION": next_action,
+        "ARTIFACT_STATUS": pick_text(language, "已生成", "Generated"),
+        "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "本文件已经生成正式版本，可继续补充细节，但不再属于待生成占位。", "This file has been generated as a formal version. It can still be refined, but it is no longer a pending placeholder."),
+        "ARTIFACT_MISSING_ITEMS": to_bullets(
+            args.risk,
+            pick_text(language, "如仍有空缺，请补齐证据、负责人或验收结论", "If anything is still missing, complete the evidence, owner, or acceptance conclusion"),
+        ),
+        "ARTIFACT_FILE_PATH": pick_text(language, "将在落盘后回填", "Will be filled after persistence"),
     }
 
     print_step(4, 5, "执行与落盘", language=language)
     base_dir = Path(args.output_dir).expanduser().resolve() if args.output_dir else company_dir
     output_dir = base_dir / CATEGORY_DIRS[category]
-    filename = numbered_name(next_numbered_index(output_dir), args.title, ".docx")
-    output_path = output_dir / filename
+    output_path = planned_docx_path(output_dir, args.title, completed=True)
+    output_path_display = display_path(output_path, company_dir)
+    values["ARTIFACT_FILE_PATH"] = output_path_display
     rendered = render_template("artifact-docx-ready-template.md", values)
     write_docx(output_path, rendered, title=args.title)
+    current_artifact = str(current_round.get("artifact", ""))
+    if current_artifact in {
+        pick_text(language, "待定义", "Undefined"),
+        "",
+    } or safe_document_name(args.title) in safe_document_name(current_artifact):
+        current_round["artifact"] = output_path_display
+        current_round["updated_at"] = now_string()
+        save_state(company_dir, state)
+        render_workspace(company_dir, state)
+    write_text(company_dir / "11-交付状态总览.md", artifact_status_summary_markdown(company_dir, language))
 
     record = write_record(
         company_dir,

@@ -44,6 +44,8 @@ One Person Company OS is designed to solve that category of problem.
 
 On a serious first run, the system should produce:
 
+- lightweight founder intake from a single-sentence idea
+- 3 to 4 startup directions when the founder is still undecided
 - a company setup draft
 - a one-line product definition
 - 3 to 5 company name options
@@ -175,9 +177,13 @@ The workspace now includes these canonical files:
 - artifact output spec: `07-文档产物规范.md`
 - stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
 - current-stage delivery requirements: `09-当前阶段交付要求.md`
-- formal deliverable template: `产物/00-交付模板/01-正式交付文档模板.docx`
-- actual deliverables index: `产物/01-实际交付/01-实际产出总表.docx`
-- deployment and rollback checklist: `产物/04-部署与生产/01-部署与回滚清单.docx` when the stage requires it
+- founder start card: `10-创始人启动卡.md`
+- deliverable status overview: `11-交付状态总览.md`
+- formal deliverable template: `产物/00-交付模板/01-[待生成]正式交付文档模板.docx`
+- actual deliverables index: `产物/01-实际交付/01-[待生成]实际产出总表.docx`
+- deployment and rollback checklist: `产物/04-部署与生产/01-[待生成]部署与回滚清单.docx` when the stage requires it
+
+Starter deliverables land as `[待生成]` placeholder DOCX files so the founder can see the full formal output plan immediately. Once a deliverable is formally produced, it switches to `[已生成]`.
 
 To generate artifact documents directly:
 
@@ -230,6 +236,7 @@ Core design rules:
 - one stage has one dominant bottleneck
 - one moment has one current round
 - one round must have one artifact, one blocker, and one shortest next action
+- every meaningful reply should say where to review the latest output and how to tighten it further
 
 ## Why It Is More Professional Than A Generic Prompt
 
@@ -248,15 +255,16 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the current persistence mode, save status, and runtime status before creation.
+I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
 ```
 
 ## Recommended Start Prompt
 
 ```text
 I am building an AI-native solo company. Use one-person-company-os.
-Do Step 1/5 to Step 3/5 first, give me the company setup draft,
-and show the current persistence mode, save status, and runtime status before creation.
+Do not make me fill a lot of fields first. Ask for the idea in one sentence, or give me 3 to 4 directions to choose from.
+Then do Step 1/5 to Step 3/5, give me the company setup draft,
+and tell me whether anything is saved plus which path I should open next.
 ```
 
 Common follow-up prompts:

@@ -108,6 +108,57 @@ def numbered_name(index: int, title: str, suffix: str) -> str:
     return f"{index:02d}-{safe_document_name(title)}{suffix}"
 
 
+def planned_docx_name(index: int, title: str, status: str) -> str:
+    status_marker = "已生成" if status == "done" else "待生成"
+    return f"{index:02d}-[{status_marker}]{safe_document_name(title)}.docx"
+
+
+def parse_planned_docx_name(filename: str) -> Optional[dict[str, Any]]:
+    match = re.match(r"^(?P<index>\d{2})-\[(?P<status>待生成|已生成)\](?P<title>.+)\.docx$", filename)
+    if not match:
+        return None
+    return {
+        "index": int(match.group("index")),
+        "status": "done" if match.group("status") == "已生成" else "pending",
+        "title": match.group("title"),
+    }
+
+
+def ensure_planned_docx_path(directory: Path, index: int, title: str, *, completed: bool) -> Path:
+    desired = directory / planned_docx_name(index, title, "done" if completed else "pending")
+    safe_title = safe_document_name(title)
+    existing_matches = []
+    if directory.is_dir():
+        for path in directory.iterdir():
+            parsed = parse_planned_docx_name(path.name)
+            if parsed and parsed["index"] == index and parsed["title"] == safe_title:
+                existing_matches.append(path)
+
+    for path in existing_matches:
+        if path == desired:
+            return desired
+    if existing_matches:
+        source = existing_matches[0]
+        if desired.exists():
+            source.unlink()
+        else:
+            source.rename(desired)
+    return desired
+
+
+def planned_docx_path(directory: Path, title: str, *, completed: bool) -> Path:
+    safe_title = safe_document_name(title)
+    existing_index: Optional[int] = None
+    if directory.is_dir():
+        for path in directory.iterdir():
+            parsed = parse_planned_docx_name(path.name)
+            if parsed and parsed["title"] == safe_title:
+                existing_index = parsed["index"]
+                break
+    index = existing_index or next_numbered_index(directory)
+    return ensure_planned_docx_path(directory, index, title, completed=completed)
+
+
 def next_numbered_index(directory: Path) -> int:
     max_index = 0
     if directory.is_dir():
@@ -500,9 +551,6 @@ def ensure_workspace_dirs(company_dir: Path) -> None:
         "产物/03-非软件与业务",
         "产物/04-部署与生产",
         "产物/05-上线与增长",
-        "产物/产品",
-        "产物/增长",
-        "产物/运营",
         "记录/推进日志",
         "记录/决策记录",
         "记录/校准记录",
@@ -904,6 +952,14 @@ def emit_runtime_report(
         language=language,
     )
     runtime_explanation = explain_runtime_status(runtime, language)
+    review_guidance = [
+        (pick_text(language, "查看路径", "Review Path"), save_path),
+        (pick_text(language, "重点文件", "Key Files"), save_details or pick_text(language, "本次没有新增保存文件", "No files were persisted in this run")),
+        (
+            pick_text(language, "如需继续改进", "If You Want Changes"),
+            pick_text(language, "如果有不合适的地方，直接告诉我你想调整哪一项，我会继续改进。", "If anything feels off, tell me what to adjust and I will continue improving it."),
+        ),
+    ]
 
     if output_view in ("both", "navigation"):
         print(pick_text(language, "用户导航版:", "User Navigation View:"), file=stream)
@@ -933,6 +989,7 @@ def emit_runtime_report(
             stream=stream,
         )
         print_block(pick_text(language, "回合仪表盘", "Round Dashboard"), round_dashboard, stream=stream)
+        print_block(pick_text(language, "查看与改进", "Review And Improve"), review_guidance, stream=stream)
         print_block(pick_text(language, "保存解释", "Persistence Explanation"), save_explanation, stream=stream)
         print_block(pick_text(language, "运行解释", "Runtime Explanation"), runtime_explanation, stream=stream)
         if output_view == "both":
@@ -1004,22 +1061,26 @@ def stage_artifact_specs(stage_id: str) -> list[dict[str, str]]:
     common_specs = [
         {
             "subdir": "00-交付模板",
-            "filename": "01-正式交付文档模板.docx",
+            "index": "01",
+            "title": "正式交付文档模板",
             "template": "artifact-docx-ready-template.md",
         },
         {
             "subdir": "01-实际交付",
-            "filename": "01-实际产出总表.docx",
+            "index": "01",
+            "title": "实际产出总表",
             "template": "artifact-delivery-index-template.md",
         },
         {
             "subdir": "02-软件与代码",
-            "filename": "01-代码与功能交付清单.docx",
+            "index": "01",
+            "title": "代码与功能交付清单",
             "template": "artifact-software-delivery-template.md",
         },
         {
             "subdir": "03-非软件与业务",
-            "filename": "01-非软件交付清单.docx",
+            "index": "01",
+            "title": "非软件交付清单",
             "template": "artifact-non-software-delivery-template.md",
         },
     ]
@@ -1027,75 +1088,88 @@ def stage_artifact_specs(stage_id: str) -> list[dict[str, str]]:
         "validate": [
             {
                 "subdir": "01-实际交付",
-                "filename": "02-问题与用户证据包.docx",
+                "index": "02",
+                "title": "问题与用户证据包",
                 "template": "artifact-validate-evidence-template.md",
             },
         ],
         "build": [
             {
                 "subdir": "02-软件与代码",
-                "filename": "02-测试与验收记录.docx",
+                "index": "02",
+                "title": "测试与验收记录",
                 "template": "artifact-quality-template.md",
             },
         ],
         "launch": [
             {
                 "subdir": "02-软件与代码",
-                "filename": "02-测试与验收记录.docx",
+                "index": "02",
+                "title": "测试与验收记录",
                 "template": "artifact-quality-template.md",
             },
             {
                 "subdir": "04-部署与生产",
-                "filename": "01-部署与回滚清单.docx",
+                "index": "01",
+                "title": "部署与回滚清单",
                 "template": "artifact-deployment-template.md",
             },
             {
                 "subdir": "04-部署与生产",
-                "filename": "02-生产观测与告警清单.docx",
+                "index": "02",
+                "title": "生产观测与告警清单",
                 "template": "artifact-production-template.md",
             },
             {
                 "subdir": "05-上线与增长",
-                "filename": "01-上线公告与反馈回收清单.docx",
+                "index": "01",
+                "title": "上线公告与反馈回收清单",
                 "template": "artifact-launch-feedback-template.md",
             },
         ],
         "operate": [
             {
                 "subdir": "04-部署与生产",
-                "filename": "01-部署与回滚清单.docx",
+                "index": "01",
+                "title": "部署与回滚清单",
                 "template": "artifact-deployment-template.md",
             },
             {
                 "subdir": "04-部署与生产",
-                "filename": "02-生产观测与告警清单.docx",
+                "index": "02",
+                "title": "生产观测与告警清单",
                 "template": "artifact-production-template.md",
             },
             {
                 "subdir": "04-部署与生产",
-                "filename": "03-事故响应与复盘记录.docx",
+                "index": "03",
+                "title": "事故响应与复盘记录",
                 "template": "artifact-production-template.md",
             },
             {
                 "subdir": "05-上线与增长",
-                "filename": "01-上线公告与反馈回收清单.docx",
+                "index": "01",
+                "title": "上线公告与反馈回收清单",
                 "template": "artifact-launch-feedback-template.md",
             },
         ],
         "grow": [
             {
                 "subdir": "04-部署与生产",
-                "filename": "01-部署与回滚清单.docx",
+                "index": "01",
+                "title": "部署与回滚清单",
                 "template": "artifact-deployment-template.md",
             },
             {
                 "subdir": "04-部署与生产",
-                "filename": "02-生产观测与告警清单.docx",
+                "index": "02",
+                "title": "生产观测与告警清单",
                 "template": "artifact-production-template.md",
             },
             {
                 "subdir": "05-上线与增长",
-                "filename": "01-增长实验与经营复盘.docx",
+                "index": "01",
+                "title": "增长实验与经营复盘",
                 "template": "artifact-growth-template.md",
             },
         ],
@@ -1150,7 +1224,150 @@ def artifact_template_values(common_values: dict[str, str], state: dict[str, Any
             language,
         ),
         "ARTIFACT_NEXT_ACTION": current_round.get("next_action", pick_text(language, "补齐本轮真实交付与证据。", "Fill in the real deliverables and evidence for this round.")),
+        "ARTIFACT_STATUS": pick_text(language, "待生成", "Pending"),
+        "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "当前只生成了正式文件骨架，请按标题补齐实际内容后再标记完成。", "Only the formal file skeleton exists right now. Fill in the real content before marking it complete."),
+        "ARTIFACT_MISSING_ITEMS": format_list(
+            [
+                pick_text(language, "真实文件、代码、材料或业务证据", "Real files, code, materials, or business evidence"),
+                pick_text(language, "责任人与验收结论", "Owner and acceptance conclusion"),
+                pick_text(language, "与当前阶段匹配的下一步动作", "A next action that matches the current stage"),
+            ],
+            language,
+        ),
+        "ARTIFACT_FILE_PATH": pick_text(language, "待生成后补齐", "Fill in after the file is finalized"),
     }
+
+
+def build_founder_start_here(language: str) -> str:
+    if language == "en-US":
+        return "\n".join(
+            [
+                "# Founder Start Card",
+                "",
+                "## Reply Burden: Keep It To One Sentence",
+                "",
+                "- Tell me the company idea in one sentence, or pick one direction below.",
+                "- If you are not ready, reply with a single number and I will turn it into the first company draft.",
+                "",
+                "## Suggested Directions",
+                "",
+                "- 1. Sell an AI efficiency tool to a narrow professional role.",
+                "- 2. Turn your own workflow into a reusable AI product.",
+                "- 3. Build an AI service-plus-software hybrid for a niche industry.",
+                "- 4. Build a small launchable product first and expand later.",
+                "",
+                "## Minimum Input Format",
+                "",
+                "- Idea: what you want to sell",
+                "- User: who pays first",
+                "- Problem: what pain is urgent",
+                "",
+                "## Good Enough Example",
+                "",
+                '- "I want to build an AI copilot for cross-border sellers who spend too much time writing product listings."',
+                "",
+                "## After You Reply",
+                "",
+                "- I will propose the company direction, stage, first round, and starter deliverable pack.",
+                "- You can review the generated files in this workspace and tell me what to tighten next.",
+            ]
+        ) + "\n"
+    return "\n".join(
+        [
+            "# 创始人启动卡",
+            "",
+            "## 你的回复负担只要一句话",
+            "",
+            "- 直接说一句你想做什么，或者从下面选一个方向。",
+            "- 如果你还没想清楚，只回一个数字也可以，我会把它展开成第一版公司草案。",
+            "",
+            "## 可直接选的创业方向",
+            "",
+            "- 1. 给某个细分职业卖 AI 效率工具。",
+            "- 2. 把你自己正在用的工作流产品化。",
+            "- 3. 做一个“服务 + 软件”混合型 AI 业务。",
+            "- 4. 先做一个可上线的小产品，再逐步扩展。",
+            "",
+            "## 最小输入格式",
+            "",
+            "- 想卖什么",
+            "- 谁会先付费",
+            "- 他现在最痛的点是什么",
+            "",
+            "## 合格示例",
+            "",
+            '- “我想做一个给跨境卖家的 AI 上架助手，帮他们更快写标题和描述。”',
+            "",
+            "## 你回复后我会做什么",
+            "",
+            "- 我会给出方向建议、建议阶段、首个回合和 starter 交付包。",
+            "- 你可以直接去当前工作区查看产物，再告诉我还要怎么收紧或改进。",
+        ]
+    ) + "\n"
+
+
+def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
+    category_names = {
+        "00-交付模板": pick_text(language, "交付模板", "Deliverable Templates"),
+        "01-实际交付": pick_text(language, "实际交付", "Actual Deliverables"),
+        "02-软件与代码": pick_text(language, "软件与代码", "Software And Code"),
+        "03-非软件与业务": pick_text(language, "非软件与业务", "Non-Software And Business"),
+        "04-部署与生产": pick_text(language, "部署与生产", "Deployment And Production"),
+        "05-上线与增长": pick_text(language, "上线与增长", "Launch And Growth"),
+    }
+    lines = [
+        pick_text(language, "# 交付状态总览", "# Deliverable Status Overview"),
+        "",
+        f"{pick_text(language, '更新于', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(
+            language,
+            "- 看到 `[待生成]` 表示文件骨架已经创建，但内容还需要继续补齐。",
+            "- `[待生成]` means the formal file shell exists, but the content still needs to be completed.",
+        ),
+        pick_text(
+            language,
+            "- 看到 `[已生成]` 表示该文件已经被正式生成，可继续精修。",
+            "- `[已生成]` means the document has been formally generated and can be refined further.",
+        ),
+        "",
+    ]
+
+    for subdir, label in category_names.items():
+        lines.extend([f"## {label}", ""])
+        artifact_dir = company_dir / ARTIFACT_ROOT / subdir
+        entries = []
+        if artifact_dir.is_dir():
+            for path in sorted(artifact_dir.glob("*.docx")):
+                parsed = parse_planned_docx_name(path.name)
+                if parsed:
+                    status_text = pick_text(language, "已完成" if parsed["status"] == "done" else "待生成", "Completed" if parsed["status"] == "done" else "Pending")
+                    title = parsed["title"].replace("-", " ")
+                else:
+                    status_text = pick_text(language, "已生成", "Generated")
+                    title = path.stem
+                entries.append(
+                    pick_text(
+                        language,
+                        f"- {path.name} | 状态: {status_text} | 路径: {display_path(path, company_dir)}",
+                        f"- {path.name} | Status: {status_text} | Path: {display_path(path, company_dir)}",
+                    )
+                )
+        if not entries:
+            entries.append(pick_text(language, "- 当前目录还没有 DOCX 文件。", "- No DOCX files exist in this directory yet."))
+        lines.extend(entries)
+        lines.append("")
+
+    lines.extend(
+        [
+            pick_text(language, "## 使用说明", "## How To Use"),
+            "",
+            pick_text(language, "- 先打开本文件看清有哪些交付件，再进入对应目录补齐内容。", "- Open this file first to see the deliverable plan, then complete the content in the matching directories."),
+            pick_text(language, "- 如果文件名、顺序或内容边界不合适，直接告诉我你要怎么改，我会继续收口。", "- If the file names, ordering, or scope feel wrong, tell me what to adjust and I will tighten the system further."),
+            "",
+        ]
+    )
+    return "\n".join(lines)
 
 
 def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
@@ -1234,6 +1451,7 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         company_dir / "09-当前阶段交付要求.md",
         render_template("current-stage-deliverable-template.md", common_values),
     )
+    write_text(company_dir / "10-创始人启动卡.md", build_founder_start_here(language))
 
     write_text(company_dir / "角色智能体" / "角色清单.md", render_template("role-index-template.md", common_values))
     for role_id in active_roles:
@@ -1259,9 +1477,17 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text(company_dir / "自动化" / "提醒规则.md", render_template("reminder-rules-template.md", common_values))
     write_text(company_dir / "自动化" / "定时任务定义.md", render_template("scheduler-spec-template.md", common_values))
 
-    docx_values = artifact_template_values(common_values, state)
     for spec in stage_artifact_specs(stage_id):
+        output_dir = company_dir / ARTIFACT_ROOT / spec["subdir"]
+        output_path = ensure_planned_docx_path(output_dir, int(spec["index"]), spec["title"], completed=False)
+        docx_values = {
+            **artifact_template_values(common_values, state),
+            "ARTIFACT_TITLE": spec["title"],
+            "ARTIFACT_STATUS": pick_text(language, "待生成", "Pending"),
+            "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "当前是占位交付件，标题和路径已锁定，等待填充真实内容。", "This is currently a placeholder deliverable. The title and path are locked, and the real content still needs to be filled in."),
+            "ARTIFACT_FILE_PATH": display_path(output_path, company_dir),
+        }
         rendered = render_template(spec["template"], docx_values)
-        filename = spec["filename"]
-        title = filename[:-5] if filename.endswith(".docx") else filename
-        write_docx(company_dir / ARTIFACT_ROOT / spec["subdir"] / filename, rendered, title=title)
+        write_docx(output_path, rendered, title=spec["title"])
+
+    write_text(company_dir / "11-交付状态总览.md", artifact_status_summary_markdown(company_dir, language))

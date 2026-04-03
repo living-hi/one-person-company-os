@@ -1,5 +1,29 @@
 # Release Notes
 
+## v0.5.6 - Founder Intake And Placeholder Deliverable Control
+
+`v0.5.5` improved the storefront hook.
+
+`v0.5.6` improves the actual founder experience and artifact discipline during real use.
+
+The gap was no longer positioning alone.
+It was that first-run interaction still asked too much of the founder, and the workspace still did not make pending vs completed deliverables obvious enough.
+
+This release adds:
+
+- proactive founder intake from a one-line idea, with 3 to 4 suggested directions when the founder is still undecided
+- a new `10-创始人启动卡.md` so the workspace itself teaches the founder how to reply with low effort
+- a new `11-交付状态总览.md` so users can immediately see which DOCX files are pending and which are complete
+- placeholder starter deliverables marked with `[待生成]` and automatic promotion to `[已生成]` when a formal artifact is generated
+- review-path and improvement reminders in every runtime report
+- stricter validation against legacy unnumbered artifact folders and outdated deliverable naming
+
+The product now behaves more like a serious control board:
+
+- lighter founder input at the start
+- clearer output visibility during execution
+- stronger formal-deliverable discipline throughout the workspace lifecycle
+
 ## v0.5.5 - Outcome-Driven Storefront Hook
 
 This patch release makes the ClawHub storefront more compelling.

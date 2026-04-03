@@ -136,8 +136,10 @@ def main() -> int:
             company_dir / "04-当前回合.md",
             company_dir / "07-文档产物规范.md",
             company_dir / "08-阶段角色与交付矩阵.md",
+            company_dir / "10-创始人启动卡.md",
+            company_dir / "11-交付状态总览.md",
             company_dir / "角色智能体" / "角色清单.md",
-            company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx",
+            company_dir / "产物" / "01-实际交付" / "01-[待生成]实际产出总表.docx",
             state_path(company_dir),
         ],
         work_scope=[
@@ -150,9 +152,9 @@ def main() -> int:
             pick_text(language, "不会跳过确认边界去伪造不存在的角色执行结果。", "Do not fake role execution outcomes by skipping approval boundaries."),
         ],
         changes=[
-            pick_text(language, "已创建公司总览、当前回合、角色清单和当前状态文件。", "Created the company overview, current round, role index, and current-state file."),
-            pick_text(language, "已生成阶段角色与交付矩阵，以及只含编号 DOCX 的产物目录。", "Generated the stage-role deliverable matrix and the DOCX-only artifact structure."),
-            pick_text(language, "当前公司已进入可继续启动回合的状态。", "The company workspace is now ready to start the next round."),
+            pick_text(language, "已创建公司总览、当前回合、创始人启动卡、交付状态总览和当前状态文件。", "Created the company overview, current round, founder start card, deliverable-status overview, and current-state file."),
+            pick_text(language, "已生成阶段角色与交付矩阵，以及带 `[待生成]` 标记的编号化 DOCX starter pack。", "Generated the stage-role deliverable matrix plus a numbered DOCX starter pack marked with `[待生成]`."),
+            pick_text(language, "当前公司已进入可继续启动回合和继续补齐正式交付的状态。", "The company workspace is now ready to start the next round and continue filling formal deliverables."),
         ],
         language=language,
     )

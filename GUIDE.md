@@ -24,11 +24,13 @@ The simplest first prompt is:
 
 ```text
 I want to build a solo company. Use one-person-company-os.
-It is mainly for an AI product. Start now.
+Do not make me fill a lot of fields first. Ask me for the idea in one sentence, or give me 3 to 4 directions to choose from.
 ```
 
 The system first gives you a company setup draft that includes:
 
+- direction guidance from the one-line idea
+- a few startup directions if you are still undecided
 - a one-line product definition
 - company-name options
 - the suggested current stage
@@ -38,6 +40,7 @@ The system first gives you a company setup draft that includes:
 - the first executable round
 
 Only after you confirm will it create the workspace, role briefs, and process files.
+After creation, start with `10-创始人启动卡.md` and `11-交付状态总览.md`.
 
 ## How It Differs From A Generic Startup Assistant
 
@@ -52,6 +55,7 @@ This skill behaves like an execution system. It keeps:
 - a three-layer navigation bar on every important output
 - separate user-navigation and audit views
 - numbered DOCX deliverables with real evidence
+- a path reminder on every meaningful reply so you know what to open next
 
 ## Why Weekly Reviews Are Not The Main Rhythm
 

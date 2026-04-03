@@ -6,6 +6,8 @@
 - 产品名称: {{PRODUCT_NAME}}
 - 当前阶段: {{STAGE_LABEL}}
 - 当前回合: {{CURRENT_ROUND_NAME}}
+- 文档状态: {{ARTIFACT_STATUS}}
+- 文件路径: {{ARTIFACT_FILE_PATH}}
 
 ## 2. 必备生产资料
 
@@ -15,7 +17,11 @@
 - 故障升级路径
 - 事故复盘位置
 
-## 3. 建议记录字段
+## 3. 当前进度说明
+
+{{ARTIFACT_PROGRESS_SUMMARY}}
+
+## 4. 建议记录字段
 
 - 关键指标
 - 告警渠道
@@ -24,6 +30,10 @@
 - 已知风险
 - 处置预案
 
-## 4. 结论
+## 5. 当前缺口
+
+{{ARTIFACT_MISSING_ITEMS}}
+
+## 6. 结论
 
 - 上线后仍需持续维护生产资料，不能只保留发布当天文档
