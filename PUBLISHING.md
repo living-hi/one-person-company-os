@@ -72,9 +72,9 @@ Replace the staged files, commit message, version, and changelog as needed.
 
 ## Suggested Current Release
 
-- tag: `v0.5.0`
-- title: `v0.5.0: numbered DOCX deliverables and post-launch ops pack`
-- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.5.0-github-release.md`
+- tag: `v0.5.1`
+- title: `v0.5.1: bilingual runtime and document upgrade`
+- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.5.1-github-release.md`
 
 ## ClawHub Submission Prep
 

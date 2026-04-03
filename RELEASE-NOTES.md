@@ -1,5 +1,24 @@
 # Release Notes
 
+## v0.5.1 - Bilingual Runtime And Document Upgrade
+
+This release upgrades `one-person-company-os` from “Chinese-friendly” to “actually bilingual in production use.”
+
+The remaining gap was not core workflow design.
+It was language continuity across the real product surface:
+
+- English founders could read the README but still hit Chinese-only runtime output
+- generated role briefs and formal deliverables did not fully follow English execution
+- public release copy still leaned too hard on a Chinese-only framing
+
+This release closes that gap by adding:
+
+- language-aware runtime reports across the main workflow scripts
+- English role localization and English generated workspace content
+- English DOCX artifact content generation
+- release validation that now checks the English path as well as the Chinese path
+- updated GitHub, ClawHub, guide, and release materials for both Chinese and English founders
+
 ## v0.5.0 - Numbered DOCX Deliverables and Post-Launch Ops Pack
 
 This release upgrades `one-person-company-os` from “deliverable-aware” to “actually deliverable under audit.”
@@ -19,7 +38,6 @@ This release closes those gaps by adding:
 - explicit stage-role and deliverable matrices so users can see which roles and outputs must exist at each stage
 - default launch-stage activation of `运维保障` and `用户运营`
 - updated validation so release checks now assert numbered DOCX artifacts and launch-stage ops materials
-- language-aware runtime reports and generated materials so Chinese and English founders each get matching outputs by default
 
 ## v0.4.0 - Navigation UX and Deliverable Document System
 
