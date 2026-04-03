@@ -33,6 +33,8 @@ From `assets/examples/zh-round-mode/00-公司总览.md`
 - 当前回合: 完成首页首屏
 ```
 
+这里的“当前阶段”应理解为主瓶颈标签，而不是重型流程阶段。
+
 ## 当前回合
 
 From `assets/examples/zh-round-mode/01-当前回合.md`
@@ -71,6 +73,7 @@ From `assets/examples/zh-round-mode/02-校准记录.md`
   09-当前阶段交付要求.md
   10-创始人启动卡.md
   11-交付状态总览.md
+  12-AI时代快循环.md
   角色智能体/
   流程/
   产物/00-交付模板/01-[待生成]正式交付文档模板.docx

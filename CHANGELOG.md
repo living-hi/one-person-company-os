@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.5.7 - 2026-04-04
+
+- repositioned the visible workflow around an AI-era fast loop: validate demand, ship the smallest useful MVP, launch narrowly, capture feedback, improve, then scale
+- kept the internal stage engine but reframed stages as lightweight bottleneck labels instead of heavyweight process phases
+- added `12-AI时代快循环.md` to generated workspaces so founders can read the operating model directly on disk
+- updated founder start guidance, stage/output templates, release copy, and agent metadata to match the new fast-loop positioning
+- expanded release validation to check the new fast-loop guide in generated workspaces
+
 ## v0.5.6 - 2026-04-04
 
 - upgraded the first-run contract so the system now actively asks for a one-line founder idea or offers 3 to 4 startup directions instead of front-loading heavy input

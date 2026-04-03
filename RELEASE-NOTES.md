@@ -1,5 +1,31 @@
 # Release Notes
 
+## v0.5.7 - AI-Era Fast Loop And Lightweight Stages
+
+`v0.5.6` made the first-run and deliverable board clearer.
+
+`v0.5.7` fixes the next real problem: the product still exposed too much stage and process weight to founders who should really be moving on a faster AI-era loop.
+
+This release reframes the visible operating model around:
+
+- narrow the user and pain
+- validate demand quickly
+- ship the smallest useful MVP
+- launch narrowly
+- collect feedback and production reality
+- improve before scaling growth
+
+This release adds and updates:
+
+- a new `12-AI时代快循环.md` generated into every workspace
+- founder-start guidance that explains the fast loop directly
+- lighter stage descriptions that position stages as bottleneck labels rather than bureaucracy
+- updated current-stage, execution, calibration, and deliverable templates
+- aligned README, guide, agent metadata, ClawHub listing, and release copy
+- stronger validation so the generated workspace must include the fast-loop guide
+
+The result is a system that still keeps real control structures internally, but feels closer to how an AI-native solo company should actually run.
+
 ## v0.5.6 - Founder Intake And Placeholder Deliverable Control
 
 `v0.5.5` improved the storefront hook.

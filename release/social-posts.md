@@ -6,10 +6,10 @@ I rebuilt `one-person-company-os`.
 
 It is now a language-aware control system for AI-native solo companies:
 
-- create the company
-- start a round
-- advance the round
-- calibrate only when needed
+- validate demand
+- ship a small MVP
+- launch narrowly
+- improve from real feedback
 
 Not a prompt bundle. Not a weekly review ritual.
 
@@ -19,10 +19,10 @@ Not a prompt bundle. Not a weekly review ritual.
 
 现在它不是“按周复盘的一人公司文档包”，而是：
 
-- 先创建公司骨架
-- 再启动当前回合
-- 一路推进
-- 卡住时才校准
+- 先验证需求
+- 再做最小 MVP
+- 再小范围上线
+- 再根据反馈持续改进
 
 中文用户默认得到中文运行过程和中文资料。
 英文用户默认得到英文运行过程和英文资料。
@@ -32,10 +32,10 @@ Not a prompt bundle. Not a weekly review ritual.
 `one-person-company-os` has been rebuilt around a faster loop:
 
 - company setup draft first
-- minimal roles
-- one current round
-- trigger-based calibration
-- stage transition when the bottleneck changes
+- fast validation
+- smallest useful MVP
+- narrow launch
+- feedback-driven iteration
 
 The result is much closer to how an AI-native solo company should actually run.
 

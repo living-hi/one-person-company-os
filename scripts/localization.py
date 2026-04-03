@@ -237,96 +237,96 @@ STAGE_CONFIG = {
     "validate": {
         "label": {"zh-CN": "验证期", "en-US": "Validation"},
         "goal": {
-            "zh-CN": "确认问题、目标用户和愿意付费的信号。",
-            "en-US": "Confirm the problem, target user, and early willingness-to-pay signals.",
+            "zh-CN": "快速确认尖锐问题、目标用户和真实需求或付费信号。",
+            "en-US": "Quickly confirm the sharp problem, target user, and real demand or willingness-to-pay signals.",
         },
         "exit_criteria": {
-            "zh-CN": "至少拿到足够明确的用户反馈与继续构建的理由。",
-            "en-US": "Reach enough user evidence to justify continued building.",
+            "zh-CN": "拿到足够真实的用户证据，能明确首个最小可卖或可测方案。",
+            "en-US": "Collect enough real user evidence to define the first minimum sellable or testable offer.",
         },
         "next_requirements": {
-            "zh-CN": "问题定义稳定、目标用户清晰、第一版范围可收敛。",
-            "en-US": "Stabilize the problem definition, clarify the target user, and narrow the first version scope.",
+            "zh-CN": "用户、问题、价值主张和首个 MVP 范围都已收敛。",
+            "en-US": "The user, problem, value proposition, and first MVP scope are all narrowed enough.",
         },
         "risks": {
-            "zh-CN": ["把假设当事实", "在没有证据前过早开发"],
-            "en-US": ["Treating assumptions as facts", "Building too early without evidence"],
+            "zh-CN": ["把想象当用户证据", "研究太久还不动手", "问题范围太散"],
+            "en-US": ["Treating imagination as user evidence", "Researching too long without shipping", "Keeping the problem space too broad"],
         },
     },
     "build": {
         "label": {"zh-CN": "构建期", "en-US": "Build"},
         "goal": {
-            "zh-CN": "把核心产品路径做出来，并形成最小可交付结果。",
-            "en-US": "Build the core product path and produce a minimum deliverable result.",
+            "zh-CN": "用最小成本做出可上线的 MVP，并跑通一个核心价值闭环。",
+            "en-US": "Build the smallest launchable MVP and make one core value loop work end to end.",
         },
         "exit_criteria": {
-            "zh-CN": "关键流程可跑通，具备最小验证或上线条件。",
-            "en-US": "Make the key flow run end to end and reach minimum validation or launch readiness.",
+            "zh-CN": "关键流程端到端可用，具备基础质量和最小上线条件。",
+            "en-US": "The key path works end to end with a basic quality bar and minimum launch readiness.",
         },
         "next_requirements": {
-            "zh-CN": "关键功能可用、质量边界清晰、上线准备就绪。",
-            "en-US": "Ensure critical functionality works, quality boundaries are clear, and launch readiness is in place.",
+            "zh-CN": "MVP 范围锁定、关键功能可用、验收与上线边界清晰。",
+            "en-US": "Keep the MVP scope locked, the critical functionality usable, and acceptance plus launch boundaries clear.",
         },
         "risks": {
-            "zh-CN": ["范围失控", "技术债堆积", "没有明确验收标准"],
-            "en-US": ["Scope creep", "Accumulating technical debt", "No clear acceptance criteria"],
+            "zh-CN": ["把 MVP 做成大而全产品", "技术实现脱离真实需求", "没有测试和验收证据"],
+            "en-US": ["Turning the MVP into a full product too early", "Building detached from real demand", "Missing testing and acceptance evidence"],
         },
     },
     "launch": {
         "label": {"zh-CN": "上线期", "en-US": "Launch"},
         "goal": {
-            "zh-CN": "把产品带到目标用户面前，并建立最小反馈闭环。",
-            "en-US": "Put the product in front of target users and establish a minimum feedback loop.",
+            "zh-CN": "把 MVP 快速推到一小批目标用户面前，并建立反馈闭环。",
+            "en-US": "Put the MVP in front of a narrow set of target users quickly and establish a feedback loop.",
         },
         "exit_criteria": {
-            "zh-CN": "产品已对外可访问，渠道和反馈路径跑通。",
-            "en-US": "Make the product publicly reachable, with channels and feedback loops working.",
+            "zh-CN": "真实用户已可访问，反馈、支持、部署和回滚路径都已跑通。",
+            "en-US": "Real users can access the product, with feedback, support, deployment, and rollback paths all working.",
         },
         "next_requirements": {
-            "zh-CN": "上线链路稳定、反馈可回收、关键问题有处理路径。",
-            "en-US": "Stabilize the launch path, make feedback recoverable, and define a path for critical issues.",
+            "zh-CN": "上线链路稳定、反馈可回收、关键问题和生产风险都有处理路径。",
+            "en-US": "The launch path is stable, feedback is recoverable, and critical issues plus production risks have handling paths.",
         },
         "risks": {
-            "zh-CN": ["信息不一致", "上线无回滚", "渠道铺太多"],
-            "en-US": ["Inconsistent messaging", "No rollback path at launch", "Spreading across too many channels"],
+            "zh-CN": ["信息不一致", "没有回滚就上线", "一开始铺太多渠道"],
+            "en-US": ["Inconsistent messaging", "Launching without rollback", "Spreading across too many channels too early"],
         },
     },
     "operate": {
         "label": {"zh-CN": "运营期", "en-US": "Operate"},
         "goal": {
-            "zh-CN": "维持产品稳定运行，并持续处理反馈与问题。",
-            "en-US": "Keep the product stable in production while continuously handling feedback and issues.",
+            "zh-CN": "围绕真实使用持续修产品，并保持反馈处理和生产稳定。",
+            "en-US": "Improve the product around real usage while keeping feedback handling and production stability healthy.",
         },
         "exit_criteria": {
-            "zh-CN": "关键问题处理机制稳定，指标和反馈进入可持续节奏。",
-            "en-US": "Stabilize issue handling and move metrics plus feedback into a sustainable rhythm.",
+            "zh-CN": "问题处理、反馈回收和优先级判断进入稳定节奏。",
+            "en-US": "Issue handling, feedback capture, and prioritization have settled into a stable rhythm.",
         },
         "next_requirements": {
-            "zh-CN": "留存和稳定性基本可控，优化方向明确。",
-            "en-US": "Make retention and stability controllable enough to prioritize optimization clearly.",
+            "zh-CN": "留存、稳定性和优化方向已有足够数据支撑。",
+            "en-US": "Retention, stability, and optimization direction are now supported by enough data.",
         },
         "risks": {
-            "zh-CN": ["问题积压", "缺少优先级", "数据无法解释"],
-            "en-US": ["Issue backlog growth", "No prioritization", "Data that cannot be explained"],
+            "zh-CN": ["问题积压", "只修小问题不修价值交付", "有数据但没有判断"],
+            "en-US": ["Issue backlog growth", "Fixing only surface issues instead of value delivery", "Having data without judgment"],
         },
     },
     "grow": {
         "label": {"zh-CN": "增长期", "en-US": "Grow"},
         "goal": {
-            "zh-CN": "围绕获客、转化、留存和收益持续放大有效动作。",
-            "en-US": "Scale effective actions across acquisition, conversion, retention, and revenue.",
+            "zh-CN": "在价值和留存被验证后，放大有效渠道、转化和收益模型。",
+            "en-US": "Scale effective channels, conversion paths, and revenue models only after value and retention are proven.",
         },
         "exit_criteria": {
-            "zh-CN": "有清晰的增长杠杆与投入产出判断。",
-            "en-US": "Develop clear growth levers and a grounded view of return on effort and spend.",
+            "zh-CN": "已经找到可重复的增长动作，并能判断投入产出。",
+            "en-US": "Find repeatable growth actions and develop a grounded view of return on effort and spend.",
         },
         "next_requirements": {
-            "zh-CN": "实验机制可持续，财务边界清晰。",
-            "en-US": "Keep experimentation sustainable with clear financial boundaries.",
+            "zh-CN": "实验机制可持续，现金流和产品稳定边界清晰。",
+            "en-US": "Keep experimentation sustainable with clear cash-flow and product-stability boundaries.",
         },
         "risks": {
-            "zh-CN": ["过早铺渠道", "用噪音替代有效增长", "忽视现金流"],
-            "en-US": ["Expanding channels too early", "Mistaking noise for growth", "Ignoring cash flow"],
+            "zh-CN": ["产品价值未稳就放大流量", "把噪音当增长", "忽视现金流和交付承载能力"],
+            "en-US": ["Scaling traffic before the product value is stable", "Mistaking noise for growth", "Ignoring cash flow and delivery capacity"],
         },
     },
 }
@@ -334,12 +334,12 @@ STAGE_CONFIG = {
 STAGE_REQUIRED_OUTPUTS = {
     "validate": {
         "zh-CN": [
-            "用户问题证据、访谈纪要、付费或预约信号等真实验证材料。",
-            "至少一份可直接继续使用的正式交付文档，而不是只有聊天摘要。",
+            "必须留下真实用户问题证据、访谈纪要、预约或付费信号等验证材料。",
+            "至少形成一份可继续复用的正式交付文档，而不是只有聊天摘要。",
         ],
         "en-US": [
-            "Real validation evidence such as user-problem proof, interview notes, and payment or waitlist signals.",
-            "At least one formal deliverable document that can be reused downstream, not just a chat summary.",
+            "Leave real validation evidence such as user-problem proof, interview notes, and payment or waitlist signals.",
+            "Produce at least one formal deliverable document that can be reused downstream, not just a chat summary.",
         ],
     },
     "build": {
@@ -360,32 +360,32 @@ STAGE_REQUIRED_OUTPUTS = {
         "zh-CN": [
             "必须同时看到对外可交付物和上线资料，不能只有发布文案。",
             "必须包含部署清单、回滚方案、生产观测/告警安排。",
-            "必须包含上线公告、反馈回收路径和首轮支持安排。",
+            "必须包含上线公告、反馈回收路径和首轮支持安排，且优先小范围上线。",
         ],
         "en-US": [
             "Include both user-facing deliverables and launch materials, not just launch copy.",
             "Include deployment checklists, rollback plans, and production observability or alerting arrangements.",
-            "Include launch announcement material, feedback collection paths, and first-line support plans.",
+            "Include launch announcement material, feedback collection paths, and first-line support plans, with a narrow launch first.",
         ],
     },
     "operate": {
         "zh-CN": [
             "必须持续更新生产运行资料、事故复盘和用户反馈处理记录。",
-            "部署与生产类资料不能在产品上线后消失，必须继续维护。",
+            "部署与生产类资料不能在产品上线后消失，必须继续维护，并支撑快速迭代判断。",
         ],
         "en-US": [
             "Keep production runbooks, incident reviews, and user-feedback handling records continuously updated.",
-            "Deployment and production materials must remain maintained after launch.",
+            "Deployment and production materials must remain maintained after launch and support fast iteration decisions.",
         ],
     },
     "grow": {
         "zh-CN": [
             "必须把增长实验、收入/成本复盘和运行稳定性资料一起保留。",
-            "增长动作不能脱离真实交付和生产运行状态单独存在。",
+            "增长动作不能脱离真实交付、留存反馈和生产运行状态单独存在。",
         ],
         "en-US": [
             "Keep growth experiments, revenue or cost reviews, and runtime stability materials together.",
-            "Growth work cannot exist independently from real deliverables and production reality.",
+            "Growth work cannot exist independently from real deliverables, retention feedback, and production reality.",
         ],
     },
 }
@@ -1042,9 +1042,11 @@ Updated At: {{UPDATED_AT}}
 
 ## When To Calibrate
 
-- When the current round stalls around the same blocker
+- When the current round stalls around the same blocker for too long
 - When the current owner no longer fits the round
 - When new evidence invalidates the previous assumption
+- When a key artifact is completed and the next move should be re-scoped
+- Before launch, pricing, customer-facing, or other high-risk actions
 
 ## Calibration Output
 
@@ -1071,14 +1073,15 @@ Updated At: {{UPDATED_AT}}
 
 ## Current Focus
 
-- Advance only around the current round
-- Enter calibration only when a trigger appears
+- Keep the visible workflow on the AI fast loop: validate, ship the smallest useful MVP, launch narrowly, then improve from feedback
+- Use the current stage only as a label for the dominant bottleneck
 - Ask the founder for approval on budget, launch, customer-facing, or compliance-sensitive actions
 
 ## Quick Paths
 
 - Founder Start Card: `10-创始人启动卡.md`
 - Deliverable Status Overview: `11-交付状态总览.md`
+- AI Fast Loop Guide: `12-AI时代快循环.md`
 - Formal Deliverables: `产物/`
 """,
     "current-round-template.md": """# Current Round
@@ -1114,6 +1117,7 @@ Updated At: {{UPDATED_AT}}
 
 - Read `10-创始人启动卡.md` first for direction and minimum input.
 - Read `11-交付状态总览.md` next to see which DOCX files are completed and which are still placeholders.
+- Read `12-AI时代快循环.md` when you need the high-level operating loop and stage meaning.
 - Then complete the matching files under `产物/`.
 
 ## Risks
@@ -1139,10 +1143,24 @@ Updated At: {{UPDATED_AT}}
 - Goal: {{STAGE_GOAL}}
 - Exit Criteria: {{STAGE_EXIT_CRITERIA}}
 - Next-Stage Requirements: {{NEXT_STAGE_REQUIREMENTS}}
+
+## How To Read This Stage
+
+- This stage marks the current dominant bottleneck, not a heavy bureaucracy phase.
+- Keep each round small enough to move the company through the AI fast loop quickly.
+- Transition when the bottleneck changes, not because a ceremony says so.
 """,
     "execution-rules-template.md": """# Execution Rules
 
 Updated At: {{UPDATED_AT}}
+
+## AI-Era Fast Loop
+
+- Narrow one user pain first
+- Validate demand with real evidence
+- Ship the smallest useful MVP
+- Launch narrowly and capture feedback
+- Improve the product before scaling growth
 
 ## Core Rules
 
@@ -1150,6 +1168,7 @@ Updated At: {{UPDATED_AT}}
 - Keep the shortest next action practical and small
 - Do not skip founder approval on high-risk actions
 - Prefer script execution, then manual persistence, then chat-only progression
+- Treat the current stage as a bottleneck label, not as a reason to slow down
 
 ## Current Focus
 
@@ -1185,6 +1204,11 @@ Updated At: {{UPDATED_AT}}
 - Core Problem: {{CORE_PROBLEM}}
 - Current Stage: {{STAGE_LABEL}}
 - Company Goal: {{COMPANY_GOAL}}
+
+## Current Product Focus
+
+- Solve the sharpest pain first instead of designing the full company at once.
+- Use this stage to narrow the MVP and the next proof point.
 """,
     "reminder-rules-template.md": """# Reminder Rules
 
@@ -1267,6 +1291,9 @@ Updated At: {{UPDATED_AT}}
     "stage-role-deliverable-matrix-template.md": """# Stage Role And Deliverable Matrix
 
 Updated At: {{UPDATED_AT}}
+
+This matrix describes the current bottleneck state, not a heavy mandatory process.
+Use it to understand which roles and outputs matter right now.
 
 ## Validation
 

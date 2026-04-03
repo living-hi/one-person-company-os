@@ -31,7 +31,7 @@ python3 scripts/validate_release.py
 git init
 git checkout -b main
 git add .
-git commit -m "release: publish one-person-company-os v0.5.6"
+git commit -m "release: publish one-person-company-os v0.5.7"
 git remote add origin <YOUR_GITHUB_REPO_URL>
 git push -u origin main
 ```
@@ -51,13 +51,13 @@ python3 scripts/ensure_python_runtime.py
 python3 scripts/validate_release.py
 git status --short
 git add .
-git commit -m "release: upgrade navigation and document outputs"
+git commit -m "release: upgrade ai fast-loop workflow"
 git push origin main
 clawhub publish /home/living/.openclaw/workspace/one-person-company-os \
   --slug one-person-company-os \
   --name "One Person Company OS" \
-  --version 0.5.6 \
-  --changelog "Upgrade founder intake, placeholder deliverable visibility, and review-path guidance."
+  --version 0.5.7 \
+  --changelog "Reframe the product around the AI-era fast loop and add a visible workspace guide."
 ```
 
 Replace the staged files, commit message, version, and changelog as needed.
@@ -72,9 +72,9 @@ Replace the staged files, commit message, version, and changelog as needed.
 
 ## Suggested Current Release
 
-- tag: `v0.5.6`
-- title: `v0.5.6: founder intake and placeholder deliverable control`
-- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.5.6-github-release.md`
+- tag: `v0.5.7`
+- title: `v0.5.7: ai-era fast loop and lightweight stages`
+- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v0.5.7-github-release.md`
 
 ## ClawHub Submission Prep
 
@@ -95,10 +95,10 @@ Use the materials in `release/`:
 - After any timeout, verify with the download endpoint before retrying:
 
 ```bash
-curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=0.5.6" -o /tmp/one-person-company-os-0.5.6.zip
-unzip -p /tmp/one-person-company-os-0.5.6.zip README.zh-CN.md | sed -n '1,80p'
-unzip -p /tmp/one-person-company-os-0.5.6.zip agents/openai.yaml
-unzip -p /tmp/one-person-company-os-0.5.6.zip scripts/generate_artifact_document.py | sed -n '1,120p'
+curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=0.5.7" -o /tmp/one-person-company-os-0.5.7.zip
+unzip -p /tmp/one-person-company-os-0.5.7.zip README.zh-CN.md | sed -n '1,80p'
+unzip -p /tmp/one-person-company-os-0.5.7.zip agents/openai.yaml
+unzip -p /tmp/one-person-company-os-0.5.7.zip scripts/generate_artifact_document.py | sed -n '1,120p'
 ```
 
 - The public listing page may lag behind the downloadable package version. Trust the download endpoint first.

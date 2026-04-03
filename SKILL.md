@@ -1,6 +1,6 @@
 ---
 name: one-person-company-os
-description: Turn one AI product idea into a run-ready solo company with rounds, role briefs, and persistent workspace. / 把一个 AI 产品想法推进成可运行的一人公司，具备回合推进、角色 brief 与持久化工作区。
+description: Turn one AI product idea into a fast-loop solo company with lightweight founder intake, real deliverables, and persistent workspace. / 把一个 AI 产品想法推进成按 AI 快循环运行的一人公司，具备轻量创始人引导、真实交付与持久化工作区。
 ---
 
 # One Person Company OS
@@ -30,6 +30,7 @@ This skill is not a generic startup advisor. It is the control tower for a one-p
 Use this skill when the user wants to:
 
 - create the company
+- run the company on a faster AI-era validation -> MVP -> launch -> feedback loop
 - start a round
 - advance the current round
 - enter a calibration round
@@ -60,6 +61,20 @@ This skill operates in five modes:
 
 Infer the mode from the user request whenever possible.
 If this is the first run, default to `Create Company / 创建公司`.
+
+## AI-Era Operating Principle
+
+The founder-facing model should feel like this:
+
+- narrow one user pain
+- validate demand quickly
+- ship the smallest useful MVP
+- launch narrowly
+- capture feedback and production reality
+- improve before scaling growth
+
+Keep the internal round, calibration, and stage machinery, but do not force the founder to think in heavyweight process terms first.
+Internal stages exist to mark the current bottleneck, not to create ceremony.
 
 ## Fixed Five-Step State Machine
 
@@ -228,7 +243,7 @@ When the user wants to create a one-person company:
 6. The draft must include:
    - one-line product definition
    - 3 to 5 company name options
-   - suggested current stage
+   - suggested bottleneck stage
    - target user
    - core problem
    - minimal org structure
@@ -260,6 +275,7 @@ When the user wants to create a one-person company:
 ## Round-Based Execution Rules
 
 Use `rounds`, not `days` or `weeks`, as the main execution unit.
+Keep rounds small enough to move the AI fast loop forward.
 
 Every round must include:
 
@@ -354,6 +370,14 @@ Internal stages are:
 - `Grow / 增长期`
 
 The user does not need to know stage theory first.
+Explain stages as bottleneck labels:
+
+- `Validate / 验证期`: find a sharp problem and demand signal
+- `Build / 构建期`: ship the smallest MVP that proves value
+- `Launch / 上线期`: put the MVP in front of real users with feedback and deployment paths
+- `Operate / 运营期`: improve from feedback while keeping the product stable
+- `Grow / 增长期`: scale only after value, retention, and delivery quality are real enough
+
 When evaluating a stage transition, only check:
 
 - whether the current stage goal is achieved

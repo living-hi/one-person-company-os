@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-**One Person Company OS is a company operating system for AI-native solo founders.**
+**One Person Company OS is a fast-loop company operating system for AI-native solo founders.**
 
 It is not a business-plan generator, not a generic startup copilot, and not an endless advisory prompt.
 Its job is to give a solo founder a professional operating layer for:
@@ -38,7 +38,7 @@ Typical failure modes:
 - no standard operating structure
 - scripts fail and the workflow collapses back into pure chat
 
-One Person Company OS is designed to solve that category of problem.
+One Person Company OS is designed to solve that category of problem while keeping the founder on an AI-era fast loop instead of a heavy startup process.
 
 ## What You Get
 
@@ -49,7 +49,7 @@ On a serious first run, the system should produce:
 - a company setup draft
 - a one-line product definition
 - 3 to 5 company name options
-- a suggested stage
+- a suggested bottleneck stage
 - target user and core problem
 - a minimal org structure and starter role set
 - a language-aware workspace plan
@@ -66,6 +66,22 @@ After confirmation, it continues with:
 - checkpoint records
 - English content and runtime reports for English prompts
 - Chinese content and runtime reports for Chinese prompts
+
+## The AI-Era Default Flow
+
+The right default flow for a solo AI company is not a heavy staged process.
+
+It is a fast loop:
+
+- narrow the user and pain quickly
+- validate demand with real evidence
+- ship the smallest useful MVP
+- launch narrowly
+- collect feedback, usage signals, and production reality
+- improve the product before scaling growth
+
+This repository now treats that fast loop as the visible operating model.
+The internal `Validation / Build / Launch / Operate / Grow` stages still exist, but only as lightweight labels for the current bottleneck.
 
 ## System Architecture
 
@@ -103,7 +119,10 @@ Layer responsibilities:
 
 ## Standard Operating Model
 
-Every real execution follows the same five-step state machine:
+Every real execution follows the same five-step state machine.
+
+This is an execution contract for each run, not a demand that founders think in heavyweight lifecycle theory.
+For founder-facing usage, the fast loop above remains the primary model.
 
 1. `Step 1/5 Decide which flow this run should enter [Mode selection]`
 2. `Step 2/5 Confirm environment, persistence conditions, and execution path [Preflight and persistence strategy check]`
@@ -142,7 +161,7 @@ This means users can read the system at a glance without losing the deeper techn
 The navigation model is now explicit:
 
 - `Stage`
-  - shows whether the company is in validation, build, launch, operate, or grow
+  - shows whether the current bottleneck is validation, MVP building, launch, operation, or growth
 - `Round`
   - shows the single current round being advanced
 - `Current Step`
@@ -181,6 +200,7 @@ After workspace initialization, the system creates three clear file groups.
 - current-stage delivery requirements: `09-当前阶段交付要求.md`
 - founder start card: `10-创始人启动卡.md`
 - deliverable status overview: `11-交付状态总览.md`
+- AI fast-loop guide: `12-AI时代快循环.md`
 
 ### Formal Deliverable Starter Files
 
@@ -237,6 +257,9 @@ Canonical root files on disk remain:
 - artifact output spec: `07-文档产物规范.md`
 - stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
 - current-stage delivery requirements: `09-当前阶段交付要求.md`
+- founder start card: `10-创始人启动卡.md`
+- deliverable status overview: `11-交付状态总览.md`
+- AI fast-loop guide: `12-AI时代快循环.md`
 
 Core design rules:
 
@@ -263,7 +286,7 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
+I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Default to the AI-era solo-company fast loop: validate demand quickly, ship a small MVP, launch narrowly, collect feedback, then iterate. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
 ```
 
 ## Recommended Start Prompt
@@ -271,6 +294,7 @@ I am building an AI-native solo company. Use one-person-company-os. Do not make 
 ```text
 I am building an AI-native solo company. Use one-person-company-os.
 Do not make me fill a lot of fields first. Ask for the idea in one sentence, or give me 3 to 4 directions to choose from.
+Default to the AI-era solo-company fast loop: validate demand quickly, ship a small MVP, launch narrowly, collect feedback, then iterate.
 Then do Step 1/5 to Step 3/5, give me the company setup draft,
 and tell me whether anything is saved plus which path I should open next.
 ```

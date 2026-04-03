@@ -49,3 +49,4 @@ One Person Company OS 默认把关键产物统一成正式交付制式：
 - 当前回合: {{CURRENT_ROUND_NAME}}
 - 当前下一步最短动作: {{CURRENT_NEXT_ACTION}}
 - 当前主要瓶颈: {{CURRENT_BOTTLENECK}}
+- 当前原则: 先跑通最小闭环，再决定是否放大

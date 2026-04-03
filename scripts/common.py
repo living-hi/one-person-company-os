@@ -1246,8 +1246,14 @@ def build_founder_start_here(language: str) -> str:
                 "",
                 "## Reply Burden: Keep It To One Sentence",
                 "",
-                "- Tell me the company idea in one sentence, or pick one direction below.",
+                "- Tell me the founder idea in one sentence, or pick one direction below.",
                 "- If you are not ready, reply with a single number and I will turn it into the first company draft.",
+                "",
+                "## Default AI-Era Path",
+                "",
+                "- Start from one narrow pain, not from a full business plan.",
+                "- Validate demand quickly, ship the smallest useful MVP, launch narrowly, then improve from feedback.",
+                "- Treat stages as lightweight bottleneck labels, not as bureaucracy.",
                 "",
                 "## Suggested Directions",
                 "",
@@ -1268,8 +1274,9 @@ def build_founder_start_here(language: str) -> str:
                 "",
                 "## After You Reply",
                 "",
-                "- I will propose the company direction, stage, first round, and starter deliverable pack.",
-                "- You can review the generated files in this workspace and tell me what to tighten next.",
+                "- I will propose the company direction, the current bottleneck stage, the first round, and the starter deliverable pack.",
+                "- Review `11-交付状态总览.md` and `12-AI时代快循环.md` in this workspace next.",
+                "- If the files, naming, or scope feel off, tell me what to tighten and I will keep refining it.",
             ]
         ) + "\n"
     return "\n".join(
@@ -1280,6 +1287,12 @@ def build_founder_start_here(language: str) -> str:
             "",
             "- 直接说一句你想做什么，或者从下面选一个方向。",
             "- 如果你还没想清楚，只回一个数字也可以，我会把它展开成第一版公司草案。",
+            "",
+            "## 默认 AI 时代路径",
+            "",
+            "- 先从一个足够窄的痛点开始，不先写一套大商业计划。",
+            "- 先快速验证需求，再做最小可上线 MVP，上线后靠反馈迭代。",
+            "- 阶段只是当前主瓶颈标签，不是官僚流程。",
             "",
             "## 可直接选的创业方向",
             "",
@@ -1300,8 +1313,84 @@ def build_founder_start_here(language: str) -> str:
             "",
             "## 你回复后我会做什么",
             "",
-            "- 我会给出方向建议、建议阶段、首个回合和 starter 交付包。",
-            "- 你可以直接去当前工作区查看产物，再告诉我还要怎么收紧或改进。",
+            "- 我会给出方向建议、当前主瓶颈阶段、首个回合和 starter 交付包。",
+            "- 你可以先看 `11-交付状态总览.md` 和 `12-AI时代快循环.md`，再告诉我还要怎么收紧或改进。",
+        ]
+    ) + "\n"
+
+
+def build_ai_fast_loop(language: str) -> str:
+    if language == "en-US":
+        return "\n".join(
+            [
+                "# AI-Era Solo Company Fast Loop",
+                "",
+                "## Core Principle",
+                "",
+                "- Do not run a solo company like a heavy startup bureaucracy.",
+                "- Move through a fast loop: narrow pain, validate demand, ship the smallest useful MVP, launch narrowly, collect feedback, improve, then scale what works.",
+                "- Internal stages exist to mark the current bottleneck, not to force unnecessary ceremony.",
+                "",
+                "## Recommended Loop",
+                "",
+                "- 1. Narrow the user and pain: make the first buyer and urgent pain concrete.",
+                "- 2. Validate with real evidence: interviews, waitlist, pre-sales, manual service, or usage signals.",
+                "- 3. Ship the smallest launchable MVP: solve one valuable path end to end.",
+                "- 4. Launch narrowly: release to a small user set and a small channel mix first.",
+                "- 5. Capture feedback and production reality: keep notes on behavior, objections, bugs, support, and metrics.",
+                "- 6. Improve before scaling: fix retention, value delivery, and reliability before widening distribution.",
+                "",
+                "## How Internal Stages Map To The Loop",
+                "",
+                "- Validation: find a sharp problem and real demand signals.",
+                "- Build: ship the minimum MVP that proves value.",
+                "- Launch: put the MVP in front of real users with deployment and feedback paths.",
+                "- Operate: keep improving the product through feedback, support, and production stability.",
+                "- Grow: scale only after value, retention, and delivery quality are real enough.",
+                "",
+                "## How To Use This Workspace",
+                "",
+                "- Start from `10-创始人启动卡.md` if the idea is still fuzzy.",
+                "- Use `11-交付状态总览.md` to see what has been created and what is still pending.",
+                "- Keep one round to roughly 2 to 3 hours, then update the current state.",
+                "- Trigger calibration when blocked, drifting, or when a key artifact has just completed.",
+                "- Keep formal outputs in `产物/`, and keep software, non-software, and post-launch operations evidence auditable.",
+            ]
+        ) + "\n"
+    return "\n".join(
+        [
+            "# AI 时代一人公司快循环",
+            "",
+            "## 核心原则",
+            "",
+            "- 不要把一人公司跑成重型创业官僚流程。",
+            "- 默认走一条快循环：收窄痛点，快速验证，做最小可上线 MVP，小范围上线，收反馈，再迭代，然后再放大。",
+            "- 内部阶段只用来标记当前主瓶颈，不用来制造额外手续。",
+            "",
+            "## 推荐循环",
+            "",
+            "- 1. 收窄用户和痛点：先说清谁最痛、为什么现在痛、谁会先付费。",
+            "- 2. 快速验证需求：用访谈、预约、预售、手动服务或真实使用信号验证。",
+            "- 3. 产出最小可上线 MVP：只打通一个真正有价值的闭环。",
+            "- 4. 小范围上线：先推给一小批目标用户和少量渠道，不求铺满。",
+            "- 5. 回收反馈与生产现实：持续记录使用行为、异议、故障、支持和关键指标。",
+            "- 6. 先改再放大：先把价值交付、留存和稳定性修稳，再谈大规模增长。",
+            "",
+            "## 内部阶段如何映射到这条快循环",
+            "",
+            "- 验证期：找到尖锐问题和真实需求信号。",
+            "- 构建期：做出能证明价值的最小 MVP。",
+            "- 上线期：把 MVP 推到真实用户面前，并补齐部署和反馈链路。",
+            "- 运营期：围绕反馈、支持和生产稳定性持续修产品。",
+            "- 增长期：只在价值、留存和交付质量足够真实后再放大渠道和收益。",
+            "",
+            "## 在这个工作区里怎么跑",
+            "",
+            "- 如果想法还模糊，先看 `10-创始人启动卡.md`。",
+            "- 用 `11-交付状态总览.md` 看哪些文件已生成，哪些还在待生成。",
+            "- 单个回合建议控制在 2 到 3 小时，再回来更新当前状态。",
+            "- 卡住、偏航或刚完成关键产物时再触发校准。",
+            "- 正式件统一进 `产物/`，软件、非软件和上线后生产资料都必须可审计。",
         ]
     ) + "\n"
 
@@ -1452,6 +1541,7 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         render_template("current-stage-deliverable-template.md", common_values),
     )
     write_text(company_dir / "10-创始人启动卡.md", build_founder_start_here(language))
+    write_text(company_dir / "12-AI时代快循环.md", build_ai_fast_loop(language))
 
     write_text(company_dir / "角色智能体" / "角色清单.md", render_template("role-index-template.md", common_values))
     for role_id in active_roles:

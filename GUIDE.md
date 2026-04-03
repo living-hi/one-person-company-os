@@ -11,12 +11,15 @@ The old pattern was:
 - write a lot of documents
 - then do weekly reviews
 
-The current pattern is:
+The better pattern is:
 
-- create the company skeleton first
-- start one current round
-- keep advancing it
-- calibrate only when blocked, drifting, or finishing a critical artifact
+- narrow one pain and one user first
+- validate demand quickly
+- ship the smallest useful MVP
+- launch narrowly and collect feedback
+- improve before scaling growth
+
+The system still keeps internal structures like current round, stage, calibration, and stage transition, but the founder-facing experience should feel like the fast loop above.
 
 ## How To Use It
 
@@ -33,14 +36,14 @@ The system first gives you a company setup draft that includes:
 - a few startup directions if you are still undecided
 - a one-line product definition
 - company-name options
-- the suggested current stage
+- the suggested bottleneck stage
 - a minimal org structure
 - the first active roles
 - the workspace structure
 - the first executable round
 
 Only after you confirm will it create the workspace, role briefs, and process files.
-After creation, start with `10-创始人启动卡.md` and `11-交付状态总览.md`.
+After creation, start with `10-创始人启动卡.md`, `11-交付状态总览.md`, and `12-AI时代快循环.md`.
 
 ## How It Differs From A Generic Startup Assistant
 
@@ -63,7 +66,8 @@ In the AI era, a week is often too slow.
 
 A more effective rhythm is:
 
-- round-based execution
+- fast-loop execution as the founder-facing model
+- rounds as 2-to-3-hour execution units
 - trigger-based calibration
 - stage transitions only when the bottleneck changes
 
@@ -85,13 +89,14 @@ The system has five core layers:
 - `orchestration/*.json`
 - `scripts/*.py`
 
-## Five Moves To Remember
+## Six Moves To Remember
 
-- create company
-- start round
-- advance round
-- calibrate
-- transition stage
+- name the pain
+- validate the demand
+- ship the smallest MVP
+- launch narrowly
+- improve from feedback
+- scale only after value is real
 
 If you only want occasional ideation, this skill may feel heavy.
 If you actually want a solo company to keep moving, it becomes useful very quickly.

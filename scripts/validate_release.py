@@ -168,6 +168,7 @@ def validate_workspace_scripts() -> None:
         assert_exists(company_dir / "09-当前阶段交付要求.md")
         assert_exists(company_dir / "10-创始人启动卡.md")
         assert_exists(company_dir / "11-交付状态总览.md")
+        assert_exists(company_dir / "12-AI时代快循环.md")
         assert_exists(company_dir / "角色智能体" / "角色清单.md")
         assert_exists(company_dir / "产物" / "00-交付模板" / "01-[待生成]正式交付文档模板.docx")
         assert_exists(company_dir / "产物" / "01-实际交付" / "01-[待生成]实际产出总表.docx")
@@ -189,6 +190,11 @@ def validate_workspace_scripts() -> None:
             (company_dir / "11-交付状态总览.md").read_text(encoding="utf-8"),
             "01-[待生成]实际产出总表.docx",
             "02-[待生成]测试与验收记录.docx",
+        )
+        assert_contains(
+            (company_dir / "12-AI时代快循环.md").read_text(encoding="utf-8"),
+            "最小可上线 MVP",
+            "阶段只用来标记当前主瓶颈",
         )
 
         start = run(

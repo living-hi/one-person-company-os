@@ -31,7 +31,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--target-user", default="待确认用户", help="目标用户")
     parser.add_argument("--core-problem", default="待确认核心问题", help="核心问题")
     parser.add_argument("--product-pitch", default="待补充产品一句话定义", help="产品一句话定义")
-    parser.add_argument("--company-goal", default="先完成当前阶段最关键的一个回合", help="当前主目标")
+    parser.add_argument("--company-goal", default="先跑通最小闭环并拿到第一轮真实反馈", help="当前主目标")
     parser.add_argument("--current-bottleneck", default="尚未定义首个回合", help="当前瓶颈")
     parser.add_argument("--language", default="auto", help="工作语言，如 zh-CN、en-US 或 auto")
     parser.add_argument("--force", action="store_true", help="允许写入已存在目录")
@@ -58,8 +58,8 @@ def main() -> int:
         args.core_problem = "Core problem to be confirmed"
     if args.product_pitch == "待补充产品一句话定义" and language == "en-US":
         args.product_pitch = "Add the one-line product pitch"
-    if args.company_goal == "先完成当前阶段最关键的一个回合" and language == "en-US":
-        args.company_goal = "Complete the single most important round in the current stage first"
+    if args.company_goal == "先跑通最小闭环并拿到第一轮真实反馈" and language == "en-US":
+        args.company_goal = "Ship the smallest useful loop and collect the first real feedback"
     if args.current_bottleneck == "尚未定义首个回合" and language == "en-US":
         args.current_bottleneck = "The first round has not been defined yet"
 
@@ -138,13 +138,14 @@ def main() -> int:
             company_dir / "08-阶段角色与交付矩阵.md",
             company_dir / "10-创始人启动卡.md",
             company_dir / "11-交付状态总览.md",
+            company_dir / "12-AI时代快循环.md",
             company_dir / "角色智能体" / "角色清单.md",
             company_dir / "产物" / "01-实际交付" / "01-[待生成]实际产出总表.docx",
             state_path(company_dir),
         ],
         work_scope=[
             pick_text(language, "创建公司工作区骨架与当前状态文件。", "Create the company workspace skeleton and current-state file."),
-            pick_text(language, "生成当前阶段、当前回合、角色矩阵和编号化 DOCX 交付包。", "Generate the current stage, current round, role matrix, and numbered DOCX deliverable pack."),
+            pick_text(language, "生成当前阶段、当前回合、角色矩阵、AI 快循环说明和编号化 DOCX 交付包。", "Generate the current stage, current round, role matrix, AI fast-loop guide, and numbered DOCX deliverable pack."),
             pick_text(language, "明确这次是否已真实保存以及下一步怎么继续。", "Explain clearly what was persisted and what should happen next."),
         ],
         non_scope=[
@@ -152,9 +153,9 @@ def main() -> int:
             pick_text(language, "不会跳过确认边界去伪造不存在的角色执行结果。", "Do not fake role execution outcomes by skipping approval boundaries."),
         ],
         changes=[
-            pick_text(language, "已创建公司总览、当前回合、创始人启动卡、交付状态总览和当前状态文件。", "Created the company overview, current round, founder start card, deliverable-status overview, and current-state file."),
+            pick_text(language, "已创建公司总览、当前回合、创始人启动卡、交付状态总览、AI 快循环说明和当前状态文件。", "Created the company overview, current round, founder start card, deliverable-status overview, AI fast-loop guide, and current-state file."),
             pick_text(language, "已生成阶段角色与交付矩阵，以及带 `[待生成]` 标记的编号化 DOCX starter pack。", "Generated the stage-role deliverable matrix plus a numbered DOCX starter pack marked with `[待生成]`."),
-            pick_text(language, "当前公司已进入可继续启动回合和继续补齐正式交付的状态。", "The company workspace is now ready to start the next round and continue filling formal deliverables."),
+            pick_text(language, "当前公司已进入可继续启动回合、按快循环推进 MVP 和继续补齐正式交付的状态。", "The company workspace is now ready to start the next round, push the fast-loop MVP path, and continue filling formal deliverables."),
         ],
         language=language,
     )

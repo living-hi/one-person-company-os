@@ -1,6 +1,6 @@
 # One Person Company OS
 
-This is not a generic startup prompt. It is a **navigable, persistent, deliverable company operating system** for founders actively building an AI-native solo company.
+This is not a generic startup prompt. It is a **navigable, persistent, deliverable, fast-loop company operating system** for founders actively building an AI-native solo company.
 
 It unifies four critical objects into one operating layer:
 
@@ -19,7 +19,7 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
+I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Default to the AI-era solo-company fast loop: validate demand quickly, ship a small MVP, launch narrowly, collect feedback, then iterate. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
 ```
 
 ## Best For Founders Who
@@ -36,7 +36,7 @@ I am building an AI-native solo company. Use one-person-company-os. Do not make 
 - lightweight founder intake from a single sentence
 - startup direction suggestions when the founder is still undecided
 - 3 to 5 company name options
-- a suggested stage
+- a suggested bottleneck stage
 - a minimal org structure and first active roles
 - a language-aware workspace plan
 - the first executable round
@@ -44,6 +44,7 @@ I am building an AI-native solo company. Use one-person-company-os. Do not make 
 - user-navigation and audit views
 - explicit state, save, and runtime explanations
 - status-marked placeholder DOCX deliverables plus software/non-software evidence and post-launch deployment materials
+- `12-AI时代快循环.md` inside the workspace so the operating model is visible on disk
 
 ## Language Behavior
 
@@ -60,6 +61,7 @@ I am building an AI-native solo company. Use one-person-company-os. Do not make 
 - preflight checks plus Python recovery
 - fallback modes for execution, manual persistence, and chat-only operation
 - standard document templates plus a visible pending/completed deliverable map
+- a visible AI fast-loop guide that keeps stages in the background as bottleneck labels
 
 ## Architecture
 
@@ -74,6 +76,15 @@ Workspace Persistence Layer
   ↓
 Runtime Recovery Layer
 ```
+
+## AI-Era Default Flow
+
+- narrow one painful user problem
+- validate demand quickly
+- ship the smallest useful MVP
+- launch narrowly
+- improve from feedback and production reality
+- scale growth only after value and retention are real
 
 ## Local Workflow
 
