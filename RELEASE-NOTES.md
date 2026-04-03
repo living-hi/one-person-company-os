@@ -1,5 +1,22 @@
 # Release Notes
 
+## v0.5.5 - Outcome-Driven Storefront Hook
+
+This patch release makes the ClawHub storefront more compelling.
+
+The previous summary was cleaner, but still mostly descriptive.
+This version shifts the opening line to an outcome:
+
+- start from one AI product idea
+- end with a run-ready solo company
+
+This release updates:
+
+- the `SKILL.md` public summary
+- the ClawHub listing short description
+
+No runtime behavior changes are included in this patch.
+
 ## v0.5.4 - ClawHub Summary Compression
 
 This patch release shortens the public storefront summary.

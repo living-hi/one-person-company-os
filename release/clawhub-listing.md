@@ -6,7 +6,7 @@ One Person Company OS
 
 ## Short Description
 
-Run an AI-native solo company with rounds, role briefs, and persistent workspace
+Turn one AI product idea into a run-ready solo company with rounds, role briefs, and persistent workspace
 
 ## Tagline Options
 

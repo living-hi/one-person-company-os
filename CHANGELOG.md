@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.5 - 2026-04-03
+
+- upgraded the ClawHub storefront summary from descriptive to outcome-driven so the first line feels more compelling to new users
+- aligned the listing short description with the new stronger hook
+
 ## v0.5.4 - 2026-04-03
 
 - shortened the public ClawHub summary so the English hook is tighter and more of the Chinese summary fits on the listing card
