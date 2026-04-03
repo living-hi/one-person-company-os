@@ -1,5 +1,18 @@
 # Release Notes
 
+## v0.5.2 - Bilingual Listing Metadata Polish
+
+This patch release fixes the remaining public-surface mismatch after the bilingual runtime upgrade.
+
+The runtime, generated documents, GitHub README, and release materials were already bilingual.
+The remaining weak point was the live ClawHub listing summary, which still rendered as Chinese-only metadata.
+
+This release closes that gap by:
+
+- updating `SKILL.md` frontmatter to use a concise Chinese-plus-English description
+- making the latest ClawHub listing readable to both Chinese and English users before they even open the repository
+- keeping the runtime and packaging behavior unchanged so the patch is safe to ship immediately
+
 ## v0.5.1 - Bilingual Runtime And Document Upgrade
 
 This release upgrades `one-person-company-os` from “Chinese-friendly” to “actually bilingual in production use.”

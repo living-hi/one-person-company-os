@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.2 - 2026-04-03
+
+- updated `SKILL.md` metadata so the public ClawHub summary is readable for both Chinese and English users
+- aligned the latest release notes and publishing references with the metadata polish release
+
 ## v0.5.1 - 2026-04-03
 
 - added language-aware runtime reports so Chinese prompts default to Chinese output and English prompts default to English output

@@ -1,6 +1,6 @@
 ---
 name: one-person-company-os
-description: 帮用户创建并推进一间 AI 原生一人公司。适用于从一句产品想法开始，生成公司骨架、语言感知工作区、最小角色智能体、回合制推进流程、触发式校准规则，并在 OpenClaw 中持续推进当前阶段。
+description: 帮用户创建并推进一间 AI 原生一人公司 / Build and run an AI-native solo company with language-aware workspace, role briefs, rounds, calibration, and persistent operating rhythm.
 ---
 
 # One Person Company OS
