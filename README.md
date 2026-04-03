@@ -172,16 +172,24 @@ The default contract is now:
 
 For English users, the content and runtime output switch to English, but the on-disk canonical filenames stay stable for automation.
 
-The workspace now includes these canonical files:
+After workspace initialization, the system creates three clear file groups.
+
+### Root Navigation Files
 
 - artifact output spec: `07-文档产物规范.md`
 - stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
 - current-stage delivery requirements: `09-当前阶段交付要求.md`
 - founder start card: `10-创始人启动卡.md`
 - deliverable status overview: `11-交付状态总览.md`
+
+### Formal Deliverable Starter Files
+
 - formal deliverable template: `产物/00-交付模板/01-[待生成]正式交付文档模板.docx`
 - actual deliverables index: `产物/01-实际交付/01-[待生成]实际产出总表.docx`
-- deployment and rollback checklist: `产物/04-部署与生产/01-[待生成]部署与回滚清单.docx` when the stage requires it
+
+### Stage-Dependent Operational Files
+
+- when the stage requires it, the workspace also auto-adds the matching starter docs under `产物/04-部署与生产/` and `产物/05-上线与增长/`
 
 Starter deliverables land as `[待生成]` placeholder DOCX files so the founder can see the full formal output plan immediately. Once a deliverable is formally produced, it switches to `[已生成]`.
 
