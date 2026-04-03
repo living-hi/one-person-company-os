@@ -50,7 +50,7 @@ On a serious first run, the system should produce:
 - a suggested stage
 - target user and core problem
 - a minimal org structure and starter role set
-- a Chinese-first workspace plan
+- a language-aware workspace plan
 - the first round you can execute in 2 to 3 hours
 - explicit founder approval items
 - explicit save status and runtime status
@@ -62,6 +62,8 @@ After confirmation, it continues with:
 - role briefs
 - calibration records
 - checkpoint records
+- English content and runtime reports for English prompts
+- Chinese content and runtime reports for Chinese prompts
 
 ## System Architecture
 
@@ -309,7 +311,9 @@ python3 scripts/validate_release.py
 
 ## Operating Principles
 
-- Chinese is the default for Chinese users across workspace, filenames, and operating language
+- Chinese prompts produce Chinese runtime reports and Chinese generated materials by default
+- English prompts produce English runtime reports and English generated materials by default
+- the repository keeps a stable canonical workspace structure for automation compatibility, while user-facing content follows the active language
 - the founder remains the final approver for budget, launch, compliance, and customer-facing actions
 - the system advances in rounds, not weekly reporting rituals
 - the first round should be small enough to yield a clear result in 2 to 3 hours

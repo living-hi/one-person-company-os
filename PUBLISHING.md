@@ -108,3 +108,4 @@ unzip -p /tmp/one-person-company-os-0.5.0.zip scripts/generate_artifact_document
 - Chinese prompt in, Chinese materials out by default
 - English prompt in, English materials out by default
 - bilingual output only when explicitly requested
+- repository path conventions stay stable even when user-facing runtime output changes language

@@ -8,6 +8,8 @@
 - added `08-阶段角色与交付矩阵.md` and `09-当前阶段交付要求.md` so role activation and required outputs are explicit
 - promoted `devops-sre` and `customer-success` into the default launch-stage role set to ensure上线后资料不缺位
 - upgraded release validation to assert numbered DOCX artifacts, launch-stage ops docs, and the expanded launch role pack
+- added language-aware runtime reports, role briefs, and generated documents so Chinese prompts produce Chinese materials and English prompts produce English materials
+- updated README, ClawHub copy, and release docs to position the project as bilingual rather than Chinese-only
 
 ## v0.4.0 - 2026-04-03
 

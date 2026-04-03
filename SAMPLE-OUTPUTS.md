@@ -1,8 +1,10 @@
 # Sample Outputs
 
-These excerpts show the V2 behavior: Chinese-first company setup, current-round control, calibration, and stage transition.
+These excerpts show the current behavior: language-aware company setup, current-round control, calibration, and stage transition.
 
 ## 交互输出结构
+
+中文用户看到中文版本，英文用户看到英文版本；下面保留的是中文示例。
 
 Every major operation now includes:
 

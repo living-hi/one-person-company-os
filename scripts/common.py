@@ -16,6 +16,28 @@ from pathlib import Path
 from typing import Any, Optional, TextIO
 from xml.sax.saxutils import escape
 
+from localization import (
+    bool_audit_label as localized_bool_audit_label,
+    bool_label as localized_bool_label,
+    format_list as localized_format_list,
+    joined_text as localized_joined_text,
+    localized_role_spec,
+    mode_label,
+    normalize_language,
+    normalize_persistence_mode,
+    normalize_round_status,
+    normalize_stage as localized_normalize_stage,
+    persistence_mode_label,
+    pick_text,
+    round_status_label,
+    stage_label as localized_stage_label,
+    stage_meta,
+    stage_required_outputs,
+    step_meta,
+    resolve_step_id,
+    template_text,
+)
+
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT_DIR = ROOT / "scripts"
@@ -54,126 +76,6 @@ PYTHON_CANDIDATE_COMMANDS = (
     "python3",
     "python",
 )
-
-STEP_CATALOG = {
-    1: {
-        "system": "模式判定",
-        "human": "先判断这次要进入哪个流程",
-    },
-    2: {
-        "system": "preflight 与保存策略检查",
-        "human": "先确认环境、保存条件和执行方式",
-    },
-    3: {
-        "system": "草案 / 变更提议 / 当前状态装载",
-        "human": "先装载现状，再准备草案或变更",
-    },
-    4: {
-        "system": "执行与落盘",
-        "human": "开始执行，并把结果写入工作区",
-    },
-    5: {
-        "system": "验证与回报",
-        "human": "核对结果、说明变化并给出回报",
-    },
-}
-
-STEP_ALIASES = {
-    "模式判定": 1,
-    "环境检查": 2,
-    "preflight 与保存策略检查": 2,
-    "工作区检查": 3,
-    "组装初始状态": 3,
-    "加载当前状态": 3,
-    "组装角色 Brief": 3,
-    "草案 / 变更提议 / 当前状态装载": 3,
-    "保存策略判定": 4,
-    "执行与落盘": 4,
-    "验证与回报": 5,
-}
-
-STAGE_CONFIG = {
-    "validate": {
-        "label": "验证期",
-        "goal": "确认问题、目标用户和愿意付费的信号。",
-        "exit_criteria": "至少拿到足够明确的用户反馈与继续构建的理由。",
-        "next_requirements": "问题定义稳定、目标用户清晰、第一版范围可收敛。",
-        "risks": ["把假设当事实", "在没有证据前过早开发"],
-    },
-    "build": {
-        "label": "构建期",
-        "goal": "把核心产品路径做出来，并形成最小可交付结果。",
-        "exit_criteria": "关键流程可跑通，具备最小验证或上线条件。",
-        "next_requirements": "关键功能可用、质量边界清晰、上线准备就绪。",
-        "risks": ["范围失控", "技术债堆积", "没有明确验收标准"],
-    },
-    "launch": {
-        "label": "上线期",
-        "goal": "把产品带到目标用户面前，并建立最小反馈闭环。",
-        "exit_criteria": "产品已对外可访问，渠道和反馈路径跑通。",
-        "next_requirements": "上线链路稳定、反馈可回收、关键问题有处理路径。",
-        "risks": ["信息不一致", "上线无回滚", "渠道铺太多"],
-    },
-    "operate": {
-        "label": "运营期",
-        "goal": "维持产品稳定运行，并持续处理反馈与问题。",
-        "exit_criteria": "关键问题处理机制稳定，指标和反馈进入可持续节奏。",
-        "next_requirements": "留存和稳定性基本可控，优化方向明确。",
-        "risks": ["问题积压", "缺少优先级", "数据无法解释"],
-    },
-    "grow": {
-        "label": "增长期",
-        "goal": "围绕获客、转化、留存和收益持续放大有效动作。",
-        "exit_criteria": "有清晰的增长杠杆与投入产出判断。",
-        "next_requirements": "实验机制可持续，财务边界清晰。",
-        "risks": ["过早铺渠道", "用噪音替代有效增长", "忽视现金流"],
-    },
-}
-
-STAGE_ALIASES = {
-    "validate": "validate",
-    "validation": "validate",
-    "验证": "validate",
-    "验证期": "validate",
-    "build": "build",
-    "构建": "build",
-    "构建期": "build",
-    "launch": "launch",
-    "上线": "launch",
-    "上线期": "launch",
-    "operate": "operate",
-    "运营": "operate",
-    "运营期": "operate",
-    "grow": "grow",
-    "增长": "grow",
-    "增长期": "grow",
-}
-
-STAGE_REQUIRED_OUTPUTS = {
-    "validate": [
-        "用户问题证据、访谈纪要、付费或预约信号等真实验证材料。",
-        "至少一份可直接继续使用的正式交付文档，而不是只有聊天摘要。",
-    ],
-    "build": [
-        "实际软件或实际非软件交付物必须至少有一项真实落盘。",
-        "如果做软件，必须能看到代码、配置、脚本、接口或自动化资产中的至少一类产出。",
-        "如果做非软件产品，必须能看到服务方案、培训材料、研究成果、销售资料或执行清单中的至少一类产出。",
-        "必须同步保留测试或验收记录。",
-    ],
-    "launch": [
-        "必须同时看到对外可交付物和上线资料，不能只有发布文案。",
-        "必须包含部署清单、回滚方案、生产观测/告警安排。",
-        "必须包含上线公告、反馈回收路径和首轮支持安排。",
-    ],
-    "operate": [
-        "必须持续更新生产运行资料、事故复盘和用户反馈处理记录。",
-        "部署与生产类资料不能在产品上线后消失，必须继续维护。",
-    ],
-    "grow": [
-        "必须把增长实验、收入/成本复盘和运行稳定性资料一起保留。",
-        "增长动作不能脱离真实交付和生产运行状态单独存在。",
-    ],
-}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -217,10 +119,7 @@ def next_numbered_index(directory: Path) -> int:
 
 
 def normalize_stage(value: str) -> str:
-    key = value.strip().lower()
-    if key not in STAGE_ALIASES:
-        raise ValueError(f"unknown stage: {value}")
-    return STAGE_ALIASES[key]
+    return localized_normalize_stage(value)
 
 
 def now_string() -> str:
@@ -231,21 +130,20 @@ def round_id_now() -> str:
     return datetime.now().strftime("R%Y%m%d%H%M")
 
 
-def format_list(items: list[str]) -> str:
-    return "\n".join(f"- {item}" for item in items) if items else "- 无"
+def format_list(items: list[str], language: str = "zh-CN") -> str:
+    return localized_format_list(items, language)
 
 
-def bool_label(value: bool) -> str:
-    return "是" if value else "否"
+def bool_label(value: bool, language: str = "zh-CN") -> str:
+    return localized_bool_label(value, language)
 
 
-def bool_audit_label(value: bool) -> str:
-    return "通过" if value else "未通过"
+def bool_audit_label(value: bool, language: str = "zh-CN") -> str:
+    return localized_bool_audit_label(value, language)
 
 
-def joined_text(values: Iterable[str]) -> str:
-    cleaned = [value for value in values if value]
-    return "；".join(cleaned) if cleaned else "无"
+def joined_text(values: Iterable[str], language: str = "zh-CN") -> str:
+    return localized_joined_text(values, language)
 
 
 def display_path(path: Path, root: Optional[Path] = None) -> str:
@@ -336,32 +234,48 @@ def build_agent_action(
     current_supported: bool,
     compatible_runtime: Optional[dict[str, Any]],
     writable: bool,
+    language: str = "zh-CN",
 ) -> str:
     if current_supported:
-        return "优先在 OpenClaw 中继续执行当前脚本；若脚本失败，再由智能体切到手动落盘模式。"
+        return pick_text(
+            language,
+            "优先在 OpenClaw 中继续执行当前脚本；若脚本失败，再由智能体切到手动落盘模式。",
+            "Prefer continuing with the current script in OpenClaw; if the script fails, have the agent fall back to manual persistence.",
+        )
 
     minimum = version_text(MIN_SUPPORTED_PYTHON)
     if compatible_runtime:
-        return (
+        return pick_text(
+            language,
             "优先让 OpenClaw 智能体运行 `scripts/ensure_python_runtime.py --run-script <目标脚本>`，改用兼容解释器 "
             f"{compatible_runtime['executable']} ({python_compatibility_label(compatible_runtime['version'])}) 重跑脚本；"
-            "若切换失败，再由智能体手动完成脚本任务。"
+            "若切换失败，再由智能体手动完成脚本任务。",
+            "Prefer asking the OpenClaw agent to run `scripts/ensure_python_runtime.py --run-script <target-script>` "
+            f"and retry with the compatible interpreter {compatible_runtime['executable']} "
+            f"({python_compatibility_label(compatible_runtime['version'])}); if switching fails, let the agent finish the task manually.",
         )
 
     if writable:
-        return (
+        return pick_text(
+            language,
             f"优先让 OpenClaw 智能体运行 `scripts/ensure_python_runtime.py --apply` 安装兼容解释器（目标 {minimum}+）；"
-            "若当前环境不便安装，则由智能体直接完成脚本任务并手动落盘。"
+            "若当前环境不便安装，则由智能体直接完成脚本任务并手动落盘。",
+            f"Prefer asking the OpenClaw agent to run `scripts/ensure_python_runtime.py --apply` to install a compatible interpreter (target {minimum}+); "
+            "if installing is not practical in this environment, let the agent finish the task and persist files manually.",
         )
 
-    return (
+    return pick_text(
+        language,
         f"优先让 OpenClaw 智能体在宿主环境运行 `scripts/ensure_python_runtime.py --apply` 安装兼容解释器（目标 {minimum}+）；"
-        "若仍无法写文件，只能由智能体继续纯对话推进并明确未保存。"
+        "若仍无法写文件，只能由智能体继续纯对话推进并明确未保存。",
+        f"Prefer asking the OpenClaw agent to run `scripts/ensure_python_runtime.py --apply` in the host environment to install a compatible interpreter (target {minimum}+); "
+        "if files still cannot be written, the agent can only continue in chat and must state clearly that nothing was persisted.",
     )
 
 
 def render_template(template_name: str, values: dict[str, str]) -> str:
-    template = (TEMPLATE_DIR / template_name).read_text(encoding="utf-8")
+    language = values.get("LANGUAGE", "zh-CN")
+    template = template_text(template_name, TEMPLATE_DIR, language)
     rendered = template
     for key, value in values.items():
         rendered = rendered.replace(f"{{{{{key}}}}}", value)
@@ -563,8 +477,8 @@ def default_role_ids_for_stage(stage_id: str) -> list[str]:
     return list(load_stage_defaults()["stage_defaults"][stage_id])
 
 
-def stage_label(stage_id: str) -> str:
-    return STAGE_CONFIG[stage_id]["label"]
+def stage_label(stage_id: str, language: str = "zh-CN") -> str:
+    return localized_stage_label(stage_id, language)
 
 
 def state_path(company_dir: Path) -> Path:
@@ -604,17 +518,28 @@ def save_state(company_dir: Path, state: dict[str, Any]) -> None:
 
 
 def load_state(company_dir: Path) -> dict[str, Any]:
-    return load_json(state_path(company_dir))
+    state = load_json(state_path(company_dir))
+    state["language"] = normalize_language(
+        state.get("language"),
+        state.get("company_name"),
+        state.get("product_name"),
+        state.get("stage_label"),
+    )
+    return state
 
 
-def role_display_names(role_ids: list[str], role_specs: dict[str, dict[str, Any]]) -> list[str]:
-    return [role_specs[role_id]["display_name"] for role_id in role_ids if role_id in role_specs]
+def role_display_names(role_ids: list[str], role_specs: dict[str, dict[str, Any]], language: str = "zh-CN") -> list[str]:
+    names: list[str] = []
+    for role_id in role_ids:
+        if role_id in role_specs:
+            names.append(localized_role_spec(role_specs[role_id], language)["display_name"])
+    return names
 
 
-def role_spec(role_id: str, role_specs: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def role_spec(role_id: str, role_specs: dict[str, dict[str, Any]], language: str = "zh-CN") -> dict[str, Any]:
     if role_id not in role_specs:
         raise ValueError(f"unknown role id: {role_id}")
-    return role_specs[role_id]
+    return localized_role_spec(role_specs[role_id], language)
 
 
 def write_record(company_dir: Path, subdir: str, suffix: str, title: str, lines: list[str]) -> Path:
@@ -625,7 +550,10 @@ def write_record(company_dir: Path, subdir: str, suffix: str, title: str, lines:
     return path
 
 
-def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
+def preflight_status(company_dir: Optional[Path] = None, language: Optional[str] = None) -> dict[str, Any]:
+    if company_dir and state_path(company_dir).is_file():
+        language = normalize_language(language, load_json(state_path(company_dir)).get("language"))
+    language = normalize_language(language)
     current_version = tuple(sys.version_info[:3])
     current_supported = is_python_version_supported(current_version)
     runtimes = discover_python_runtimes()
@@ -655,7 +583,7 @@ def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
     missing = [display_path(path, ROOT) for path in required_paths if not path.exists()]
     installed = ROLE_DIR.is_dir() and not missing
 
-    runtime_error = "无"
+    runtime_error = pick_text(language, "无", "None")
     runnable = False
 
     if company_dir is None:
@@ -669,49 +597,66 @@ def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
     if not current_supported:
         minimum = version_text(MIN_SUPPORTED_PYTHON)
         if compatible_runtime:
-            runtime_error = (
+            runtime_error = pick_text(
+                language,
                 f"当前解释器 {python_compatibility_label(current_version)} 不在兼容范围内；"
-                f"可改用 {compatible_runtime['executable']} ({python_compatibility_label(compatible_runtime['version'])})。"
+                f"可改用 {compatible_runtime['executable']} ({python_compatibility_label(compatible_runtime['version'])})。",
+                f"The current interpreter {python_compatibility_label(current_version)} is outside the supported range; "
+                f"you can switch to {compatible_runtime['executable']} ({python_compatibility_label(compatible_runtime['version'])}).",
             )
         else:
-            runtime_error = (
+            runtime_error = pick_text(
+                language,
                 f"当前解释器 {python_compatibility_label(current_version)} 不在兼容范围内；"
-                f"未发现可直接切换的 Python {minimum}+。"
+                f"未发现可直接切换的 Python {minimum}+。",
+                f"The current interpreter {python_compatibility_label(current_version)} is outside the supported range; "
+                f"no directly switchable Python {minimum}+ runtime was found.",
             )
     elif installed:
         try:
             load_stage_defaults()
             load_role_specs()
-            render_template("company-overview-template.md", {"COMPANY_NAME": "预检"})
+            render_template("company-overview-template.md", {"COMPANY_NAME": "Preflight", "LANGUAGE": language})
         except Exception as exc:
             runtime_error = f"{type(exc).__name__}: {exc}"
         else:
             runnable = True
     else:
-        runtime_error = f"缺少文件: {joined_text(missing)}"
+        runtime_error = pick_text(
+            language,
+            f"缺少文件: {joined_text(missing, language)}",
+            f"Missing files: {joined_text(missing, language)}",
+        )
 
     workspace_created = bool(company_dir and company_dir.exists())
     persisted = bool(company_dir and all(path.is_file() for path in workspace_core_paths(company_dir)))
 
     if runnable and writable:
-        recommended_mode = "模式 A：脚本执行"
+        recommended_mode_id = "script-execution"
     elif compatible_runtime and installed and writable:
-        recommended_mode = "模式 A：脚本执行（切换兼容 Python）"
+        recommended_mode_id = "script-execution-switch-python"
     elif writable:
-        recommended_mode = "模式 B：手动落盘"
+        recommended_mode_id = "manual-persistence"
     else:
-        recommended_mode = "模式 C：纯对话推进"
+        recommended_mode_id = "chat-only"
 
     if company_dir is None:
-        unsaved_reason = "尚未指定目标工作区"
+        unsaved_reason = pick_text(language, "尚未指定目标工作区", "No target workspace has been specified yet")
     elif not workspace_created:
-        unsaved_reason = "目标工作区尚未创建"
+        unsaved_reason = pick_text(language, "目标工作区尚未创建", "The target workspace has not been created yet")
     elif not persisted:
-        unsaved_reason = "工作区已存在，但关键文件未全部落盘"
+        unsaved_reason = pick_text(language, "工作区已存在，但关键文件未全部落盘", "The workspace exists, but not all core files have been persisted")
     else:
-        unsaved_reason = "无"
+        unsaved_reason = pick_text(language, "无", "None")
 
+    agent_action = build_agent_action(
+        current_supported=current_supported,
+        compatible_runtime=compatible_runtime,
+        writable=writable,
+        language=language,
+    )
     return {
+        "language": language,
         "installed": installed,
         "runnable": runnable,
         "python_supported": current_supported,
@@ -719,36 +664,46 @@ def preflight_status(company_dir: Optional[Path] = None) -> dict[str, Any]:
         "current_python_version": version_text(current_version),
         "current_python_label": python_compatibility_label(current_version),
         "compatible_python_found": compatible_runtime is not None,
-        "compatible_python_path": compatible_runtime["executable"] if compatible_runtime else "无",
-        "compatible_python_version": version_text(compatible_runtime["version"]) if compatible_runtime else "无",
+        "compatible_python_path": compatible_runtime["executable"] if compatible_runtime else pick_text(language, "无", "None"),
+        "compatible_python_version": version_text(compatible_runtime["version"]) if compatible_runtime else pick_text(language, "无", "None"),
         "recovery_script": "scripts/ensure_python_runtime.py",
-        "agent_action": build_agent_action(
-            current_supported=current_supported,
-            compatible_runtime=compatible_runtime,
-            writable=writable,
-        ),
+        "agent_action": agent_action,
         "workspace_created": workspace_created,
         "persisted": persisted,
         "writable": writable,
         "writable_target": str(writable_target),
         "python_path": sys.executable,
         "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
-        "recommended_mode": recommended_mode,
-        "runtime_error": f"{runtime_error} 建议动作: {build_agent_action(current_supported=current_supported, compatible_runtime=compatible_runtime, writable=writable)}"
-        if runtime_error != "无"
-        else runtime_error,
-        "missing_files": joined_text(missing),
+        "recommended_mode_id": recommended_mode_id,
+        "recommended_mode": persistence_mode_label(recommended_mode_id, language),
+        "runtime_error": (
+            pick_text(language, f"{runtime_error} 建议动作: {agent_action}", f"{runtime_error} Recommended action: {agent_action}")
+            if runtime_error != pick_text(language, "无", "None")
+            else runtime_error
+        ),
+        "missing_files": joined_text(missing, language),
         "unsaved_reason": unsaved_reason,
     }
 
 
-def print_step(step: int, total: int, title: str, *, status: str = "已完成", stream: TextIO = sys.stdout) -> None:
-    step_id = STEP_ALIASES.get(title, step)
-    meta = STEP_CATALOG.get(step_id, {"human": title, "system": title})
+def print_step(
+    step: int,
+    total: int,
+    title: str,
+    *,
+    status: str = "已完成",
+    stream: TextIO = sys.stdout,
+    language: str = "zh-CN",
+) -> None:
+    resolved_step_id = resolve_step_id(title)
+    step_id = resolved_step_id or step
+    meta = step_meta(step_id, language) or {"human": title, "system": title}
     human_label = meta["human"]
     system_label = meta["system"]
-    if title not in (human_label, system_label):
-        status = f"{status}（{title}）"
+    if status == "已完成" and language != "zh-CN":
+        status = "Completed"
+    if resolved_step_id == 0 and title not in (human_label, system_label):
+        status = f"{status}（{title}）" if language == "zh-CN" else f"{status} ({title})"
     print(f"Step {step}/{total} {human_label} [{system_label}]: {status}", file=stream)
 
 
@@ -758,9 +713,9 @@ def print_block(title: str, items: list[tuple[str, str]], *, stream: TextIO = sy
         print(f"- {label}: {value}", file=stream)
 
 
-def step_display(step_number: int, phase: str) -> str:
-    step_id = STEP_ALIASES.get(phase, step_number)
-    meta = STEP_CATALOG.get(step_id, {"human": phase, "system": phase})
+def step_display(step_number: int, phase: str, language: str = "zh-CN") -> str:
+    step_id = resolve_step_id(phase) or step_number
+    meta = step_meta(step_id, language) or {"human": phase, "system": phase}
     return f"Step {step_number}/5 {meta['human']} [{meta['system']}]"
 
 
@@ -772,52 +727,68 @@ def explain_save_status(
     save_details: str,
     unsaved_reason: str,
     persistence_mode: str,
+    language: str,
 ) -> list[tuple[str, str]]:
     if saved:
         return [
-            ("保存结论", "本次关键内容已经真实写入工作区，不只是停留在聊天里。"),
-            ("你可以去哪里看", save_path),
-            ("这次写入了什么", filenames),
-            ("写入明细", save_details),
-            ("当前保存方式", persistence_mode),
+            (
+                pick_text(language, "保存结论", "Persistence Result"),
+                pick_text(language, "本次关键内容已经真实写入工作区，不只是停留在聊天里。", "The key output from this run has been written into the workspace instead of staying only in chat."),
+            ),
+            (pick_text(language, "你可以去哪里看", "Where To Look"), save_path),
+            (pick_text(language, "这次写入了什么", "Files Written"), filenames),
+            (pick_text(language, "写入明细", "Write Details"), save_details),
+            (pick_text(language, "当前保存方式", "Current Persistence Mode"), persistence_mode),
         ]
 
+    mode_id = normalize_persistence_mode(persistence_mode)
     save_next = {
-        "模式 A：脚本执行": "先修复脚本执行问题，再重跑当前步骤。",
-        "模式 A：脚本执行（切换兼容 Python）": "先切换到兼容 Python，再重跑当前步骤。",
-        "模式 B：手动落盘": "当前适合直接手动写入 markdown/json 到工作区。",
-        "模式 C：纯对话推进": "当前只能在对话里推进；如果要落盘，需要先确认创建或恢复写入能力。",
-    }.get(persistence_mode, "先确认是否允许写文件，再决定脚本执行或手动落盘。")
+        "script-execution": pick_text(language, "先修复脚本执行问题，再重跑当前步骤。", "Fix the script-execution issue first, then rerun this step."),
+        "script-execution-switch-python": pick_text(language, "先切换到兼容 Python，再重跑当前步骤。", "Switch to a compatible Python runtime first, then rerun this step."),
+        "manual-persistence": pick_text(language, "当前适合直接手动写入 markdown/json 到工作区。", "This environment is better suited for writing markdown/json directly into the workspace."),
+        "chat-only": pick_text(language, "当前只能在对话里推进；如果要落盘，需要先确认创建或恢复写入能力。", "This run can only progress in chat; to persist output, confirm workspace creation or restore write access first."),
+    }.get(mode_id, pick_text(language, "先确认是否允许写文件，再决定脚本执行或手动落盘。", "Confirm whether file writing is allowed before choosing script execution or manual persistence."))
 
     return [
-        ("保存结论", "本次内容还没有真实写入工作区。"),
-        ("为什么还没保存", unsaved_reason),
-        ("现在内容在哪里", "当前内容只存在于本次输出或标准输出里。"),
-        ("如果你要保存", save_next),
-        ("当前保存方式", persistence_mode),
+        (pick_text(language, "保存结论", "Persistence Result"), pick_text(language, "本次内容还没有真实写入工作区。", "This run has not written the output into the workspace yet.")),
+        (pick_text(language, "为什么还没保存", "Why It Is Not Persisted Yet"), unsaved_reason),
+        (pick_text(language, "现在内容在哪里", "Where The Content Is Now"), pick_text(language, "当前内容只存在于本次输出或标准输出里。", "The current content only exists in this output or standard output.")),
+        (pick_text(language, "如果你要保存", "How To Persist It"), save_next),
+        (pick_text(language, "当前保存方式", "Current Persistence Mode"), persistence_mode),
     ]
 
 
-def explain_runtime_status(runtime: dict[str, Any]) -> list[tuple[str, str]]:
+def explain_runtime_status(runtime: dict[str, Any], language: str) -> list[tuple[str, str]]:
     if runtime["runnable"]:
-        runtime_summary = "当前环境可以直接运行脚本，适合走模式 A。"
+        runtime_summary = pick_text(language, "当前环境可以直接运行脚本，适合走模式 A。", "The current environment can run the scripts directly, so Mode A is appropriate.")
     elif runtime["compatible_python_found"]:
-        runtime_summary = "当前解释器不理想，但已经找到可切换的兼容 Python。"
+        runtime_summary = pick_text(language, "当前解释器不理想，但已经找到可切换的兼容 Python。", "The current interpreter is not ideal, but a compatible Python runtime is available.")
     elif runtime["writable"]:
-        runtime_summary = "脚本暂时不稳，但当前环境还能直接写文件，适合走手动落盘。"
+        runtime_summary = pick_text(language, "脚本暂时不稳，但当前环境还能直接写文件，适合走手动落盘。", "Script execution is not reliable right now, but the environment can still write files directly, so manual persistence is appropriate.")
     else:
-        runtime_summary = "当前环境既不适合直接跑脚本，也不适合直接写文件，只能先纯对话推进。"
+        runtime_summary = pick_text(language, "当前环境既不适合直接跑脚本，也不适合直接写文件，只能先纯对话推进。", "The environment is not suitable for direct script execution or direct file writes, so chat-only progression is the only safe option for now.")
 
-    install_summary = "技能文件齐全，可以继续恢复运行。" if runtime["installed"] else "技能文件还不完整，先补齐缺失文件。"
-    persistence_summary = "当前工作区已经具备核心落盘文件。" if runtime["persisted"] else runtime["unsaved_reason"]
+    install_summary = (
+        pick_text(language, "技能文件齐全，可以继续恢复运行。", "The skill files are complete, so recovery can continue.")
+        if runtime["installed"]
+        else pick_text(language, "技能文件还不完整，先补齐缺失文件。", "The skill files are incomplete, so fill the missing files first.")
+    )
+    persistence_summary = (
+        pick_text(language, "当前工作区已经具备核心落盘文件。", "The current workspace already contains the core persisted files.")
+        if runtime["persisted"]
+        else runtime["unsaved_reason"]
+    )
 
     return [
-        ("运行结论", runtime_summary),
-        ("安装情况", install_summary),
-        ("工作区情况", "目标工作区已存在。" if runtime["workspace_created"] else "目标工作区还没有创建。"),
-        ("落盘情况", persistence_summary),
-        ("Python 兼容", f"当前是 {runtime['current_python_label']}；兼容目标是 Python {runtime['python_minimum']}+。"),
-        ("推荐动作", runtime["agent_action"]),
+        (pick_text(language, "运行结论", "Runtime Summary"), runtime_summary),
+        (pick_text(language, "安装情况", "Installation Status"), install_summary),
+        (
+            pick_text(language, "工作区情况", "Workspace Status"),
+            pick_text(language, "目标工作区已存在。", "The target workspace already exists.") if runtime["workspace_created"] else pick_text(language, "目标工作区还没有创建。", "The target workspace has not been created yet."),
+        ),
+        (pick_text(language, "落盘情况", "Persistence Status"), persistence_summary),
+        (pick_text(language, "Python 兼容", "Python Compatibility"), pick_text(language, f"当前是 {runtime['current_python_label']}；兼容目标是 Python {runtime['python_minimum']}+。", f"The current runtime is {runtime['current_python_label']}; the compatibility target is Python {runtime['python_minimum']}+.")),
+        (pick_text(language, "推荐动作", "Recommended Action"), runtime["agent_action"]),
     ]
 
 
@@ -829,6 +800,7 @@ def build_round_dashboard(
     role: str,
     artifact: str,
     next_action: str,
+    language: str,
 ) -> list[tuple[str, str]]:
     if company_dir is not None:
         state_file = state_path(company_dir)
@@ -836,40 +808,40 @@ def build_round_dashboard(
             state = load_state(company_dir)
             current_round = state.get("current_round", {})
             return [
-                ("当前阶段", state.get("stage_label", stage)),
-                ("当前回合", current_round.get("name", round_name)),
-                ("回合状态", current_round.get("status", "待定义")),
-                ("当前负责角色", current_round.get("owner_role_name", role)),
-                ("关键产物", current_round.get("artifact", artifact)),
-                ("当前阻塞", current_round.get("blocker", "无")),
-                ("下一步最短动作", current_round.get("next_action", next_action)),
-                ("完成标准", current_round.get("success_criteria", "待定义")),
+                (pick_text(language, "当前阶段", "Current Stage"), state.get("stage_label", stage)),
+                (pick_text(language, "当前回合", "Current Round"), current_round.get("name", round_name)),
+                (pick_text(language, "回合状态", "Round Status"), round_status_label(current_round.get("status_id") or current_round.get("status", "undefined"), language)),
+                (pick_text(language, "当前负责角色", "Current Owner"), current_round.get("owner_role_name", role)),
+                (pick_text(language, "关键产物", "Key Artifact"), current_round.get("artifact", artifact)),
+                (pick_text(language, "当前阻塞", "Current Blocker"), current_round.get("blocker", pick_text(language, "无", "None"))),
+                (pick_text(language, "下一步最短动作", "Shortest Next Action"), current_round.get("next_action", next_action)),
+                (pick_text(language, "完成标准", "Success Criteria"), current_round.get("success_criteria", pick_text(language, "待定义", "Undefined"))),
             ]
 
     return [
-        ("当前阶段", stage),
-        ("当前回合", round_name),
-        ("回合状态", "待确认"),
-        ("当前负责角色", role),
-        ("关键产物", artifact),
-        ("当前阻塞", "待确认"),
-        ("下一步最短动作", next_action),
-        ("完成标准", "待确认"),
+        (pick_text(language, "当前阶段", "Current Stage"), stage),
+        (pick_text(language, "当前回合", "Current Round"), round_name),
+        (pick_text(language, "回合状态", "Round Status"), pick_text(language, "待确认", "Pending")),
+        (pick_text(language, "当前负责角色", "Current Owner"), role),
+        (pick_text(language, "关键产物", "Key Artifact"), artifact),
+        (pick_text(language, "当前阻塞", "Current Blocker"), pick_text(language, "待确认", "Pending")),
+        (pick_text(language, "下一步最短动作", "Shortest Next Action"), next_action),
+        (pick_text(language, "完成标准", "Success Criteria"), pick_text(language, "待确认", "Pending")),
     ]
 
 
-def default_work_scope(artifact: str) -> list[str]:
+def default_work_scope(artifact: str, language: str) -> list[str]:
     return [
-        f"说明本次与 {artifact} 相关的关键结果。",
-        "明确这次是否真正保存、保存到哪里。",
-        "明确当前环境该继续脚本执行、手动落盘，还是只做对话推进。",
+        pick_text(language, f"说明本次与 {artifact} 相关的关键结果。", f"Explain the key results from this run related to {artifact}."),
+        pick_text(language, "明确这次是否真正保存、保存到哪里。", "Explain clearly whether this run persisted output and where it was written."),
+        pick_text(language, "明确当前环境该继续脚本执行、手动落盘，还是只做对话推进。", "Explain whether the current environment should continue with script execution, manual persistence, or chat-only progression."),
     ]
 
 
-def default_non_scope(mode: str) -> list[str]:
-    if mode == "创建公司":
-        return ["不会在未确认前假装已经完成正式创建。"]
-    return ["不会把未执行的动作说成已经完成。"]
+def default_non_scope(mode: str, language: str) -> list[str]:
+    if mode == "创建公司" or mode == "Create Company":
+        return [pick_text(language, "不会在未确认前假装已经完成正式创建。", "Do not pretend the formal creation already happened before approval.")]
+    return [pick_text(language, "不会把未执行的动作说成已经完成。", "Do not claim unfinished actions are already complete.")]
 
 
 def emit_runtime_report(
@@ -892,21 +864,27 @@ def emit_runtime_report(
     output_view: str = "both",
     step_number: int = 5,
     stream: TextIO = sys.stdout,
+    language: Optional[str] = None,
 ) -> None:
-    runtime = preflight_status(company_dir)
+    language = normalize_language(language, stage, round_name, role, artifact, next_action)
+    runtime = preflight_status(company_dir, language=language)
     saved = bool(saved_paths) and all(path.exists() for path in saved_paths)
     save_path = str(company_dir) if company_dir is not None else "未指定"
-    save_details = joined_text(display_path(path, company_dir) for path in saved_paths)
-    filenames = joined_text(path.name for path in saved_paths)
+    if company_dir is None:
+        save_path = pick_text(language, "未指定", "Unspecified")
+    save_details = joined_text((display_path(path, company_dir) for path in saved_paths), language)
+    filenames = joined_text((path.name for path in saved_paths), language)
 
-    if not saved and unsaved_reason == "无":
+    if not saved and unsaved_reason == pick_text(language, "无", "None"):
         unsaved_reason = runtime["unsaved_reason"]
-    work_scope = work_scope or default_work_scope(artifact)
-    non_scope = non_scope or default_non_scope(mode)
+    work_scope = work_scope or default_work_scope(artifact, language)
+    non_scope = non_scope or default_non_scope(mode, language)
     changes = changes or (
-        [f"已更新或写入 {joined_text(path.name for path in saved_paths)}。"] if saved_paths else ["本次没有写入新文件。"]
+        [pick_text(language, f"已更新或写入 {joined_text((path.name for path in saved_paths), language)}。", f"Updated or wrote {joined_text((path.name for path in saved_paths), language)}.")] if saved_paths else [pick_text(language, "本次没有写入新文件。", "No new files were written in this run.")]
     )
-    step_label = step_display(step_number, phase)
+    step_label = step_display(step_number, phase, language)
+    localized_mode = mode_label(mode, language)
+    localized_persistence_mode = persistence_mode_label(persistence_mode, language)
     round_dashboard = build_round_dashboard(
         company_dir=company_dir,
         stage=stage,
@@ -914,6 +892,7 @@ def emit_runtime_report(
         role=role,
         artifact=artifact,
         next_action=next_action,
+        language=language,
     )
     save_explanation = explain_save_status(
         saved=saved,
@@ -921,99 +900,103 @@ def emit_runtime_report(
         filenames=filenames,
         save_details=save_details,
         unsaved_reason=unsaved_reason,
-        persistence_mode=persistence_mode,
+        persistence_mode=localized_persistence_mode,
+        language=language,
     )
-    runtime_explanation = explain_runtime_status(runtime)
+    runtime_explanation = explain_runtime_status(runtime, language)
 
     if output_view in ("both", "navigation"):
-        print("用户导航版:", file=stream)
+        print(pick_text(language, "用户导航版:", "User Navigation View:"), file=stream)
         print_block(
-            "三层导航条",
+            pick_text(language, "三层导航条", "Three-Layer Navigation"),
             [
-                ("阶段", stage),
-                ("回合", round_name),
-                ("本次 Step", step_label),
+                (pick_text(language, "阶段", "Stage"), stage),
+                (pick_text(language, "回合", "Round"), round_name),
+                (pick_text(language, "本次 Step", "Current Step"), step_label),
             ],
             stream=stream,
         )
         print_block(
-            "本次范围",
+            pick_text(language, "本次范围", "Scope This Run"),
             [
-                ("本次会做", joined_text(work_scope)),
-                ("本次不会做", joined_text(non_scope)),
+                (pick_text(language, "本次会做", "Will Do"), joined_text(work_scope, language)),
+                (pick_text(language, "本次不会做", "Will Not Do"), joined_text(non_scope, language)),
             ],
             stream=stream,
         )
         print_block(
-            "本次变化",
-            [(f"变化 {index}", value) for index, value in enumerate(changes, start=1)],
+            pick_text(language, "本次变化", "Changes This Run"),
+            [
+                (pick_text(language, f"变化 {index}", f"Change {index}"), value)
+                for index, value in enumerate(changes, start=1)
+            ],
             stream=stream,
         )
-        print_block("回合仪表盘", round_dashboard, stream=stream)
-        print_block("保存解释", save_explanation, stream=stream)
-        print_block("运行解释", runtime_explanation, stream=stream)
+        print_block(pick_text(language, "回合仪表盘", "Round Dashboard"), round_dashboard, stream=stream)
+        print_block(pick_text(language, "保存解释", "Persistence Explanation"), save_explanation, stream=stream)
+        print_block(pick_text(language, "运行解释", "Runtime Explanation"), runtime_explanation, stream=stream)
         if output_view == "both":
             print("", file=stream)
 
     if output_view in ("both", "audit"):
-        print("审计版:", file=stream)
+        print(pick_text(language, "审计版:", "Audit View:"), file=stream)
         print_block(
-            "状态栏",
+            pick_text(language, "状态栏", "Status Bar"),
             [
-                ("当前模式", mode),
-                ("当前步骤", step_label),
-                ("当前阶段", stage),
-                ("当前回合", round_name),
-                ("当前角色", role),
-                ("当前产物", artifact),
-                ("当前保存模式", persistence_mode),
-                ("下一步动作", next_action),
-                ("是否需要确认", needs_confirmation),
+                (pick_text(language, "当前模式", "Current Mode"), localized_mode),
+                (pick_text(language, "当前步骤", "Current Step"), step_label),
+                (pick_text(language, "当前阶段", "Current Stage"), stage),
+                (pick_text(language, "当前回合", "Current Round"), round_name),
+                (pick_text(language, "当前角色", "Current Role"), role),
+                (pick_text(language, "当前产物", "Current Artifact"), artifact),
+                (pick_text(language, "当前保存模式", "Current Persistence Mode"), localized_persistence_mode),
+                (pick_text(language, "下一步动作", "Next Action"), next_action),
+                (pick_text(language, "是否需要确认", "Needs Confirmation"), needs_confirmation),
             ],
             stream=stream,
         )
         print_block(
-            "保存状态",
+            pick_text(language, "保存状态", "Persistence Status"),
             [
-                ("是否已保存", bool_label(saved)),
-                ("保存路径", save_path),
-                ("文件名", filenames),
-                ("保存明细", save_details),
-                ("未保存原因", "无" if saved else unsaved_reason),
+                (pick_text(language, "是否已保存", "Persisted"), bool_label(saved, language)),
+                (pick_text(language, "保存路径", "Save Path"), save_path),
+                (pick_text(language, "文件名", "File Names"), filenames),
+                (pick_text(language, "保存明细", "Save Details"), save_details),
+                (pick_text(language, "未保存原因", "Unsaved Reason"), pick_text(language, "无", "None") if saved else unsaved_reason),
             ],
             stream=stream,
         )
         print_block(
-            "运行状态",
+            pick_text(language, "运行状态", "Runtime Status"),
             [
-                ("installed", bool_audit_label(runtime["installed"])),
-                ("runnable", bool_audit_label(runtime["runnable"])),
-                ("python_supported", bool_audit_label(runtime["python_supported"])),
-                ("workspace_created", bool_audit_label(runtime["workspace_created"])),
-                ("persisted", bool_audit_label(runtime["persisted"])),
-                ("writable", bool_audit_label(runtime["writable"])),
-                ("当前 Python", f"{runtime['python_path']} ({runtime['python_version']})"),
-                ("兼容目标", f"Python {runtime['python_minimum']}+"),
-                ("可切换解释器", "无" if not runtime["compatible_python_found"] else f"{runtime['compatible_python_path']} ({runtime['compatible_python_version']})"),
-                ("恢复脚本", runtime["recovery_script"]),
-                ("推荐模式", runtime["recommended_mode"]),
-                ("智能体建议动作", runtime["agent_action"]),
-                ("环境异常", runtime["runtime_error"]),
+                ("installed", bool_audit_label(runtime["installed"], language)),
+                ("runnable", bool_audit_label(runtime["runnable"], language)),
+                ("python_supported", bool_audit_label(runtime["python_supported"], language)),
+                ("workspace_created", bool_audit_label(runtime["workspace_created"], language)),
+                ("persisted", bool_audit_label(runtime["persisted"], language)),
+                ("writable", bool_audit_label(runtime["writable"], language)),
+                (pick_text(language, "当前 Python", "Current Python"), f"{runtime['python_path']} ({runtime['python_version']})"),
+                (pick_text(language, "兼容目标", "Compatibility Target"), f"Python {runtime['python_minimum']}+"),
+                (pick_text(language, "可切换解释器", "Switchable Interpreter"), pick_text(language, "无", "None") if not runtime["compatible_python_found"] else f"{runtime['compatible_python_path']} ({runtime['compatible_python_version']})"),
+                (pick_text(language, "恢复脚本", "Recovery Script"), runtime["recovery_script"]),
+                (pick_text(language, "推荐模式", "Recommended Mode"), runtime["recommended_mode"]),
+                (pick_text(language, "智能体建议动作", "Suggested Agent Action"), runtime["agent_action"]),
+                (pick_text(language, "环境异常", "Runtime Error"), runtime["runtime_error"]),
             ],
             stream=stream,
         )
 
 
-def build_matrix_values(role_specs: dict[str, dict[str, Any]]) -> dict[str, str]:
+def build_matrix_values(role_specs: dict[str, dict[str, Any]], language: str) -> dict[str, str]:
     defaults = load_stage_defaults()
     values: dict[str, str] = {}
-    for stage_id in STAGE_CONFIG:
+    for stage_id in ("validate", "build", "launch", "operate", "grow"):
         stage_upper = stage_id.upper()
-        stage_roles = role_display_names(defaults["stage_defaults"][stage_id], role_specs)
-        optional_roles = role_display_names(defaults["stage_optional_roles"].get(stage_id, []), role_specs)
-        values[f"{stage_upper}_DEFAULT_ROLES"] = format_list(stage_roles)
-        values[f"{stage_upper}_OPTIONAL_ROLES"] = format_list(optional_roles)
-        values[f"{stage_upper}_REQUIRED_OUTPUTS"] = format_list(STAGE_REQUIRED_OUTPUTS[stage_id])
+        stage_roles = role_display_names(defaults["stage_defaults"][stage_id], role_specs, language)
+        optional_roles = role_display_names(defaults["stage_optional_roles"].get(stage_id, []), role_specs, language)
+        values[f"{stage_upper}_DEFAULT_ROLES"] = format_list(stage_roles, language)
+        values[f"{stage_upper}_OPTIONAL_ROLES"] = format_list(optional_roles, language)
+        values[f"{stage_upper}_REQUIRED_OUTPUTS"] = format_list(stage_required_outputs(stage_id, language), language)
     return values
 
 
@@ -1123,36 +1106,50 @@ def stage_artifact_specs(stage_id: str) -> list[dict[str, str]]:
 def artifact_template_values(common_values: dict[str, str], state: dict[str, Any]) -> dict[str, str]:
     current_round = state.get("current_round", {})
     current_stage = state["stage_id"]
+    language = state.get("language", "zh-CN")
     return {
         **common_values,
-        "ARTIFACT_TITLE": "正式交付文档模板",
-        "ARTIFACT_TYPE": "正式交付文档",
-        "ARTIFACT_OWNER": current_round.get("owner_role_name", "总控台"),
-        "ARTIFACT_OBJECTIVE": current_round.get("goal", "记录一个可真正交付的实际产出"),
-        "ARTIFACT_SUMMARY": "这是一份正式交付文档模板。交付时必须写清真实产出、证据、责任人和下一步动作。",
-        "ARTIFACT_SCOPE_IN": format_list([
-            "实际软件产出或实际非软件产出",
-            "验收证据与责任人",
-            "与当前阶段匹配的部署/生产资料",
-        ]),
-        "ARTIFACT_SCOPE_OUT": format_list([
-            "只有聊天记录、没有文件或链接的伪交付",
-            "缺少证据路径的空泛总结",
-        ]),
-        "ARTIFACT_DELIVERABLES": format_list(STAGE_REQUIRED_OUTPUTS[current_stage]),
-        "ARTIFACT_CHANGES": format_list([
-            "文件名使用两位序号开头。",
-            "产物目录默认只落 DOCX。",
-            "上线后自动要求部署与生产资料。",
-        ]),
-        "ARTIFACT_DECISIONS": format_list([
-            "关键产物统一进入正式交付文档路径。",
-            "软件和非软件产出都必须可被审计。",
-        ]),
-        "ARTIFACT_RISKS": format_list([
-            "没有真实文件、代码、配置、材料或证据时，不应视为完成交付。",
-        ]),
-        "ARTIFACT_NEXT_ACTION": current_round.get("next_action", "补齐本轮真实交付与证据。"),
+        "ARTIFACT_TITLE": pick_text(language, "正式交付文档模板", "Formal Deliverable Template"),
+        "ARTIFACT_TYPE": pick_text(language, "正式交付文档", "Formal Deliverable Document"),
+        "ARTIFACT_OWNER": current_round.get("owner_role_name", pick_text(language, "总控台", "Control Tower")),
+        "ARTIFACT_OBJECTIVE": current_round.get("goal", pick_text(language, "记录一个可真正交付的实际产出", "Record a real deliverable that can actually be handed off")),
+        "ARTIFACT_SUMMARY": pick_text(language, "这是一份正式交付文档模板。交付时必须写清真实产出、证据、责任人和下一步动作。", "This is a formal deliverable template. Every delivery should state the real outputs, evidence, owner, and next action clearly."),
+        "ARTIFACT_SCOPE_IN": format_list(
+            [
+                pick_text(language, "实际软件产出或实际非软件产出", "Real software outputs or real non-software outputs"),
+                pick_text(language, "验收证据与责任人", "Acceptance evidence and accountable owners"),
+                pick_text(language, "与当前阶段匹配的部署/生产资料", "Deployment or production materials that match the current stage"),
+            ],
+            language,
+        ),
+        "ARTIFACT_SCOPE_OUT": format_list(
+            [
+                pick_text(language, "只有聊天记录、没有文件或链接的伪交付", "Fake deliverables that only exist in chat without files or links"),
+                pick_text(language, "缺少证据路径的空泛总结", "Vague summaries without evidence paths"),
+            ],
+            language,
+        ),
+        "ARTIFACT_DELIVERABLES": format_list(stage_required_outputs(current_stage, language), language),
+        "ARTIFACT_CHANGES": format_list(
+            [
+                pick_text(language, "文件名使用两位序号开头。", "File names should start with a two-digit index."),
+                pick_text(language, "产物目录默认只落 DOCX。", "Artifact directories default to DOCX-only formal outputs."),
+                pick_text(language, "上线后自动要求部署与生产资料。", "Deployment and production materials become mandatory after launch."),
+            ],
+            language,
+        ),
+        "ARTIFACT_DECISIONS": format_list(
+            [
+                pick_text(language, "关键产物统一进入正式交付文档路径。", "Critical artifacts should enter the formal deliverable path."),
+                pick_text(language, "软件和非软件产出都必须可被审计。", "Both software and non-software outputs must remain auditable."),
+            ],
+            language,
+        ),
+        "ARTIFACT_RISKS": format_list(
+            [pick_text(language, "没有真实文件、代码、配置、材料或证据时，不应视为完成交付。", "If there are no real files, code, configuration, materials, or evidence, the work should not be treated as a completed delivery.")],
+            language,
+        ),
+        "ARTIFACT_NEXT_ACTION": current_round.get("next_action", pick_text(language, "补齐本轮真实交付与证据。", "Fill in the real deliverables and evidence for this round.")),
     }
 
 
@@ -1160,22 +1157,28 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     role_specs = load_role_specs()
     ensure_workspace_dirs(company_dir)
 
+    language = normalize_language(state.get("language"), state.get("company_name"), state.get("product_name"))
+    state["language"] = language
     stage_id = state["stage_id"]
-    stage = STAGE_CONFIG[stage_id]
+    stage = stage_meta(stage_id, language)
+    state["stage_label"] = stage["label"]
     active_roles = state.get("active_roles") or default_role_ids_for_stage(stage_id)
-    active_display = role_display_names(active_roles, role_specs)
+    active_display = role_display_names(active_roles, role_specs, language)
     available_display = [
-        spec["display_name"]
+        localized_role_spec(spec, language)["display_name"]
         for role_id, spec in sorted(role_specs.items())
         if role_id not in active_roles
     ]
     current_round = state.get("current_round", {})
 
-    round_name = current_round.get("name", "未启动")
-    round_owner = current_round.get("owner_role_name", "待指定")
-    round_next_action = current_round.get("next_action", "待定义")
+    round_name = current_round.get("name", pick_text(language, "未启动", "Not Started"))
+    round_owner = current_round.get("owner_role_name", pick_text(language, "待指定", "Unassigned"))
+    round_next_action = current_round.get("next_action", pick_text(language, "待定义", "Undefined"))
+    current_round["status_id"] = normalize_round_status(current_round.get("status_id") or current_round.get("status", "undefined"))
+    current_round["status"] = round_status_label(current_round["status_id"], language)
 
     common_values = {
+        "LANGUAGE": language,
         "COMPANY_NAME": state["company_name"],
         "PRODUCT_NAME": state["product_name"],
         "STAGE_LABEL": stage["label"],
@@ -1190,13 +1193,13 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         "STAGE_GOAL": stage["goal"],
         "STAGE_EXIT_CRITERIA": stage["exit_criteria"],
         "NEXT_STAGE_REQUIREMENTS": stage["next_requirements"],
-        "STAGE_RISKS": format_list(stage["risks"]),
-        "CURRENT_STAGE_REQUIRED_OUTPUTS": format_list(STAGE_REQUIRED_OUTPUTS[stage_id]),
-        "ACTIVE_ROLE_LIST": format_list(active_display),
-        "AVAILABLE_ROLE_LIST": format_list(available_display),
-        "ACTIVE_ROLE_INLINE": "、".join(active_display) or "无",
+        "STAGE_RISKS": format_list(stage["risks"], language),
+        "CURRENT_STAGE_REQUIRED_OUTPUTS": format_list(stage_required_outputs(stage_id, language), language),
+        "ACTIVE_ROLE_LIST": format_list(active_display, language),
+        "AVAILABLE_ROLE_LIST": format_list(available_display, language),
+        "ACTIVE_ROLE_INLINE": ("、".join(active_display) if language == "zh-CN" else ", ".join(active_display)) or pick_text(language, "无", "None"),
     }
-    matrix_values = build_matrix_values(role_specs)
+    matrix_values = build_matrix_values(role_specs, language)
 
     write_text(company_dir / "00-公司总览.md", render_template("company-overview-template.md", common_values))
     write_text(company_dir / "01-产品定位.md", render_template("product-positioning-template.md", common_values))
@@ -1206,17 +1209,17 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     round_values = dict(common_values)
     round_values.update(
         {
-            "ROUND_ID": current_round.get("round_id", "未启动"),
+            "ROUND_ID": current_round.get("round_id", pick_text(language, "未启动", "Not Started")),
             "ROUND_NAME": round_name,
-            "ROUND_STATUS": current_round.get("status", "待定义"),
+            "ROUND_STATUS": round_status_label(current_round.get("status_id", "undefined"), language),
             "ROUND_OWNER": round_owner,
-            "ROUND_GOAL": current_round.get("goal", "待定义"),
-            "ROUND_ARTIFACT": current_round.get("artifact", "待定义"),
-            "ROUND_BLOCKER": current_round.get("blocker", "无"),
+            "ROUND_GOAL": current_round.get("goal", pick_text(language, "待定义", "Undefined")),
+            "ROUND_ARTIFACT": current_round.get("artifact", pick_text(language, "待定义", "Undefined")),
+            "ROUND_BLOCKER": current_round.get("blocker", pick_text(language, "无", "None")),
             "ROUND_NEXT_ACTION": round_next_action,
-            "ROUND_SUCCESS_CRITERIA": current_round.get("success_criteria", "待定义"),
-            "ROUND_STARTED_AT": current_round.get("started_at", "未启动"),
-            "ROUND_UPDATED_AT": current_round.get("updated_at", "未启动"),
+            "ROUND_SUCCESS_CRITERIA": current_round.get("success_criteria", pick_text(language, "待定义", "Undefined")),
+            "ROUND_STARTED_AT": current_round.get("started_at", pick_text(language, "未启动", "Not Started")),
+            "ROUND_UPDATED_AT": current_round.get("updated_at", pick_text(language, "未启动", "Not Started")),
         }
     )
     write_text(company_dir / "04-当前回合.md", render_template("current-round-template.md", round_values))
@@ -1234,16 +1237,17 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
 
     write_text(company_dir / "角色智能体" / "角色清单.md", render_template("role-index-template.md", common_values))
     for role_id in active_roles:
-        spec = role_spec(role_id, role_specs)
+        spec = role_spec(role_id, role_specs, language)
         role_values = {
+            "LANGUAGE": language,
             "ROLE_NAME": spec["display_name"],
             "ROLE_MISSION": spec["mission"],
-            "ROLE_OWNS": format_list(spec["owns"]),
-            "ROLE_INPUTS": format_list(spec["inputs_required"]),
-            "ROLE_OUTPUTS": format_list(spec["outputs_required"]),
-            "ROLE_GUARDRAILS": format_list(spec["do_not_do"]),
-            "ROLE_APPROVALS": format_list(spec["approval_required_for"]),
-            "ROLE_HANDOFFS": format_list(role_display_names(spec["handoff_to"], role_specs)),
+            "ROLE_OWNS": format_list(spec["owns"], language),
+            "ROLE_INPUTS": format_list(spec["inputs_required"], language),
+            "ROLE_OUTPUTS": format_list(spec["outputs_required"], language),
+            "ROLE_GUARDRAILS": format_list(spec["do_not_do"], language),
+            "ROLE_APPROVALS": format_list(spec["approval_required_for"], language),
+            "ROLE_HANDOFFS": format_list(role_display_names(spec["handoff_to"], role_specs, language), language),
         }
         filename = spec.get("workspace_filename", spec["display_name"])
         write_text(company_dir / "角色智能体" / f"{filename}.md", render_template("role-brief-template.md", role_values))

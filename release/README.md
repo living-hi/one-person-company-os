@@ -36,12 +36,18 @@ I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 
 - 3 to 5 company name options
 - a suggested stage
 - a minimal org structure and first active roles
-- a Chinese workspace plan
+- a language-aware workspace plan
 - the first executable round
 - a three-layer navigation model
 - user-navigation and audit views
 - explicit state, save, and runtime explanations
 - numbered DOCX deliverables with software/non-software evidence and post-launch deployment materials
+
+## Language Behavior
+
+- Chinese prompt in -> Chinese runtime reports and Chinese generated materials out
+- English prompt in -> English runtime reports and English generated materials out
+- repository path conventions stay stable so automation and publishing stay reliable
 
 ## Why It Feels Like A Company OS
 

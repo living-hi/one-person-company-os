@@ -6,7 +6,7 @@ One Person Company OS
 
 ## Short Description
 
-面向 AI 一人公司的可导航、可落盘、可交付 company operating system
+A navigable, persistent, bilingual company operating system for AI-native solo founders
 
 ## Tagline Options
 
@@ -24,7 +24,7 @@ It starts by turning one product idea into a founder-reviewable company setup dr
 
 After founder confirmation, it keeps the company moving with:
 
-- Chinese-first workspace creation
+- language-aware runtime reports and generated materials
 - explicit architecture and operating model
 - a three-layer navigation bar with stage, round, and current step
 - dual output views for user navigation and auditability
@@ -45,7 +45,7 @@ The first serious run should produce:
 - 3 to 5 company name options
 - the suggested current stage
 - a minimal org structure and first active roles
-- a Chinese workspace structure
+- a language-aware workspace structure and artifact pack
 - the first executable round
 - explicit founder approval items
 - explicit save explanations and runtime explanations
@@ -55,13 +55,18 @@ The first serious run should produce:
 
 - `clawhub install one-person-company-os`
 - `我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并用三层导航条、用户导航版/审计版、保存解释和运行解释告诉我当前状态；我确认后再正式创建。`
+- `I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the three-layer navigation bar, user-navigation view, audit view, save explanation, and runtime explanation before creation.`
 - `帮我启动当前阶段的第一个推进回合。`
+- `Start the first active round for the current stage.`
 - `继续推进当前回合，告诉我现在最短路径怎么走。`
+- `Keep advancing the current round and tell me the shortest next path.`
 - `我卡住了，帮我进入校准回合。`
+- `I am blocked. Move me into a calibration round.`
 
 ## What Users Get
 
-- Chinese-first operating outputs
+- Chinese in -> Chinese runtime and generated materials out
+- English in -> English runtime and generated materials out
 - round-based execution instead of week-based management
 - explicit role ownership with a minimal starter set
 - one clear current stage, current round, blocker, and shortest next move
@@ -76,3 +81,5 @@ This skill drafts first and still requires explicit founder approval before laun
 ## Default Prompt
 
 我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先做 Step 1/5 到 Step 3/5，给我公司创建草案，并用三层导航条、用户导航版/审计版、保存解释和运行解释告诉我当前状态；我确认后再正式创建。
+
+I am building an AI-native solo company. Use one-person-company-os, do Step 1/5 to Step 3/5 first, give me the company setup draft, and show the three-layer navigation bar, user-navigation view, audit view, save explanation, and runtime explanation before creation.

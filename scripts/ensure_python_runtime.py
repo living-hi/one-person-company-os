@@ -23,6 +23,7 @@ from common import (
     python_compatibility_label,
     version_text,
 )
+from localization import normalize_language, pick_text
 
 def shell_join(parts: list[str]) -> str:
     return " ".join(shlex.quote(part) for part in parts)
@@ -58,6 +59,7 @@ def build_install_plan(
     system_name: Optional[str] = None,
     os_release: Optional[dict[str, str]] = None,
     available_commands: Optional[set[str]] = None,
+    language: str = "zh-CN",
 ) -> dict[str, Any]:
     system_name = (system_name or platform.system()).lower()
     os_release = os_release or parse_os_release()
@@ -68,10 +70,10 @@ def build_install_plan(
     plan = {
         "supported": False,
         "platform": system_name,
-        "installer": "无",
-        "title": "未找到自动安装方案",
+        "installer": pick_text(language, "无", "None"),
+        "title": pick_text(language, "未找到自动安装方案", "No automatic installation plan was found"),
         "commands": [],
-        "notes": ["当前环境未识别到可直接执行的 Python 安装方案。"],
+        "notes": [pick_text(language, "当前环境未识别到可直接执行的 Python 安装方案。", "The current environment does not expose a directly executable Python installation plan.")],
     }
 
     if system_name == "darwin":
@@ -81,13 +83,13 @@ def build_install_plan(
                     "supported": True,
                     "platform": "macOS",
                     "installer": "Homebrew",
-                    "title": "通过 Homebrew 安装兼容 Python",
+                    "title": pick_text(language, "通过 Homebrew 安装兼容 Python", "Install a compatible Python via Homebrew"),
                     "commands": [["brew", "install", "python@{}".format(target_version)]],
-                    "notes": ["安装完成后可用 `python{}` 重跑脚本。".format(target_version)],
+                    "notes": [pick_text(language, "安装完成后可用 `python{}` 重跑脚本。".format(target_version), "After installation, rerun the script with `python{}`.".format(target_version))],
                 }
             )
         else:
-            plan["notes"].append("缺少 Homebrew，需先安装 brew。")
+            plan["notes"].append(pick_text(language, "缺少 Homebrew，需先安装 brew。", "Homebrew is missing, so install `brew` first."))
         return plan
 
     if system_name == "windows":
@@ -98,9 +100,9 @@ def build_install_plan(
                     "supported": True,
                     "platform": "Windows",
                     "installer": "winget",
-                    "title": "通过 winget 安装兼容 Python",
+                    "title": pick_text(language, "通过 winget 安装兼容 Python", "Install a compatible Python via winget"),
                     "commands": [["winget", "install", "-e", "--id", winget_id]],
-                    "notes": ["安装完成后优先使用 `py -{}.{}` 或新安装的 python 可执行文件。".format(*target_version.split("."))],
+                    "notes": [pick_text(language, "安装完成后优先使用 `py -{}.{}` 或新安装的 python 可执行文件。".format(*target_version.split(".")), "After installation, prefer `py -{}.{}` or the newly installed python executable.".format(*target_version.split(".")))],
                 }
             )
         elif "choco" in available_commands:
@@ -109,13 +111,13 @@ def build_install_plan(
                     "supported": True,
                     "platform": "Windows",
                     "installer": "Chocolatey",
-                    "title": "通过 Chocolatey 安装兼容 Python",
+                    "title": pick_text(language, "通过 Chocolatey 安装兼容 Python", "Install a compatible Python via Chocolatey"),
                     "commands": [["choco", "install", python_package_name(target_version, "choco"), "-y"]],
-                    "notes": ["安装完成后重新打开终端，确保 PATH 生效。"],
+                    "notes": [pick_text(language, "安装完成后重新打开终端，确保 PATH 生效。", "Reopen the terminal after installation so PATH updates take effect.")],
                 }
             )
         else:
-            plan["notes"].append("缺少 winget 或 Chocolatey，需由 OpenClaw 智能体接管。")
+            plan["notes"].append(pick_text(language, "缺少 winget 或 Chocolatey，需由 OpenClaw 智能体接管。", "winget or Chocolatey is unavailable, so the OpenClaw agent should take over."))
         return plan
 
     if system_name == "linux":
@@ -127,12 +129,12 @@ def build_install_plan(
                     "supported": True,
                     "platform": os_release.get("PRETTY_NAME", "Debian/Ubuntu"),
                     "installer": "apt-get",
-                    "title": "通过 apt-get 安装兼容 Python",
+                    "title": pick_text(language, "通过 apt-get 安装兼容 Python", "Install a compatible Python via apt-get"),
                     "commands": [
                         ["sudo", "apt-get", "update"],
                         ["sudo", "apt-get", "install", "-y", package, "{}-venv".format(package)],
                     ],
-                    "notes": ["如果源里缺少该版本，可由 OpenClaw 智能体切回手动落盘。"],
+                    "notes": [pick_text(language, "如果源里缺少该版本，可由 OpenClaw 智能体切回手动落盘。", "If the package repository does not provide this version, the OpenClaw agent can fall back to manual persistence.")],
                 }
             )
             return plan
@@ -145,9 +147,9 @@ def build_install_plan(
                     "supported": True,
                     "platform": os_release.get("PRETTY_NAME", "Fedora/RHEL"),
                     "installer": installer,
-                    "title": "通过 {} 安装兼容 Python".format(installer),
+                    "title": pick_text(language, "通过 {} 安装兼容 Python".format(installer), "Install a compatible Python via {}".format(installer)),
                     "commands": [["sudo", installer, "install", "-y", package]],
-                    "notes": ["安装完成后让 OpenClaw 智能体重新探测解释器。"],
+                    "notes": [pick_text(language, "安装完成后让 OpenClaw 智能体重新探测解释器。", "After installation, ask the OpenClaw agent to rediscover interpreters.")],
                 }
             )
             return plan
@@ -158,9 +160,9 @@ def build_install_plan(
                     "supported": True,
                     "platform": os_release.get("PRETTY_NAME", "Alpine"),
                     "installer": "apk",
-                    "title": "通过 apk 安装兼容 Python",
+                    "title": pick_text(language, "通过 apk 安装兼容 Python", "Install a compatible Python via apk"),
                     "commands": [["sudo", "apk", "add", "python3", "py3-pip"]],
-                    "notes": ["Alpine 会安装系统默认 Python 3。"],
+                    "notes": [pick_text(language, "Alpine 会安装系统默认 Python 3。", "Alpine installs the system-default Python 3.")],
                 }
             )
             return plan
@@ -171,15 +173,15 @@ def build_install_plan(
                     "supported": True,
                     "platform": os_release.get("PRETTY_NAME", "Arch Linux"),
                     "installer": "pacman",
-                    "title": "通过 pacman 安装兼容 Python",
+                    "title": pick_text(language, "通过 pacman 安装兼容 Python", "Install a compatible Python via pacman"),
                     "commands": [["sudo", "pacman", "-Sy", "--noconfirm", "python"]],
-                    "notes": ["Arch 默认提供当前 Python 3。"],
+                    "notes": [pick_text(language, "Arch 默认提供当前 Python 3。", "Arch provides the current Python 3 by default.")],
                 }
             )
             return plan
 
         plan["platform"] = os_release.get("PRETTY_NAME", "Linux")
-        plan["notes"].append("缺少已支持的包管理器，需由 OpenClaw 智能体接管。")
+        plan["notes"].append(pick_text(language, "缺少已支持的包管理器，需由 OpenClaw 智能体接管。", "No supported package manager was found, so the OpenClaw agent should take over."))
         return plan
 
     return plan
@@ -204,10 +206,11 @@ def run_script_with_runtime(runtime_path: str, script_path: str, script_args: li
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="为 One Person Company OS 选择或安装兼容 Python。")
+    parser = argparse.ArgumentParser(description="Select or install a compatible Python runtime for One Person Company OS.")
     parser.add_argument("--target-version", default="3.11", help="希望安装的 Python 次版本，例如 3.11")
     parser.add_argument("--apply", action="store_true", help="执行安装或直接运行目标脚本")
     parser.add_argument("--run-script", help="可选，指定一个目标脚本；如果有兼容解释器则直接用它运行")
+    parser.add_argument("--language", default="auto", help="工作语言，如 zh-CN、en-US 或 auto")
     parser.add_argument("script_args", nargs=argparse.REMAINDER, help="传给目标脚本的参数，前面可加 --")
     return parser
 
@@ -215,92 +218,94 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    language = normalize_language(args.language, args.run_script, *args.script_args)
 
-    print_step(1, 5, "检测当前 Python")
+    print_step(1, 5, pick_text(language, "检测当前 Python", "Check Current Python"), language=language)
     current_version = tuple(sys.version_info[:3])
     current_supported = is_python_version_supported(current_version)
     runtimes = discover_python_runtimes()
     compatible_runtime = choose_compatible_runtime(runtimes)
 
-    print_step(2, 5, "生成安装方案")
+    print_step(2, 5, pick_text(language, "生成安装方案", "Build Install Plan"), language=language)
     install_plan = build_install_plan(
         target_version=args.target_version,
         available_commands=available_command_names(),
+        language=language,
     )
 
-    print_step(3, 5, "判定恢复路径")
+    print_step(3, 5, pick_text(language, "判定恢复路径", "Decide Recovery Path"), language=language)
     if current_supported:
-        resolution = "当前 Python 已兼容，可直接继续"
+        resolution = pick_text(language, "当前 Python 已兼容，可直接继续", "The current Python runtime is already compatible")
         chosen_runtime = sys.executable
     elif compatible_runtime:
-        resolution = "发现可切换的兼容解释器"
+        resolution = pick_text(language, "发现可切换的兼容解释器", "Found a compatible interpreter that can be switched to")
         chosen_runtime = compatible_runtime["executable"]
     elif install_plan["supported"]:
-        resolution = "需要先安装兼容 Python"
-        chosen_runtime = "安装完成后重新探测"
+        resolution = pick_text(language, "需要先安装兼容 Python", "A compatible Python runtime must be installed first")
+        chosen_runtime = pick_text(language, "安装完成后重新探测", "Re-detect after installation")
     else:
-        resolution = "无法自动安装，需由 OpenClaw 智能体直接接管"
-        chosen_runtime = "无"
+        resolution = pick_text(language, "无法自动安装，需由 OpenClaw 智能体直接接管", "Automatic installation is not available; the OpenClaw agent should take over")
+        chosen_runtime = pick_text(language, "无", "None")
 
     run_args = list(args.script_args)
     if run_args and run_args[0] == "--":
         run_args = run_args[1:]
 
-    print_step(4, 5, "执行恢复动作", status="执行中" if args.apply else "已规划")
+    print_step(4, 5, pick_text(language, "执行恢复动作", "Execute Recovery Action"), status=pick_text(language, "执行中", "Running") if args.apply else pick_text(language, "已规划", "Planned"), language=language)
     return_code = 0
-    action_summary = "未执行，仅输出计划"
+    action_summary = pick_text(language, "未执行，仅输出计划", "No action executed; showing the plan only")
     if args.apply:
         if current_supported and args.run_script:
             return_code = run_script_with_runtime(sys.executable, args.run_script, run_args)
-            action_summary = "已用当前兼容 Python 运行目标脚本"
+            action_summary = pick_text(language, "已用当前兼容 Python 运行目标脚本", "Ran the target script with the current compatible Python")
         elif compatible_runtime and args.run_script:
             return_code = run_script_with_runtime(compatible_runtime["executable"], args.run_script, run_args)
-            action_summary = "已用兼容 Python 运行目标脚本"
+            action_summary = pick_text(language, "已用兼容 Python 运行目标脚本", "Ran the target script with the compatible Python interpreter")
         elif install_plan["supported"]:
             execute_commands(install_plan["commands"])
-            action_summary = "已执行安装命令，请重新运行 preflight 或目标脚本"
+            action_summary = pick_text(language, "已执行安装命令，请重新运行 preflight 或目标脚本", "Executed the install commands; rerun preflight or the target script next")
         else:
-            action_summary = "当前环境无法自动安装，请让 OpenClaw 智能体接管"
+            action_summary = pick_text(language, "当前环境无法自动安装，请让 OpenClaw 智能体接管", "Automatic installation is not available in this environment; let the OpenClaw agent take over")
 
-    print_step(5, 5, "验证与回报")
+    print_step(5, 5, "验证与回报", language=language)
     print_block(
-        "Python 兼容状态",
+        pick_text(language, "Python 兼容状态", "Python Compatibility Status"),
         [
-            ("当前解释器", "{} ({})".format(sys.executable, python_compatibility_label(current_version))),
-            ("兼容目标", "Python {}+".format(version_text(MIN_SUPPORTED_PYTHON))),
-            ("当前是否兼容", "是" if current_supported else "否"),
+            (pick_text(language, "当前解释器", "Current Interpreter"), "{} ({})".format(sys.executable, python_compatibility_label(current_version))),
+            (pick_text(language, "兼容目标", "Compatibility Target"), "Python {}+".format(version_text(MIN_SUPPORTED_PYTHON))),
+            (pick_text(language, "当前是否兼容", "Currently Compatible"), pick_text(language, "是", "Yes") if current_supported else pick_text(language, "否", "No")),
             (
-                "可切换解释器",
-                "无"
+                pick_text(language, "可切换解释器", "Switchable Interpreter"),
+                pick_text(language, "无", "None")
                 if not compatible_runtime
                 else "{} ({})".format(
                     compatible_runtime["executable"],
                     python_compatibility_label(compatible_runtime["version"]),
                 ),
             ),
-            ("恢复结论", resolution),
-            ("恢复动作", build_agent_action(current_supported=current_supported, compatible_runtime=compatible_runtime, writable=True)),
+            (pick_text(language, "恢复结论", "Recovery Conclusion"), resolution),
+            (pick_text(language, "恢复动作", "Recovery Action"), build_agent_action(current_supported=current_supported, compatible_runtime=compatible_runtime, writable=True, language=language)),
         ],
     )
     print_block(
-        "安装方案",
+        pick_text(language, "安装方案", "Install Plan"),
         [
-            ("平台", install_plan["platform"]),
-            ("安装器", install_plan["installer"]),
-            ("是否支持自动安装", "是" if install_plan["supported"] else "否"),
-            ("推荐标题", install_plan["title"]),
-            ("命令", "；".join(shell_join(command) for command in install_plan["commands"]) if install_plan["commands"] else "无"),
-            ("备注", "；".join(install_plan["notes"]) if install_plan["notes"] else "无"),
+            (pick_text(language, "平台", "Platform"), install_plan["platform"]),
+            (pick_text(language, "安装器", "Installer"), install_plan["installer"]),
+            (pick_text(language, "是否支持自动安装", "Supports Automatic Install"), pick_text(language, "是", "Yes") if install_plan["supported"] else pick_text(language, "否", "No")),
+            (pick_text(language, "推荐标题", "Recommended Title"), install_plan["title"]),
+            (pick_text(language, "命令", "Commands"), ("；" if language == "zh-CN" else "; ").join(shell_join(command) for command in install_plan["commands"]) if install_plan["commands"] else pick_text(language, "无", "None")),
+            (pick_text(language, "备注", "Notes"), ("；" if language == "zh-CN" else "; ").join(install_plan["notes"]) if install_plan["notes"] else pick_text(language, "无", "None")),
         ],
     )
     print_block(
-        "执行结果",
+        pick_text(language, "执行结果", "Execution Result"),
         [
-            ("目标脚本", args.run_script or "无"),
-            ("选用解释器", chosen_runtime),
-            ("apply", "是" if args.apply else "否"),
-            ("结果", action_summary),
-            ("退出码", str(return_code)),
+            (pick_text(language, "目标脚本", "Target Script"), args.run_script or pick_text(language, "无", "None")),
+            (pick_text(language, "选用解释器", "Chosen Interpreter"), chosen_runtime),
+            ("apply", pick_text(language, "是", "Yes") if args.apply else pick_text(language, "否", "No")),
+            (pick_text(language, "结果", "Result"), action_summary),
+            (pick_text(language, "退出码", "Exit Code"), str(return_code)),
         ],
     )
     return return_code

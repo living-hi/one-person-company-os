@@ -4,7 +4,7 @@
 
 I rebuilt `one-person-company-os`.
 
-It is now a Chinese-first control system for AI-native solo companies:
+It is now a language-aware control system for AI-native solo companies:
 
 - create the company
 - start a round
@@ -24,7 +24,8 @@ Not a prompt bundle. Not a weekly review ritual.
 - 一路推进
 - 卡住时才校准
 
-中文用户默认全中文工作区和全中文日常用语。
+中文用户默认得到中文运行过程和中文资料。
+英文用户默认得到英文运行过程和英文资料。
 
 ## LinkedIn / Longer Post
 
@@ -37,3 +38,5 @@ Not a prompt bundle. Not a weekly review ritual.
 - stage transition when the bottleneck changes
 
 The result is much closer to how an AI-native solo company should actually run.
+
+It now serves both Chinese and English founders with language-matched runtime output and generated materials.

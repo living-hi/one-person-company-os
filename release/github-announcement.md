@@ -16,6 +16,7 @@ This release fixes that.
 
 This release includes:
 
+- language-aware runtime reports and generated materials for both Chinese and English founders
 - numbered `.docx` artifact outputs only
 - real output packs for software, non-software, deployment, and production materials
 - explicit stage-role and deliverable requirements

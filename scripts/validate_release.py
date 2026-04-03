@@ -365,6 +365,107 @@ def validate_workspace_scripts() -> None:
         assert_exists(company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx")
         assert_exists(next((company_dir / "记录" / "检查点").glob("*-检查点.md")))
 
+        english_preflight = run(
+            str(SCRIPTS_DIR / "preflight_check.py"),
+            "--mode",
+            "create-company",
+            "--language",
+            "en-US",
+        )
+        assert_contains(
+            english_preflight.stdout,
+            "User Navigation View:",
+            "Three-Layer Navigation:",
+            "Runtime Explanation:",
+            "Mode A: Script Execution",
+        )
+        print(english_preflight.stdout.strip())
+
+        english_init = run(
+            str(SCRIPTS_DIR / "init_company.py"),
+            "North Star Lab",
+            "--path",
+            str(workspace),
+            "--product-name",
+            "North Star Assistant",
+            "--stage",
+            "build",
+            "--language",
+            "en-US",
+        )
+        assert_contains(
+            english_init.stdout,
+            "User Navigation View:",
+            "Current Mode: Create Company",
+            "Current Stage: Build",
+            "Current Artifact: Company workspace skeleton",
+        )
+        print(english_init.stdout.strip())
+
+        english_company_dir = workspace / "North Star Lab"
+        assert_exists(english_company_dir / "00-公司总览.md")
+        assert_contains((english_company_dir / "00-公司总览.md").read_text(encoding="utf-8"), "Company Overview", "Current Focus")
+        assert_contains((english_company_dir / "角色智能体" / "工程负责人.md").read_text(encoding="utf-8"), "Engineering Lead", "Outputs")
+
+        english_artifact = run(
+            str(SCRIPTS_DIR / "generate_artifact_document.py"),
+            str(english_company_dir),
+            "--title",
+            "Homepage Hero Spec",
+            "--artifact-type",
+            "software",
+            "--category",
+            "software",
+            "--summary",
+            "Define the homepage value proposition and CTA.",
+        )
+        assert_contains(
+            english_artifact.stdout,
+            "Generate Formal Deliverable Document",
+            "Generated a numbered DOCX",
+            "Mode A: Script Execution",
+        )
+        english_generated_docx = english_company_dir / "产物" / "02-软件与代码" / "03-Homepage-Hero-Spec.docx"
+        assert_exists(english_generated_docx)
+        assert_contains(read_docx_text(english_generated_docx), "Homepage Hero Spec", "Evidence And Acceptance Paths")
+
+        english_brief = run(
+            str(SCRIPTS_DIR / "build_agent_brief.py"),
+            "--stage",
+            "build",
+            "--role",
+            "engineer-tech-lead",
+            "--language",
+            "en-US",
+            "--company-name",
+            "North Star Lab",
+            "--objective",
+            "Ship the homepage hero section",
+            "--current-round",
+            "Homepage Hero",
+            "--round-goal",
+            "Implement the homepage hero path",
+            "--current-bottleneck",
+            "Copy and CTA hierarchy are not aligned yet",
+            "--next-shortest-action",
+            "Draft the hero copy and CTA structure",
+        )
+        assert_contains(english_brief.stdout, "Role Brief:", "Engineering Lead", "Continuation Context")
+        assert_contains(english_brief.stderr, "Build Agent Brief", "Mode C: Chat-Only Progression")
+
+        english_runtime = run(
+            str(SCRIPTS_DIR / "ensure_python_runtime.py"),
+            "--language",
+            "en-US",
+        )
+        assert_contains(
+            english_runtime.stdout,
+            "Python Compatibility Status",
+            "Install Plan",
+            "Execution Result",
+        )
+        print(english_runtime.stdout.strip())
+
 
 def validate_svg_assets() -> None:
     for path in sorted(RELEASE_ASSETS_DIR.glob("*.svg")):

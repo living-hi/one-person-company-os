@@ -18,6 +18,7 @@ from common import (
     write_docx,
     write_record,
 )
+from localization import pick_text
 
 
 CATEGORY_DIRS = {
@@ -91,57 +92,63 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     company_dir = Path(args.company_dir).expanduser().resolve()
+    state = load_state(company_dir)
+    language = state.get("language", "zh-CN")
+    if args.artifact_type == "关键产物" and language == "en-US":
+        args.artifact_type = "Key Artifact"
+    if args.summary == "待补充本次产物摘要" and language == "en-US":
+        args.summary = "Add the summary for this artifact"
 
-    print_step(1, 5, "模式判定")
-    print_step(2, 5, "preflight 与保存策略检查")
-    runtime = preflight_status(company_dir)
+    print_step(1, 5, "模式判定", language=language)
+    print_step(2, 5, "preflight 与保存策略检查", language=language)
+    runtime = preflight_status(company_dir, language=language)
     if not runtime["runnable"]:
         parser.error(f"runtime not runnable: {runtime['runtime_error']}")
 
-    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status="已完成（装载当前状态与文档参数）")
-    state = load_state(company_dir)
+    print_step(3, 5, "草案 / 变更提议 / 当前状态装载", status=pick_text(language, "已完成（装载当前状态与文档参数）", "Completed (loaded the current state and document parameters)"), language=language)
     current_round = state["current_round"]
-    owner_role = args.owner_role or current_round.get("owner_role_name", "待指定")
-    objective = args.objective or current_round.get("goal", "待定义")
-    next_action = args.next_action or current_round.get("next_action", "待定义")
+    owner_role = args.owner_role or current_round.get("owner_role_name", pick_text(language, "待指定", "Unassigned"))
+    objective = args.objective or current_round.get("goal", pick_text(language, "待定义", "Undefined"))
+    next_action = args.next_action or current_round.get("next_action", pick_text(language, "待定义", "Undefined"))
     category = resolve_category(args.category, args.artifact_type, state)
 
     values = {
+        "LANGUAGE": language,
         "COMPANY_NAME": state["company_name"],
         "PRODUCT_NAME": state["product_name"],
-        "STAGE_LABEL": stage_label(state["stage_id"]),
-        "CURRENT_ROUND_NAME": current_round.get("name", "待定义"),
-        "ROUND_GOAL": current_round.get("goal", "待定义"),
-        "ROUND_STATUS": current_round.get("status", "待定义"),
+        "STAGE_LABEL": stage_label(state["stage_id"], language),
+        "CURRENT_ROUND_NAME": current_round.get("name", pick_text(language, "待定义", "Undefined")),
+        "ROUND_GOAL": current_round.get("goal", pick_text(language, "待定义", "Undefined")),
+        "ROUND_STATUS": current_round.get("status", pick_text(language, "待定义", "Undefined")),
         "ARTIFACT_TITLE": args.title,
         "ARTIFACT_TYPE": args.artifact_type,
         "ARTIFACT_OWNER": owner_role,
         "ARTIFACT_OBJECTIVE": objective,
         "ARTIFACT_SUMMARY": args.summary,
-        "ARTIFACT_SCOPE_IN": to_bullets(args.scope_in, "待补充本次纳入范围"),
-        "ARTIFACT_SCOPE_OUT": to_bullets(args.scope_out, "待补充本次不纳入范围"),
-        "ARTIFACT_DELIVERABLES": to_bullets(args.deliverable, "待补充交付物"),
-        "ARTIFACT_SOFTWARE_OUTPUTS": to_bullets(args.software_output, "如为软件产品，请补齐代码、脚本、接口、配置或自动化产出"),
+        "ARTIFACT_SCOPE_IN": to_bullets(args.scope_in, pick_text(language, "待补充本次纳入范围", "Add the in-scope items for this run")),
+        "ARTIFACT_SCOPE_OUT": to_bullets(args.scope_out, pick_text(language, "待补充本次不纳入范围", "Add the out-of-scope items for this run")),
+        "ARTIFACT_DELIVERABLES": to_bullets(args.deliverable, pick_text(language, "待补充交付物", "Add the deliverables")),
+        "ARTIFACT_SOFTWARE_OUTPUTS": to_bullets(args.software_output, pick_text(language, "如为软件产品，请补齐代码、脚本、接口、配置或自动化产出", "For software work, add code, scripts, interfaces, configuration, or automation outputs")),
         "ARTIFACT_NON_SOFTWARE_OUTPUTS": to_bullets(
             args.non_software_output,
-            "如为非软件产品，请补齐方案、培训材料、研究成果、销售材料或执行清单",
+            pick_text(language, "如为非软件产品，请补齐方案、培训材料、研究成果、销售材料或执行清单", "For non-software work, add plans, training materials, research output, sales collateral, or execution checklists"),
         ),
-        "ARTIFACT_EVIDENCE": to_bullets(args.evidence, "待补充文件路径、仓库地址、演示链接或其他验收证据"),
+        "ARTIFACT_EVIDENCE": to_bullets(args.evidence, pick_text(language, "待补充文件路径、仓库地址、演示链接或其他验收证据", "Add file paths, repository links, demo links, or other acceptance evidence")),
         "ARTIFACT_DEPLOYMENT_ITEMS": to_bullets(
             args.deployment_item,
-            "如已进入上线/运营，请补齐部署目标、发布窗口、回滚方案与配置变更",
+            pick_text(language, "如已进入上线/运营，请补齐部署目标、发布窗口、回滚方案与配置变更", "If this work is in launch or operate stage, add deployment targets, release windows, rollback plans, and configuration changes"),
         ),
         "ARTIFACT_PRODUCTION_ITEMS": to_bullets(
             args.production_item,
-            "如已进入上线/运营，请补齐监控、告警、值守、事故响应和生产观察项",
+            pick_text(language, "如已进入上线/运营，请补齐监控、告警、值守、事故响应和生产观察项", "If this work is in launch or operate stage, add monitoring, alerting, on-call, incident response, and production checks"),
         ),
-        "ARTIFACT_CHANGES": to_bullets(args.change, "待补充本次变化"),
-        "ARTIFACT_DECISIONS": to_bullets(args.decision, "待补充关键决策"),
-        "ARTIFACT_RISKS": to_bullets(args.risk, "待补充风险与待确认事项"),
+        "ARTIFACT_CHANGES": to_bullets(args.change, pick_text(language, "待补充本次变化", "Add the changes in this run")),
+        "ARTIFACT_DECISIONS": to_bullets(args.decision, pick_text(language, "待补充关键决策", "Add the key decisions")),
+        "ARTIFACT_RISKS": to_bullets(args.risk, pick_text(language, "待补充风险与待确认事项", "Add risks and pending confirmations")),
         "ARTIFACT_NEXT_ACTION": next_action,
     }
 
-    print_step(4, 5, "执行与落盘")
+    print_step(4, 5, "执行与落盘", language=language)
     base_dir = Path(args.output_dir).expanduser().resolve() if args.output_dir else company_dir
     output_dir = base_dir / CATEGORY_DIRS[category]
     filename = numbered_name(next_numbered_index(output_dir), args.title, ".docx")
@@ -152,47 +159,48 @@ def main() -> int:
     record = write_record(
         company_dir,
         "推进日志",
-        "文档产物",
-        f"生成正式交付文档 {args.title}",
+        pick_text(language, "文档产物", "artifact-document"),
+        pick_text(language, f"生成正式交付文档 {args.title}", f"Generated formal deliverable document {args.title}"),
         [
-            f"- 产物标题: {args.title}",
-            f"- 产物类型: {args.artifact_type}",
-            f"- 输出分类: {category}",
-            f"- 当前阶段: {stage_label(state['stage_id'])}",
-            f"- 当前回合: {current_round.get('name', '待定义')}",
-            f"- 负责人: {owner_role}",
-            f"- 实际文件: {output_path.name}",
-            f"- 下一步最短动作: {next_action}",
+            pick_text(language, f"- 产物标题: {args.title}", f"- Artifact Title: {args.title}"),
+            pick_text(language, f"- 产物类型: {args.artifact_type}", f"- Artifact Type: {args.artifact_type}"),
+            pick_text(language, f"- 输出分类: {category}", f"- Output Category: {category}"),
+            pick_text(language, f"- 当前阶段: {stage_label(state['stage_id'], language)}", f"- Current Stage: {stage_label(state['stage_id'], language)}"),
+            pick_text(language, f"- 当前回合: {current_round.get('name', pick_text(language, '待定义', 'Undefined'))}", f"- Current Round: {current_round.get('name', pick_text(language, '待定义', 'Undefined'))}"),
+            pick_text(language, f"- 负责人: {owner_role}", f"- Owner: {owner_role}"),
+            pick_text(language, f"- 实际文件: {output_path.name}", f"- Output File: {output_path.name}"),
+            pick_text(language, f"- 下一步最短动作: {next_action}", f"- Shortest Next Action: {next_action}"),
         ],
     )
 
-    print_step(5, 5, "验证与回报")
+    print_step(5, 5, "验证与回报", language=language)
     emit_runtime_report(
-        mode="生成正式交付文档",
+        mode=pick_text(language, "生成正式交付文档", "Generate Formal Deliverable Document"),
         phase="验证与回报",
-        stage=stage_label(state["stage_id"]),
-        round_name=current_round.get("name", "待定义"),
+        stage=stage_label(state["stage_id"], language),
+        round_name=current_round.get("name", pick_text(language, "待定义", "Undefined")),
         role=owner_role,
         artifact=f"{args.title} DOCX",
         next_action=next_action,
-        needs_confirmation="否",
-        persistence_mode="模式 A：脚本执行",
+        needs_confirmation=pick_text(language, "否", "No"),
+        persistence_mode="script-execution",
         company_dir=company_dir,
         saved_paths=[output_path, record],
         work_scope=[
-            "为关键产物生成带序号的正式 DOCX 文件。",
-            "把软件产出、非软件产出、证据以及部署/生产资料写成可交付格式。",
-            "将文档真实落盘到工作区，不再只生成 Markdown 草稿。",
+            pick_text(language, "为关键产物生成带序号的正式 DOCX 文件。", "Generate a numbered formal DOCX file for the key artifact."),
+            pick_text(language, "把软件产出、非软件产出、证据以及部署/生产资料写成可交付格式。", "Write software outputs, non-software outputs, evidence, and deployment or production material into a deliverable format."),
+            pick_text(language, "将文档真实落盘到工作区，不再只生成 Markdown 草稿。", "Persist the document into the workspace instead of leaving it as a markdown-only draft."),
         ],
         non_scope=[
-            "不会在产物目录里再生成未编号的 Markdown 文件。",
-            "不会把缺少实际证据的内容说成已经完成交付。",
+            pick_text(language, "不会在产物目录里再生成未编号的 Markdown 文件。", "Do not generate extra unnumbered markdown files inside the artifact directory."),
+            pick_text(language, "不会把缺少实际证据的内容说成已经完成交付。", "Do not claim delivery is complete when actual evidence is missing."),
         ],
         changes=[
-            f"已生成编号化 DOCX：{output_path.name}。",
-            "已把实际软件/非软件产出、证据、部署与生产资料纳入正式结构。",
-            "已新增一条文档产物生成记录，便于审计和回看。",
+            pick_text(language, f"已生成编号化 DOCX：{output_path.name}。", f"Generated a numbered DOCX: {output_path.name}."),
+            pick_text(language, "已把实际软件/非软件产出、证据、部署与生产资料纳入正式结构。", "Included real software or non-software outputs, evidence, and deployment or production material in the formal structure."),
+            pick_text(language, "已新增一条文档产物生成记录，便于审计和回看。", "Added an artifact-generation record for auditing and later review."),
         ],
+        language=language,
     )
     return 0
 
