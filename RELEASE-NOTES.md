@@ -1,5 +1,22 @@
 # Release Notes
 
+## v0.6.2 - Founder Conversion Surfaces And Safer Parallel Persistence
+
+`v0.6.1` fixed stage drift and shallow support work surfaces.
+
+`v0.6.2` fixes the next founder-run gap: the system still did not create enough outward-facing conversion assets by default, and parallel business scripts could still overwrite unrelated state changes.
+
+This release adds and updates:
+
+- a generated landing-copy file for founder outreach
+- a generated interview sprint board for the first 10 target conversations
+- a generated trial intake questionnaire and a trial feedback capture sheet
+- a generated static HTML demo page with scope boundary, pricing, CTA flow, and visible intake fields
+- direct links from the dashboard and product-status views into those new sell-side and trial-side surfaces
+- baseline-aware merged state saves plus file locking so concurrent business scripts preserve unrelated sections instead of clobbering them
+
+The result is a system that is more useful in a real founder run: it now pushes closer to actual outreach and trial execution, and it is safer to keep advancing multiple business surfaces in the same session.
+
 ## v0.6.1 - Support-Surface Upgrade And Stage-Inference Fix
 
 `v0.6.0` rebuilt the product around a business loop.

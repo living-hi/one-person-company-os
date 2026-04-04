@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.6.2 - 2026-04-04
+
+- added founder-facing growth assets to the workspace renderer: `sales/04-对外落地页文案.md`, `sales/05-访谈冲刺看板.md`, `sales/06-试用申请问卷.md`, `delivery/04-试用反馈回收表.md`, and `product/demo/index.html`
+- upgraded `00-经营总盘.md` and `04-产品与上线状态.md` so they link directly to demo, landing, intake, and feedback surfaces instead of stopping at abstract status summaries
+- turned the generated demo into a real static HTML page with pricing, product boundary, trial path, and a visible intake form block
+- hardened state persistence in `scripts/common.py` with baseline-aware merge saves plus file locking so parallel script runs no longer clobber unrelated state sections
+- revalidated the package with `python3 scripts/validate_release.py`, `git diff --check`, and a concurrent founder-run regression on a temporary workspace
+
 ## v0.6.1 - 2026-04-04
 
 - fixed stage inference so updating cash no longer incorrectly promotes a build-stage company into operate or grow

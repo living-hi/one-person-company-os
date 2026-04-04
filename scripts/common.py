@@ -11,10 +11,13 @@ import subprocess
 import sys
 import zipfile
 from collections.abc import Iterable
+from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional, TextIO
 from xml.sax.saxutils import escape
+
+import fcntl
 
 from localization import (
     bool_audit_label as localized_bool_audit_label,
@@ -80,6 +83,7 @@ REQUIRED_SCRIPT_NAMES = (
     "validate_release.py",
 )
 MIN_SUPPORTED_PYTHON = (3, 7)
+STATE_BASE_KEY = "__opcos_base_state"
 PYTHON_CANDIDATE_COMMANDS = (
     "python3.13",
     "python3.12",
@@ -604,17 +608,65 @@ def ensure_workspace_dirs(company_dir: Path) -> None:
         "记录/校准记录",
         "记录/检查点",
         "自动化",
-    ]:
+        ]:
         (company_dir / relative).mkdir(parents=True, exist_ok=True)
+
+
+def _strip_internal_state(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {key: _strip_internal_state(item) for key, item in value.items() if key != STATE_BASE_KEY}
+    if isinstance(value, list):
+        return [_strip_internal_state(item) for item in value]
+    return value
+
+
+def _merge_state_changes(base: Any, updated: Any, latest: Any) -> Any:
+    if isinstance(base, dict) and isinstance(updated, dict) and isinstance(latest, dict):
+        merged = deepcopy(latest)
+        for key, value in updated.items():
+            if key == STATE_BASE_KEY:
+                continue
+            if key not in base:
+                merged[key] = deepcopy(value)
+                continue
+            base_value = base.get(key)
+            latest_value = latest.get(key)
+            if value == base_value:
+                merged[key] = deepcopy(latest_value)
+                continue
+            if isinstance(base_value, dict) and isinstance(value, dict) and isinstance(latest_value, dict):
+                merged[key] = _merge_state_changes(base_value, value, latest_value)
+            else:
+                merged[key] = deepcopy(value)
+        return merged
+    return deepcopy(updated if updated != base else latest)
 
 
 def save_state(company_dir: Path, state: dict[str, Any]) -> None:
     ensure_workspace_dirs(company_dir)
-    write_state_v3(company_dir, state)
+    path = state_path(company_dir)
+    lock_path = path.with_suffix(path.suffix + ".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    prepared = _strip_internal_state(state)
+    base_state = deepcopy(state.get(STATE_BASE_KEY)) if isinstance(state.get(STATE_BASE_KEY), dict) else None
+    with lock_path.open("w", encoding="utf-8") as lock_handle:
+        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
+        if base_state is not None and path.exists():
+            latest = read_state_any_version(company_dir)
+            merged_state = _merge_state_changes(base_state, prepared, latest)
+        else:
+            merged_state = prepared
+        saved_state = write_state_v3(company_dir, merged_state)
+        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
+    state.clear()
+    state.update(saved_state)
+    state[STATE_BASE_KEY] = deepcopy(saved_state)
 
 
 def load_state(company_dir: Path) -> dict[str, Any]:
-    return read_state_any_version(company_dir)
+    state = read_state_any_version(company_dir)
+    state[STATE_BASE_KEY] = deepcopy(_strip_internal_state(state))
+    return state
 
 
 def role_display_names(role_ids: list[str], role_specs: dict[str, dict[str, Any]], language: str = "zh-CN") -> list[str]:
@@ -1503,6 +1555,16 @@ def build_operating_dashboard(state: dict[str, Any], company_dir: Path) -> str:
         f"- [04-产品与上线状态.md]({display_path(company_dir / '04-产品与上线状态.md', company_dir)})",
         f"- [05-客户交付与回款.md]({display_path(company_dir / '05-客户交付与回款.md', company_dir)})",
         "",
+        pick_text(language, "## 关键支撑文档", "## Key Support Documents"),
+        "",
+        f"- [{pick_text(language, '对外落地页文案', 'Landing Page Copy')}]({display_path(company_dir / 'sales' / '04-对外落地页文案.md', company_dir)})",
+        f"- [{pick_text(language, '访谈冲刺看板', 'Interview Sprint Board')}]({display_path(company_dir / 'sales' / '05-访谈冲刺看板.md', company_dir)})",
+        f"- [{pick_text(language, '试用申请问卷', 'Trial Application Form')}]({display_path(company_dir / 'sales' / '06-试用申请问卷.md', company_dir)})",
+        f"- [{pick_text(language, '可演示静态页', 'Demo Page')}]({display_path(company_dir / 'product' / 'demo' / 'index.html', company_dir)})",
+        f"- [{pick_text(language, 'MVP 与上线清单', 'MVP And Launch Checklist')}]({display_path(company_dir / 'product' / '01-MVP与上线清单.md', company_dir)})",
+        f"- [{pick_text(language, '上线检查清单', 'Launch Checklist')}]({display_path(company_dir / 'ops' / '01-上线检查清单.md', company_dir)})",
+        f"- [{pick_text(language, '试用反馈回收表', 'Trial Feedback Capture')}]({display_path(company_dir / 'delivery' / '04-试用反馈回收表.md', company_dir)})",
+        "",
     ]
     return "\n".join(lines) + "\n"
 
@@ -1624,6 +1686,18 @@ def build_product_doc(state: dict[str, Any]) -> str:
         "",
         format_list(product.get("current_gap", []), language),
         "",
+        pick_text(language, "## 当前产品策略", "## Current Product Strategy"),
+        "",
+        pick_text(language, "- 先做训练型助手，不做临床建议型助手。", "- Ship as a training assistant first, not a clinical recommendation assistant."),
+        pick_text(language, "- 先做单人可交付的 demo + 试用闭环，不先做全自动平台。", "- Start with a founder-deliverable demo and trial loop before building a fully automated platform."),
+        pick_text(language, "- 先验证医生端 willingness to pay，再决定是否扩到护士、机构和雇主端。", "- Validate doctor-side willingness to pay before expanding to nurses, institutions, or employers."),
+        "",
+        pick_text(language, "## 现在直接打开", "## Open Next"),
+        "",
+        f"- [product/01-MVP与上线清单.md](product/01-MVP与上线清单.md)",
+        f"- [product/demo/index.html](product/demo/index.html)",
+        f"- [ops/01-上线检查清单.md](ops/01-上线检查清单.md)",
+        "",
     ]
     return "\n".join(lines) + "\n"
 
@@ -1715,6 +1789,357 @@ def build_sales_action_doc(state: dict[str, Any]) -> str:
         "",
     ]
     return "\n".join(lines) + "\n"
+
+
+def build_landing_copy_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    offer = state["offer"]
+    product = state["product"]
+    product_name = state["product_name"]
+    modules = product.get("core_capability", [])[:5]
+    pains = [
+        pick_text(language, "英语标准是硬门槛，但备考、临床沟通和岗位准备是割裂的。", "Language standards are a hard gate, but exam prep, clinical communication, and job readiness are fragmented."),
+        pick_text(language, "医生常常会做临床判断，却很难用当地语境把病情解释、handover 和病历表达说清楚。", "Doctors may know the medicine, but still struggle to explain cases, handovers, and notes in the local context."),
+        pick_text(language, "现有替代方案分散在老师、社群、模板和零碎咨询里，缺连续训练闭环。", "Current substitutes are scattered across tutors, groups, templates, and ad hoc consulting instead of one continuous training loop."),
+    ]
+    lines = [
+        pick_text(language, "# 对外落地页文案", "# Landing Page Copy"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## Hero", "## Hero"),
+        "",
+        f"- {pick_text(language, '标题', 'Headline')}: {product_name}：帮助中国医生更快完成赴澳执业前的语言、沟通与岗位准备",
+        f"- {pick_text(language, '副标题', 'Subheadline')}: {offer['promise']}",
+        f"- {pick_text(language, '主 CTA', 'Primary CTA')}: 预约 20 分钟演示",
+        f"- {pick_text(language, '次 CTA', 'Secondary CTA')}: 申请 14 天试用",
+        "",
+        pick_text(language, "## 适合谁", "## Who This Is For"),
+        "",
+        f"- {offer['target_customer']}",
+        pick_text(language, "- 已经确定澳洲是优先目标国家，希望在 6-18 个月内把准备推进到可投递、可面试、可试岗。", "- People who have already chosen Australia as their first target and want to become application-, interview-, and trial-shift-ready within 6-18 months."),
+        pick_text(language, "- 不想再靠零散备考、口语陪练和模板堆叠，而是希望把路径准备、临床英语和岗位训练连起来。", "- People who want one connected system for pathway prep, clinical English, and job readiness instead of fragmented prep tools."),
+        "",
+        pick_text(language, "## 你现在为什么会卡住", "## Why You Are Stuck Today"),
+        "",
+        format_list(pains, language),
+        "",
+        pick_text(language, "## 产品怎么帮你推进", "## How The Product Moves You Forward"),
+        "",
+        format_list(modules, language),
+        "",
+        pick_text(language, "## 14 天试用里你会拿到什么", "## What The 14-Day Trial Delivers"),
+        "",
+        pick_text(language, "- 第 1 天：创始人访谈，确认目标岗位、时间窗和当前最大弱项。", "- Day 1: founder interview to confirm target role, timeline, and biggest weakness."),
+        pick_text(language, "- 第 2-7 天：完成 1 次患者沟通训练、1 次面试模拟、1 次文书表达任务。", "- Days 2-7: complete one patient-communication drill, one interview simulation, and one documentation task."),
+        pick_text(language, "- 第 7 天：拿到中期反馈，知道最需要补的不是哪门考试，而是哪种真实执业表达能力。", "- Day 7: receive a midpoint review that highlights the real practice-expression gap, not just the exam gap."),
+        pick_text(language, "- 第 14 天：收到 readiness 复盘，决定继续月订阅、12 周冲刺营，还是暂停。", "- Day 14: receive a readiness recap and decide whether to continue with the monthly plan, the 12-week sprint, or pause."),
+        "",
+        pick_text(language, "## 定价", "## Pricing"),
+        "",
+        f"- {offer['pricing']}",
+        "",
+        pick_text(language, "## 边界说明", "## Product Boundary"),
+        "",
+        pick_text(language, "- 这不是诊断建议系统，也不替代医生的临床判断。", "- This is not a diagnostic advice system and does not replace a doctor's clinical judgment."),
+        pick_text(language, "- 首版定位在训练、准备、文书表达辅助和岗位适应。", "- The first version stays focused on training, preparation, documentation support, and job readiness."),
+        pick_text(language, "- 涉及真实患者诊疗时，最终医疗决策仍由持证医生和当地医疗机构承担。", "- For real patient care, final medical responsibility stays with the licensed clinician and local institution."),
+        "",
+        pick_text(language, "## 页尾 CTA", "## Footer CTA"),
+        "",
+        pick_text(language, "- 想确认你离赴澳执业 readiness 还差哪一步？先约一次 20 分钟演示。", "- Want to know which step still blocks your Australia-readiness? Start with a 20-minute demo."),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_interview_sprint_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    lines = [
+        pick_text(language, "# 访谈冲刺看板", "# Interview Sprint Board"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 本轮目标", "## Sprint Goal"),
+        "",
+        pick_text(language, "- 7 天内约到 10 个访谈对象，完成 5 次深访，拿到 3 个愿意看 demo 的对象。", "- Book 10 interview targets within 7 days, complete 5 interviews, and secure 3 people willing to watch the demo."),
+        "",
+        pick_text(language, "## 10 个目标席位", "## 10 Target Slots"),
+        "",
+        pick_text(language, "1. 澳洲路径中国医生 | 来源: 医生社群 / 同学网络 | 条件: 6-18 个月内推进出海 | 下一步: 发首轮邀约", "1. Australia-path Chinese doctor | Source: doctor groups / alumni network | Criteria: planning to move in 6-18 months | Next: send first outreach"),
+        pick_text(language, "2. 澳洲路径中国医生 | 来源: OET / IELTS 培训班学员群 | 条件: 已在备考 | 下一步: 找班主任转介绍 2 人", "2. Australia-path Chinese doctor | Source: OET / IELTS class groups | Criteria: actively preparing | Next: ask class manager for 2 referrals"),
+        pick_text(language, "3. 澳洲路径中国医生 | 来源: AMC / PESCI 备考圈 | 条件: 已开始岗位申请 | 下一步: 约 20 分钟访谈", "3. Australia-path Chinese doctor | Source: AMC / PESCI prep circles | Criteria: already applying for roles | Next: book a 20-minute interview"),
+        pick_text(language, "4. 澳洲路径中国医生 | 来源: 海外临床导师 / 校友 | 条件: 已在澳工作 1-3 年 | 下一步: 验证真实沟通场景", "4. Australia-path Chinese doctor | Source: overseas clinical mentors / alumni | Criteria: already working in Australia for 1-3 years | Next: validate real communication scenarios"),
+        pick_text(language, "5. 澳洲路径中国医生 | 来源: 小红书 / 公众号出海内容评论区 | 条件: 公开表达过出海意向 | 下一步: 私信邀约", "5. Australia-path Chinese doctor | Source: public outbound-work content comments | Criteria: explicitly stated interest in moving abroad | Next: direct-message outreach"),
+        pick_text(language, "6. OET 培训机构负责人 | 来源: 官网 / 公开课程页 | 条件: 有医生学员 | 下一步: 约渠道访谈", "6. OET training provider lead | Source: official site / public course page | Criteria: serves doctors | Next: channel interview"),
+        pick_text(language, "7. 医学英语陪练负责人 | 来源: 公开课程页 | 条件: 有 1 对 1 服务 | 下一步: 讨论联合试用", "7. Medical-English coaching lead | Source: public course page | Criteria: offers 1:1 training | Next: discuss joint trial"),
+        pick_text(language, "8. 澳洲医疗招聘顾问 | 来源: 招聘机构官网 | 条件: 负责 IMG 或 rural doctor 招聘 | 下一步: 验证岗位适应痛点", "8. Australia medical recruiter | Source: agency website | Criteria: handles IMG or rural doctor hiring | Next: validate readiness pain points"),
+        pick_text(language, "9. 出海服务机构负责人 | 来源: 公开服务页 | 条件: 提供留学 / 移民 / 求职整合服务 | 下一步: 判断是否存在 B2B2C 试点", "9. Overseas-career service lead | Source: public service page | Criteria: offers study / migration / job support | Next: test B2B2C pilot potential"),
+        pick_text(language, "10. 澳洲在岗中国医生 KOL | 来源: 公开内容账号 | 条件: 持续分享求职或执业经验 | 下一步: 邀请做产品顾问访谈", "10. Chinese doctor creator in Australia | Source: public content account | Criteria: regularly shares work-abroad experience | Next: invite to advisor interview"),
+        "",
+        pick_text(language, "## 每次访谈必须产出", "## Every Interview Must Produce"),
+        "",
+        pick_text(language, "- 当前目标国家和时间窗", "- target country and time horizon"),
+        pick_text(language, "- 最贵、最慢、最焦虑的一步", "- the most expensive, slowest, and most anxiety-inducing step"),
+        pick_text(language, "- 是否愿意看 demo", "- whether they will watch the demo"),
+        pick_text(language, "- 是否愿意试用或付订金", "- whether they will trial or place a deposit"),
+        "",
+        pick_text(language, "## 结束标准", "## Exit Criteria"),
+        "",
+        pick_text(language, "- 访谈原话足够支撑落地页改写和 demo 收口。", "- the exact user language is strong enough to rewrite the landing page and tighten the demo."),
+        pick_text(language, "- 至少 3 个对象愿意进入 demo 或试用。", "- at least 3 people agree to enter the demo or trial."),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_trial_application_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    product_name = state["product_name"]
+    lines = [
+        pick_text(language, "# 试用申请问卷", "# Trial Application Form"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 开场说明", "## Intro"),
+        "",
+        f"- {product_name} 当前只开放给明确计划赴澳执业、愿意在 14 天内完成训练任务的首批试用对象。",
+        pick_text(language, "- 目标不是广撒网，而是筛出 5-10 位最可能给出高质量反馈和转化信号的人。", "- The goal is not broad lead capture. It is to identify 5-10 early users who will generate strong feedback and conversion signals."),
+        "",
+        pick_text(language, "## 必填字段", "## Required Fields"),
+        "",
+        pick_text(language, "1. 姓名或称呼", "1. Name"),
+        pick_text(language, "2. 当前所在城市", "2. Current city"),
+        pick_text(language, "3. 当前执业年限与科室", "3. Years in practice and specialty"),
+        pick_text(language, "4. 目标国家与预计出海时间窗", "4. Target country and timing"),
+        pick_text(language, "5. 当前卡点排序：英语考试 / 患者沟通 / 面试 / 文书 / 注册材料", "5. Current blockers ranked: exam / patient communication / interview / documentation / registration"),
+        pick_text(language, "6. 最近 6 个月已经为此花了多少钱和多少时间", "6. Money and time spent in the last 6 months"),
+        pick_text(language, "7. 你最想先用试用解决哪个环节", "7. Which part you most want the trial to solve first"),
+        pick_text(language, "8. 是否愿意完成 14 天内 3 个固定训练任务", "8. Whether you will complete 3 fixed tasks in 14 days"),
+        pick_text(language, "9. 是否愿意接受 20 分钟访谈和第 14 天复盘", "9. Whether you accept a 20-minute interview and a day-14 review"),
+        pick_text(language, "10. 联系方式", "10. Contact info"),
+        "",
+        pick_text(language, "## 筛选规则", "## Screening Rules"),
+        "",
+        pick_text(language, "- 优先收：6-18 个月内会真实推进澳洲路径的人。", "- Prioritize applicants who will realistically pursue the Australia path within 6-18 months."),
+        pick_text(language, "- 优先收：已经为英语、岗位或材料投入过时间和金钱的人。", "- Prioritize people who have already invested real time or money in language, jobs, or documentation."),
+        pick_text(language, "- 延后收：只是泛泛咨询、没有时间窗、也不愿意完成训练任务的人。", "- Delay applicants who are only browsing, have no timeline, and will not complete the tasks."),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_trial_feedback_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    lines = [
+        pick_text(language, "# 试用反馈回收表", "# Trial Feedback Capture"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 第 7 天必须回收", "## Must Capture On Day 7"),
+        "",
+        pick_text(language, "- 哪个模块最有帮助：路径导航 / 沟通训练 / 面试模拟 / 文书表达", "- Which module helped most: pathway guidance / communication drill / interview simulation / documentation"),
+        pick_text(language, "- 你实际花了多少分钟使用", "- How many minutes you actually spent"),
+        pick_text(language, "- 你最不愿意继续用的是哪一步，为什么", "- Which step you are least willing to continue and why"),
+        pick_text(language, "- 如果今天结束试用，你会不会付费继续", "- If the trial ended today, would you pay to continue"),
+        "",
+        pick_text(language, "## 第 14 天必须回收", "## Must Capture On Day 14"),
+        "",
+        pick_text(language, "- readiness 哪一项最明显提升", "- Which readiness dimension improved the most"),
+        pick_text(language, "- 哪个环节仍然没有解决", "- Which part remains unsolved"),
+        pick_text(language, "- 你觉得合理的付费方式是月订阅、训练营还是按次陪跑", "- Which payment mode feels right: monthly, cohort sprint, or concierge support"),
+        pick_text(language, "- 你愿不愿意推荐给另一个正在准备赴澳的医生", "- Whether you would recommend it to another doctor preparing for Australia"),
+        "",
+        pick_text(language, "## 结果记录", "## Outcome Record"),
+        "",
+        pick_text(language, "- 是否转化为继续试用 / 月付 / 冲刺营 / 退出", "- Whether the user converted into continued trial / monthly / sprint / exit"),
+        pick_text(language, "- 如果退出，退出原因只写原话，不写自我解释", "- If they exit, record the exact reason in their words instead of your interpretation"),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_demo_html(state: dict[str, Any]) -> str:
+    language = state["language"]
+    product_name = escape(state["product_name"])
+    company_name = escape(state["company_name"])
+    offer = state["offer"]
+    product = state["product"]
+    promise = escape(offer["promise"])
+    target = escape(offer["target_customer"])
+    pricing = escape(offer["pricing"])
+    proof_items = "".join(f"<li>{escape(item)}</li>" for item in offer.get("proof", []))
+    capability_cards = "".join(
+        f"<article class=\"card\"><h3>模块 {index + 1}</h3><p>{escape(item)}</p></article>"
+        for index, item in enumerate(product.get("core_capability", [])[:5])
+    )
+    gap_items = "".join(f"<li>{escape(item)}</li>" for item in product.get("current_gap", [])[:5])
+    return f"""<!doctype html>
+<html lang="{escape('zh-CN' if language == 'zh-CN' else 'en')}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{product_name} Demo</title>
+  <style>
+    :root {{
+      --bg: #f5efe4;
+      --ink: #17211d;
+      --muted: #51605a;
+      --accent: #c95f35;
+      --panel: #fffaf2;
+      --line: #d9ccb9;
+      --ok: #2f7d4d;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0;
+      font-family: "Noto Sans SC", "PingFang SC", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(201,95,53,.12), transparent 28%),
+        linear-gradient(180deg, #f8f3ea 0%, #efe5d4 100%);
+    }}
+    .shell {{ max-width: 1120px; margin: 0 auto; padding: 40px 20px 72px; }}
+    .hero {{
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 24px;
+      align-items: stretch;
+    }}
+    .panel {{
+      background: rgba(255,250,242,.92);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(40,31,20,.08);
+    }}
+    h1, h2, h3 {{ font-family: "Sora", "Avenir Next", sans-serif; margin: 0 0 12px; }}
+    h1 {{ font-size: clamp(32px, 6vw, 62px); line-height: 1.02; letter-spacing: -.04em; }}
+    h2 {{ font-size: 28px; }}
+    p {{ line-height: 1.65; color: var(--muted); }}
+    .eyebrow {{
+      display: inline-block; padding: 6px 12px; border-radius: 999px;
+      background: rgba(201,95,53,.12); color: var(--accent); font-size: 13px; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
+    }}
+    .cta-row {{ display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }}
+    .btn {{
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 18px; border-radius: 999px; text-decoration: none; font-weight: 700;
+      border: 1px solid var(--ink); color: var(--ink);
+    }}
+    .btn.primary {{ background: var(--ink); color: #fffdf7; border-color: var(--ink); }}
+    .metrics {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }}
+    .metric {{ background: #f1e5d3; border-radius: 18px; padding: 16px; }}
+    .metric strong {{ display: block; font-size: 26px; }}
+    .grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }}
+    .card {{ background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 20px; }}
+    ul {{ margin: 0; padding-left: 20px; color: var(--muted); }}
+    li {{ margin: 0 0 10px; line-height: 1.6; }}
+    .steps {{ counter-reset: step; display: grid; gap: 14px; }}
+    .step {{ position: relative; padding: 18px 18px 18px 64px; }}
+    .step::before {{
+      counter-increment: step; content: counter(step);
+      position: absolute; left: 18px; top: 16px; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--accent); color: white;
+      display: grid; place-items: center; font-weight: 700;
+    }}
+    .footer-note {{ font-size: 14px; color: var(--muted); margin-top: 24px; }}
+    .form {{ display: grid; gap: 12px; margin-top: 16px; }}
+    label {{ font-size: 14px; color: var(--ink); font-weight: 600; }}
+    input, textarea, select {{
+      width: 100%; margin-top: 6px; padding: 12px 14px; border-radius: 14px;
+      border: 1px solid var(--line); background: #fffdf8; color: var(--ink);
+      font: inherit;
+    }}
+    textarea {{ min-height: 110px; resize: vertical; }}
+    @media (max-width: 860px) {{
+      .hero, .grid {{ grid-template-columns: 1fr; }}
+      .metrics {{ grid-template-columns: 1fr; }}
+    }}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="panel">
+        <span class="eyebrow">Australia Readiness Demo</span>
+        <h1>{product_name}</h1>
+        <p>{promise}</p>
+        <p>面向人群：{target}</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#trial">预约 20 分钟演示</a>
+          <a class="btn" href="#pricing">申请 14 天试用</a>
+        </div>
+        <div class="metrics">
+          <div class="metric"><strong>12 周</strong><span>Readiness 冲刺周期</span></div>
+          <div class="metric"><strong>14 天</strong><span>首轮试用与反馈闭环</span></div>
+          <div class="metric"><strong>3 个模块</strong><span>沟通、面试、文书先跑通</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>这不是另一个备考资料包</h2>
+        <p>它把路径准备、患者沟通、PESCI / 面试模拟和临床文书表达放到同一个训练闭环里。先帮医生达到可解释、可面试、可试岗，而不是直接碰临床决策边界。</p>
+        <ul>
+          <li>首版不做诊断建议或治疗推荐</li>
+          <li>首版重点是语言、沟通、岗位适应和材料准备</li>
+          <li>适合作为赴澳执业前的能力补充层</li>
+        </ul>
+        <p class="footer-note">公司：{company_name}</p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>核心模块</h2>
+        <div class="grid">{capability_cards}</div>
+      </div>
+      <div class="card">
+        <h2>为什么现在先做这个版本</h2>
+        <ul>{proof_items}</ul>
+      </div>
+    </section>
+
+    <section class="grid" id="trial">
+      <div class="card">
+        <h2>14 天试用路径</h2>
+        <div class="steps">
+          <div class="card step"><h3>创始人访谈</h3><p>确认目标岗位、时间窗、语言与沟通弱项。</p></div>
+          <div class="card step"><h3>三项训练任务</h3><p>病史采集 / 患者解释、PESCI / 岗位面试、handover / note 改写。</p></div>
+          <div class="card step"><h3>中期反馈</h3><p>第 7 天输出薄弱点与训练优先级。</p></div>
+          <div class="card step"><h3>readiness 复盘</h3><p>第 14 天决定继续月订阅、冲刺营或机构试点。</p></div>
+        </div>
+      </div>
+      <div class="card" id="pricing">
+        <h2>定价与当前阻塞</h2>
+        <p><strong>定价：</strong>{pricing}</p>
+        <p><strong>当前还要补齐：</strong></p>
+        <ul>{gap_items}</ul>
+        <div class="cta-row">
+          <a class="btn primary" href="#trial">加入首批试用名单</a>
+        </div>
+        <form class="form">
+          <label>你的出海时间窗
+            <select>
+              <option>3-6 个月</option>
+              <option>6-12 个月</option>
+              <option>12-18 个月</option>
+              <option>18 个月以上</option>
+            </select>
+          </label>
+          <label>你最卡的一步
+            <input type="text" value="英语考试 / 患者沟通 / 面试 / 文书 / 注册材料">
+          </label>
+          <label>你希望 14 天试用先帮你解决什么
+            <textarea>我最想先解决患者沟通和岗位面试里的真实表达问题。</textarea>
+          </label>
+        </form>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+"""
 
 
 def build_launch_checklist_doc(state: dict[str, Any]) -> str:
@@ -2032,9 +2457,14 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
 
     write_text(company_dir / "records" / "01-当前经营快照.md", build_operating_dashboard(state, company_dir))
     write_text(company_dir / "sales" / "01-成交动作清单.md", build_sales_action_doc(state))
+    write_text(company_dir / "sales" / "04-对外落地页文案.md", build_landing_copy_doc(state))
+    write_text(company_dir / "sales" / "05-访谈冲刺看板.md", build_interview_sprint_doc(state))
+    write_text(company_dir / "sales" / "06-试用申请问卷.md", build_trial_application_doc(state))
     write_text(company_dir / "product" / "01-MVP与上线清单.md", build_mvp_checklist_doc(state))
+    write_text(company_dir / "product" / "demo" / "index.html", build_demo_html(state))
     write_text(company_dir / "delivery" / "01-客户交付追踪.md", build_delivery_doc(state))
     write_text(company_dir / "delivery" / "02-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))
+    write_text(company_dir / "delivery" / "04-试用反馈回收表.md", build_trial_feedback_doc(state))
     write_text(company_dir / "ops" / "01-上线检查清单.md", build_launch_checklist_doc(state))
     write_text(company_dir / "assets" / "01-资产沉淀清单.md", build_asset_doc(state))
     write_text(
