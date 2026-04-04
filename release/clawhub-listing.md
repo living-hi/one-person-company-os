@@ -6,96 +6,86 @@ One Person Company OS
 
 ## Short Description
 
-Turn one AI product idea into a fast-loop solo company with lightweight founder intake, visible deliverables, and persistent workspace
+Turn an AI product idea into a real one-person company loop across product, sales, delivery, cash, and assets
 
 ## Tagline Options
 
-- Validate demand, ship the MVP, save the state, recover the runtime.
-- Give AI-native solo founders a real company OS that persists work, advances execution, and recovers runtime.
-- 不只是给建议，而是把一人公司从草案推进到真实执行。
-- 给正在创立 AI 一人公司的创始人，一个真正能落盘、能推进、能恢复的 company OS。
+- From vague AI idea to sellable MVP, delivery loop, and cash recovery.
+- Build the product, move the pipeline, collect the cash, and keep the state on disk.
+- 不只是聊创业，而是把一人公司的经营闭环真正跑起来。
+- 帮你把产品做出来、卖出去、交付掉、收回款，并持续沉淀资产。
 
 ## Primary Pitch
 
-One Person Company OS is for founders actively building an AI-native solo company.
+One Person Company OS is a business-loop operating system for AI-native solo founders.
 
-It is designed as a state-driven operating layer, not as a generic advisory prompt.
+It does not treat the company as a pile of templates.
+It treats the company as a loop:
 
-It starts by asking for one founder idea in one sentence, or by offering 3 to 4 concrete directions when the founder is still undecided.
+- promise
+- buyer
+- product capability
+- delivery
+- cash
+- learning
+- asset
 
-Then it turns that lightweight input into a founder-reviewable company setup draft with a suggested bottleneck stage, minimal role structure, workspace plan, and the first executable round.
+The system now generates and maintains a real operating workspace centered on:
 
-The visible operating model is not a heavy startup process.
-It is an AI-era fast loop:
+- operating dashboard
+- offer and pricing
+- pipeline
+- product and launch state
+- delivery and receivables
+- cash health
+- assets and automation
+- risks and decisions
 
-- narrow the user and pain
-- validate demand quickly
-- ship the smallest useful MVP
-- launch narrowly
-- collect feedback and production reality
-- improve before scaling growth
-
-After founder confirmation, it keeps the company moving with:
-
-- language-aware runtime reports and generated materials
-- explicit architecture and operating model
-- a three-layer navigation bar with stage, round, and current step
-- dual output views for user navigation and auditability
-- explicit save explanations and runtime explanations
-- minimal role activation
-- current round control
-- trigger-based calibration
-- stage transition when the bottleneck changes
-- standard artifact templates and document-output rules
-- status-marked DOCX deliverables with software/non-software evidence and post-launch ops materials
-- an on-disk `12-AI时代快循环.md` guide so the loop stays visible inside the workspace
-- OpenClaw-first Python recovery when the local runtime is not compatible
+It also keeps runtime transparency, file persistence, Python recovery, and final-named DOCX deliverables when formal delivery evidence is needed.
 
 ## First-Run Promise
 
 The first serious run should produce:
 
-- a company setup draft
-- lightweight founder intake from one sentence
-- startup direction suggestions when the founder is still undecided
-- 3 to 5 company name options
-- the suggested bottleneck stage
-- a minimal org structure and first active roles
-- a language-aware workspace structure and artifact pack
-- the first executable round
-- explicit founder approval items
-- explicit save explanations and runtime explanations
-- standard document templates plus a visible pending/completed deliverable map
+- a clear sellable promise
+- the first buyer definition
+- the primary bottleneck
+- the primary arena to push next
+- the operating workspace
+- the shortest action for today
+- the single result for this week
+- a real state file on disk
 
 ## Quick Start Prompts
 
 - `clawhub install one-person-company-os`
-- `I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Default to the AI-era solo-company fast loop: validate demand quickly, ship a small MVP, launch narrowly, collect feedback, then iterate. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.`
-- `Start the first active round for the current stage.`
-- `Keep advancing the current round and tell me the shortest next path.`
-- `I am blocked. Move me into a calibration round.`
-- `我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先别让我填很多表，先主动问我一句创业想法；如果我没想好，就给我 3 到 4 个方向建议让我选。默认按 AI 时代的一人公司快循环来：快速验证需求，快速做 MVP，小范围上线，收反馈再迭代。然后做 Step 1/5 到 Step 3/5，给我公司创建草案，并告诉我当前内容有没有保存、我接下来该看哪个路径。`
-- `帮我启动当前阶段的第一个推进回合。`
-- `继续推进当前回合，告诉我现在最短路径怎么走。`
-- `我卡住了，帮我进入校准回合。`
+- `I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.`
+- `Update the focus, then push the product to a demoable MVP.`
+- `Advance the revenue pipeline and tell me the next real revenue action.`
+- `Advance delivery, receivables, and cash health.`
+- `Record this SOP as a reusable asset.`
+- `我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先帮我定义可卖承诺、第一批买家、以及把 MVP 推到可演示和可售卖的最短路径，然后直接创建工作区、告诉我当前主瓶颈，并把真实文件改出来。`
+- `先更新主焦点，再继续推进产品与上线。`
+- `继续推进成交管道，并告诉我下一条真实成交动作。`
+- `继续推进交付、回款和现金状态。`
+- `把这次流程沉淀成资产。`
 
 ## What Users Get
 
-- Chinese in -> Chinese runtime and generated materials out
-- English in -> English runtime and generated materials out
-- round-based execution instead of week-based management
-- explicit role ownership with a minimal starter set
-- one clear current stage, current round, blocker, and shortest next move
-- local scripts for preflight, workspace creation, round updates, checkpoint save, calibration, stage transitions, and Python runtime recovery
-- save transparency so users always know what is persisted versus chat-only
-- status-marked DOCX outputs that force real software or non-software deliverables plus deployment/production records after launch
+- business-loop state v3
+- operating dashboard plus direct work surfaces
+- product, sales, delivery, cash, and asset update scripts
+- final-named DOCX deliverables
+- runtime transparency and Python recovery
+- compatibility with the older stage and round path when needed
 
 ## Trust Boundary
 
-This skill drafts first and still requires explicit founder approval before launch, pricing changes, budget spend, legal claims, or customer-facing high-risk actions.
+The founder is still the decision-maker.
+The system can draft, update, persist, and tighten the loop, but pricing changes, budget spend, launch claims, legal statements, and high-risk customer actions still require explicit founder approval.
 
 ## Default Prompt
 
-I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.
 
-我正在创立一间 AI 一人公司，请帮我调用 one-person-company-os。先别让我填很多表，先主动问我一句创业想法；如果我没想好，就给我 3 到 4 个方向建议让我选。然后做 Step 1/5 到 Step 3/5，给我公司创建草案，并告诉我当前内容有没有保存、我接下来该看哪个路径。
+我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先帮我定义可卖承诺、第一批买家、以及把 MVP 推到可演示和可售卖的最短路径，然后直接创建工作区、告诉我当前主瓶颈，并把真实文件改出来。

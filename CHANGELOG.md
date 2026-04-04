@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.0 - 2026-04-04
+
+- rebuilt the product around a business-loop state model instead of a stage/round-first surface
+- added v3 state handling with shared objects for founder, focus, offer, pipeline, product, delivery, cash, assets, and risk while keeping legacy compatibility fields
+- changed the generated workspace to a new operating dashboard surface with direct files for offer, pipeline, product, delivery, cash, assets, risks, weekly focus, and daily action
+- added business-first scripts for focus, offer, pipeline, product, delivery, cash, asset, migration, and system validation
+- kept legacy round and stage scripts runnable by mapping them onto the new state model
+- updated validation, README, release docs, skill metadata, and agent metadata to present the project as a true one-person-company operating system instead of a round-driven document system
+
 ## v0.5.8 - 2026-04-04
 
 - removed status markers such as `[待生成]` and `[已生成]` from generated DOCX file names so artifacts now use their final deliverable names from the start

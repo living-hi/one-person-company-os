@@ -2,281 +2,100 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-**One Person Company OS is a fast-loop company operating system for AI-native solo founders.**
+**One Person Company OS is a business-loop operating system for AI-native solo founders.**
 
-It is not a business-plan generator, not a generic startup copilot, and not an endless advisory prompt.
-Its job is to give a solo founder a professional operating layer for:
+It is not a business-plan generator, not a round-only project tracker, and not a pile of startup templates.
+It is designed to help one founder move through the real loop:
 
-- company definition
-- role structure
-- current round execution
-- real workspace persistence
-- calibration and checkpointing
-- runtime recovery when the local environment is not ready
+`promise -> buyer -> product capability -> delivery -> cash -> learning -> asset`
 
-## One-Line Positioning
+## What It Does
 
-Turn one AI product idea into a runnable, persistent, state-aware solo company operating system.
+On a serious run, the system helps a solo founder:
 
-## Who This Is For
+- define a sellable promise
+- narrow the first paying customer
+- push an MVP toward something demoable, testable, launchable, and sellable
+- track opportunities, delivery, receivables, and cash
+- persist the operating state into a real workspace
+- keep shipping real deliverables, including numbered DOCX artifacts where formal delivery is needed
 
-- founders building an AI-native solo company
-- operators with a product direction but no clear company structure yet
-- people losing context across long chat threads and scattered notes
-- users who want a real operating model instead of chat-only startup advice
+## The Real Workspace Model
 
-## What Problem It Solves
+The generated workspace now centers on operating surfaces instead of stage-first guidance:
 
-The real problem is usually not lack of ideas.
-It is lack of system.
+- `00-经营总盘.md`
+- `01-创始人约束.md`
+- `02-价值承诺与报价.md`
+- `03-机会与成交管道.md`
+- `04-产品与上线状态.md`
+- `05-客户交付与回款.md`
+- `06-现金流与经营健康.md`
+- `07-资产与自动化.md`
+- `08-风险与关键决策.md`
+- `09-本周唯一主目标.md`
+- `10-今日最短动作.md`
+- `11-协作记忆.md`
+- `12-会话交接.md`
 
-Typical failure modes:
+Supporting directories:
 
-- too much output, unclear state
-- useful artifacts, unclear persistence
-- no single current round
-- no standard operating structure
-- scripts fail and the workflow collapses back into pure chat
+- `product/`
+- `sales/`
+- `delivery/`
+- `ops/`
+- `assets/`
+- `records/`
+- `automation/`
+- `产物/`
 
-One Person Company OS is designed to solve that category of problem while keeping the founder on an AI-era fast loop instead of a heavy startup process.
+Legacy stage and round materials are still supported for compatibility, but they are no longer the primary product surface.
 
-## What You Get
+## State Model
 
-On a serious first run, the system should produce:
+The state file stays at `自动化/当前状态.json`, but the core model is now v3 and business-loop driven:
 
-- lightweight founder intake from a single-sentence idea
-- 3 to 4 startup directions when the founder is still undecided
-- a company setup draft
-- a one-line product definition
-- 3 to 5 company name options
-- a suggested bottleneck stage
-- target user and core problem
-- a minimal org structure and starter role set
-- a language-aware workspace plan
-- the first round you can execute in 2 to 3 hours
-- explicit founder approval items
-- explicit save status and runtime status
+- `founder`
+- `focus`
+- `offer`
+- `pipeline`
+- `product`
+- `delivery`
+- `cash`
+- `assets`
+- `risk`
 
-After confirmation, it continues with:
+Legacy `stage_id` and `current_round` fields are still written so older scripts can keep running.
 
-- a persisted workspace
-- current-round files
-- role briefs
-- calibration records
-- checkpoint records
-- English content and runtime reports for English prompts
-- Chinese content and runtime reports for Chinese prompts
+## Default Interaction Contract
 
-## The AI-Era Default Flow
+Every serious run should answer:
 
-The right default flow for a solo AI company is not a heavy staged process.
+- what the primary goal is
+- what the primary bottleneck is
+- which arena is primary right now: `sales / product / delivery / cash / asset`
+- what the shortest action today is
+- what changed on disk
+- what to open next
 
-It is a fast loop:
+The fixed `Step 1/5 -> Step 5/5` execution flow, persistence reporting, and runtime recovery are still part of the contract.
 
-- narrow the user and pain quickly
-- validate demand with real evidence
-- ship the smallest useful MVP
-- launch narrowly
-- collect feedback, usage signals, and production reality
-- improve the product before scaling growth
-
-This repository now treats that fast loop as the visible operating model.
-The internal `Validation / Build / Launch / Operate / Grow` stages still exist, but only as lightweight labels for the current bottleneck.
-
-## System Architecture
-
-This project is not just a bundle of documents.
-It is a layered operating model:
-
-```text
-Founder
-  ↓
-Control Tower / Skill Protocol
-  ↓
-Round Engine
-  ↓
-Workspace Persistence Layer
-  ↓
-Runtime Recovery Layer
-```
-
-Layer responsibilities:
-
-1. `Founder`
-   - sets direction, approves high-risk actions, remains final decision-maker
-
-2. `Control Tower / Skill Protocol`
-   - handles mode selection, step progression, state reporting, and confirmation boundaries
-
-3. `Round Engine`
-   - handles stage, current round, blocker, artifact, and shortest next move
-
-4. `Workspace Persistence Layer`
-   - makes artifacts real by writing them into the workspace
-
-5. `Runtime Recovery Layer`
-   - handles preflight checks, Python compatibility, interpreter switching, install recovery, and OpenClaw takeover
-
-## Standard Operating Model
-
-Every real execution follows the same five-step state machine.
-
-This is an execution contract for each run, not a demand that founders think in heavyweight lifecycle theory.
-For founder-facing usage, the fast loop above remains the primary model.
-
-1. `Step 1/5 Decide which flow this run should enter [Mode selection]`
-2. `Step 2/5 Confirm environment, persistence conditions, and execution path [Preflight and persistence strategy check]`
-3. `Step 3/5 Load current state, then prepare the draft or proposed change [Draft / proposed change / current state load]`
-4. `Step 4/5 Execute and write the result into the workspace [Execution and persistence]`
-5. `Step 5/5 Verify the result, explain changes, and report back [Verification and reporting]`
-
-This is part of the product contract, not presentation fluff.
-
-## Default Output Contract
-
-Every major operation now reports two views.
-
-### 1. User Navigation View
-
-- three-layer navigation bar
-  - stage
-  - round
-  - current step
-- what this run will do / will not do
-- what changed this time
-- round dashboard
-- save explanation
-- runtime explanation
-
-### 2. Audit View
-
-- status
-- save status
-- runtime status
-
-This means users can read the system at a glance without losing the deeper technical audit trail.
-
-## Three-Layer Navigation And Round Dashboard
-
-The navigation model is now explicit:
-
-- `Stage`
-  - shows whether the current bottleneck is validation, MVP building, launch, operation, or growth
-- `Round`
-  - shows the single current round being advanced
-- `Current Step`
-  - shows whether this output is selecting mode, checking preflight, loading state, writing files, or reporting
-
-The round dashboard always surfaces:
-
-- current stage
-- current round
-- round status
-- current owner
-- current artifact
-- current blocker
-- shortest next action
-- completion criteria
-
-## Numbered DOCX Deliverables
-
-Key artifacts no longer exist as loose markdown drafts.
-
-The default contract is now:
-
-- every formal artifact inside the canonical `产物/` (`Artifacts`) directory is a numbered `.docx`
-- software work must leave real code, config, script, interface, or automation evidence
-- non-software work must leave real deliverables instead of chat-only summaries
-- launch and post-launch stages must include deployment and production materials
-
-For English users, the content and runtime output switch to English, but the on-disk canonical filenames stay stable for automation.
-
-After workspace initialization, the system creates three clear file groups.
-
-### Root Navigation Files
-
-- deliverable map: `07-交付物地图.md`
-- stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
-- current-stage delivery requirements: `09-当前阶段交付要求.md`
-- founder start card: `10-创始人启动卡.md`
-- deliverable directory overview: `11-交付目录总览.md`
-- AI fast-loop guide: `12-AI时代快循环.md`
-
-### Formal Deliverable Files
-
-- actual deliverables index: `产物/01-实际交付/01-实际产出总表.docx`
-- software and code register: `产物/02-软件与代码/01-代码与功能交付清单.docx`
-- non-software register: `产物/03-非软件与业务/01-非软件交付清单.docx`
-
-### Stage-Dependent Operational Files
-
-- when the stage requires it, the workspace also auto-adds the matching formal documents under `产物/04-部署与生产/` and `产物/05-上线与增长/`
-
-These documents are written with their final deliverable file names from the start. Document maturity is expressed inside the file content instead of in the file name.
-
-To generate artifact documents directly:
+## Local Commands
 
 ```bash
-python3 scripts/generate_artifact_document.py <company-workspace-dir> --title "Artifact Title" --category software
+python3 scripts/preflight_check.py --mode create-company
+python3 scripts/ensure_python_runtime.py
+python3 scripts/init_business.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
+python3 scripts/update_focus.py ./workspace/北辰实验室 --primary-goal "把 MVP 推到可演示并拿到第一批对话" --primary-arena product --today-action "先补 homepage hero 的价值表达和 CTA 路径"
+python3 scripts/advance_product.py ./workspace/北辰实验室 --state prototype --current-version "v0.1 hero"
+python3 scripts/advance_pipeline.py ./workspace/北辰实验室 --talking 3 --proposal 1 --next-revenue-action "把首版 demo 发给 3 位独立开发者并约反馈"
+python3 scripts/advance_delivery.py ./workspace/北辰实验室 --active-customers 1 --delivery-status "首位试用客户已进入 onboarding" --receivable 2999
+python3 scripts/update_cash.py ./workspace/北辰实验室 --cash-in 2999 --cash-out 500 --monthly-target 10000
+python3 scripts/record_asset.py ./workspace/北辰实验室 --kind templates --item "首位试用客户 onboarding 话术"
+python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "Homepage Hero Spec" --category software
+python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "end of current session"
+python3 scripts/validate_release.py
 ```
-
-## Execution Modes
-
-- `Mode A: Script execution`
-  - use scripts when the environment is runnable
-- `Mode B: Manual persistence`
-  - write markdown/json directly when scripts are unavailable but the workspace is writable
-- `Mode C: Chat-only progression`
-  - use chat only when the system should not or cannot write files
-
-Default downgrade path:
-
-- prefer `Mode A -> Mode B`
-- use `Mode C` only when writing is blocked or not yet approved
-
-## Workspace Standard
-
-```text
-Company/
-  core overview docs
-  role agents/
-  process guides/
-  artifacts/
-  records/
-  automation/
-```
-
-Canonical root files on disk remain:
-
-- company overview: `00-公司总览.md`
-- product positioning: `01-产品定位.md`
-- current stage: `02-当前阶段.md`
-- org structure: `03-组织架构.md`
-- current round: `04-当前回合.md`
-- execution rules: `05-推进规则.md`
-- trigger and calibration rules: `06-触发器与校准规则.md`
-- deliverable map: `07-交付物地图.md`
-- stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
-- current-stage delivery requirements: `09-当前阶段交付要求.md`
-- founder start card: `10-创始人启动卡.md`
-- deliverable directory overview: `11-交付目录总览.md`
-- AI fast-loop guide: `12-AI时代快循环.md`
-
-Core design rules:
-
-- one company has one current state
-- one stage has one dominant bottleneck
-- one moment has one current round
-- one round must have one artifact, one blocker, and one shortest next action
-- every meaningful reply should say where to review the latest output and how to tighten it further
-
-## Why It Is More Professional Than A Generic Prompt
-
-- a formal operating protocol instead of free-form output
-- explicit persistence boundaries instead of “said equals done”
-- runtime recovery instead of silent failure
-- round-based execution instead of vague weekly planning
-- founder approval boundaries suitable for real business workflows
 
 ## One-Line Install
 
@@ -287,80 +106,28 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Default to the AI-era solo-company fast loop: validate demand quickly, ship a small MVP, launch narrowly, collect feedback, then iterate. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.
 ```
 
-## Recommended Start Prompt
+## Language Behavior
 
-```text
-I am building an AI-native solo company. Use one-person-company-os.
-Do not make me fill a lot of fields first. Ask for the idea in one sentence, or give me 3 to 4 directions to choose from.
-Default to the AI-era solo-company fast loop: validate demand quickly, ship a small MVP, launch narrowly, collect feedback, then iterate.
-Then do Step 1/5 to Step 3/5, give me the company setup draft,
-and tell me whether anything is saved plus which path I should open next.
-```
-
-Common follow-up prompts:
-
-```text
-Start the first execution round for the current stage.
-```
-
-```text
-Continue the current round and tell me the shortest path forward.
-```
-
-```text
-I am blocked. Enter a calibration round.
-```
-
-```text
-Tell me whether I should transition to the next stage now.
-```
-
-## Python Compatibility And Recovery
-
-- compatibility target: `Python 3.7+`
-- the system runs preflight first
-- if the current interpreter is incompatible, it first tries an existing compatible runtime
-- if none exists locally, OpenClaw should try automatic installation
-- if installation is not practical, the agent should finish the task manually and persist the output
-
-Recovery entry points:
-
-```bash
-python3 scripts/ensure_python_runtime.py
-python3 scripts/ensure_python_runtime.py --apply
-python3 scripts/ensure_python_runtime.py --apply --run-script scripts/preflight_check.py -- --mode create-company
-```
-
-## Local Scripts
-
-- `scripts/preflight_check.py`
-- `scripts/ensure_python_runtime.py`
-- `scripts/init_company.py`
-- `scripts/build_agent_brief.py`
-- `scripts/generate_artifact_document.py`
-- `scripts/start_round.py`
-- `scripts/update_round.py`
-- `scripts/calibrate_round.py`
-- `scripts/checkpoint_save.py`
-- `scripts/transition_stage.py`
-- `scripts/validate_release.py`
+- Chinese prompt in -> Chinese runtime and materials out by default
+- English prompt in -> English runtime and materials out by default
+- canonical on-disk paths stay stable for automation
 
 ## Validation
 
+Run:
+
 ```bash
-python3 scripts/preflight_check.py --mode create-company
-python3 scripts/ensure_python_runtime.py
 python3 scripts/validate_release.py
 ```
 
-## Operating Principles
+It validates:
 
-- Chinese prompts produce Chinese runtime reports and Chinese generated materials by default
-- English prompts produce English runtime reports and English generated materials by default
-- the repository keeps a stable canonical workspace structure for automation compatibility, while user-facing content follows the active language
-- the founder remains the final approver for budget, launch, compliance, and customer-facing actions
-- the system advances in rounds, not weekly reporting rituals
-- the first round should be small enough to yield a clear result in 2 to 3 hours
+- runtime recovery logic
+- business-loop workspace generation
+- new business scripts
+- legacy compatibility path
+- DOCX artifact generation
+- release SVG assets

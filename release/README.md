@@ -1,103 +1,36 @@
 # One Person Company OS
 
-This is not a generic startup prompt. It is a **navigable, persistent, deliverable, fast-loop company operating system** for founders actively building an AI-native solo company.
+One Person Company OS turns a solo founder's vague AI product idea into a working business loop:
 
-It unifies four critical objects into one operating layer:
+- define the promise
+- move the MVP toward demoable, launchable, and sellable
+- track opportunities and delivery
+- recover cash and build reusable assets
 
-- company definition
-- role structure
-- current round
-- file and runtime state
-- artifact documents
-
-## One-Line Install
+Install:
 
 ```bash
 clawhub install one-person-company-os
 ```
 
-## One-Line Start
+Best start prompt:
 
 ```text
-I am building an AI-native solo company. Use one-person-company-os. Do not make me fill a big form first. Ask for the idea in one sentence, or give me 3 to 4 directions to pick from. Default to the AI-era solo-company fast loop: validate demand quickly, ship a small MVP, launch narrowly, collect feedback, then iterate. Then do Step 1/5 to Step 3/5, give me the company setup draft, and tell me whether anything is saved plus which path I should open next.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.
 ```
 
-## Best For Founders Who
+The generated workspace now opens with:
 
-- have an AI product direction but no clear company structure yet
-- keep losing state across long chat threads
-- want real persistence instead of advisory-only output
-- need one current round, one blocker, and one shortest next move
-- want OpenClaw to recover when local scripts or Python versions get in the way
+- `00-经营总盘.md`
+- `02-价值承诺与报价.md`
+- `03-机会与成交管道.md`
+- `04-产品与上线状态.md`
+- `05-客户交付与回款.md`
 
-## What You Get
+This release line supports:
 
-- a company setup draft
-- lightweight founder intake from a single sentence
-- startup direction suggestions when the founder is still undecided
-- 3 to 5 company name options
-- a suggested bottleneck stage
-- a minimal org structure and first active roles
-- a language-aware workspace plan
-- the first executable round
-- a three-layer navigation model
-- user-navigation and audit views
-- explicit state, save, and runtime explanations
-- final-named DOCX deliverables plus software/non-software evidence and post-launch deployment materials
-- `12-AI时代快循环.md` inside the workspace so the operating model is visible on disk
-
-## Language Behavior
-
-- Chinese prompt in -> Chinese runtime reports and Chinese generated materials out
-- English prompt in -> English runtime reports and English generated materials out
-- repository path conventions stay stable so automation and publishing stay reliable
-
-## Why It Feels Like A Company OS
-
-- fixed `Step 1/5 -> Step 5/5` execution flow
-- fixed `Stage / Round / Current Step` navigation
-- split user-navigation and audit reporting
-- explicit persistence instead of chat-only output
-- preflight checks plus Python recovery
-- fallback modes for execution, manual persistence, and chat-only operation
-- a visible deliverable map plus a deliverable directory overview
-- a visible AI fast-loop guide that keeps stages in the background as bottleneck labels
-
-## Architecture
-
-```text
-Founder
-  ↓
-Control Tower / Skill Protocol
-  ↓
-Round Engine
-  ↓
-Workspace Persistence Layer
-  ↓
-Runtime Recovery Layer
-```
-
-## AI-Era Default Flow
-
-- narrow one painful user problem
-- validate demand quickly
-- ship the smallest useful MVP
-- launch narrowly
-- improve from feedback and production reality
-- scale growth only after value and retention are real
-
-## Local Workflow
-
-```bash
-python3 scripts/preflight_check.py --mode create-company
-python3 scripts/ensure_python_runtime.py
-python3 scripts/init_company.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
-python3 scripts/start_round.py ./workspace/北辰实验室 --round-name "完成首页首屏" --goal "完成首页首屏结构与注册入口"
-python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "Homepage Hero Spec" --category software
-python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "end of current session"
-python3 scripts/validate_release.py
-```
-
-## Core Positioning
-
-Turn a founder into a fast-moving AI-native solo company operating system.
+- business-loop state v3
+- direct product build and launch coordination
+- pipeline, delivery, cash, and asset updates
+- legacy stage/round compatibility
+- numbered final-named DOCX deliverables

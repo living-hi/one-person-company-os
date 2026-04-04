@@ -37,6 +37,7 @@ from localization import (
     resolve_step_id,
     template_text,
 )
+from state_v3 import read_state_any_version, sync_legacy_fields, write_state_v3
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -46,19 +47,33 @@ ROLE_DIR = ROOT / "agents" / "roles"
 ORCHESTRATION_DIR = ROOT / "orchestration"
 STATE_PATH_PARTS = ("自动化", "当前状态.json")
 CORE_WORKSPACE_FILES = (
-    "00-公司总览.md",
-    "04-当前回合.md",
+    "00-经营总盘.md",
+    "02-价值承诺与报价.md",
+    "03-机会与成交管道.md",
+    "04-产品与上线状态.md",
+    "05-客户交付与回款.md",
     "自动化/当前状态.json",
 )
 ARTIFACT_ROOT = "产物"
 REQUIRED_SCRIPT_NAMES = (
     "init_company.py",
+    "init_business.py",
     "build_agent_brief.py",
     "generate_artifact_document.py",
     "start_round.py",
     "update_round.py",
     "calibrate_round.py",
     "transition_stage.py",
+    "update_focus.py",
+    "advance_offer.py",
+    "advance_pipeline.py",
+    "advance_product.py",
+    "advance_delivery.py",
+    "update_cash.py",
+    "record_asset.py",
+    "calibrate_business.py",
+    "migrate_workspace.py",
+    "validate_system.py",
     "preflight_check.py",
     "ensure_python_runtime.py",
     "checkpoint_save.py",
@@ -570,6 +585,13 @@ def workspace_core_paths(company_dir: Path) -> list[Path]:
 def ensure_workspace_dirs(company_dir: Path) -> None:
     for relative in [
         "",
+        "product",
+        "sales",
+        "delivery",
+        "ops",
+        "assets",
+        "records",
+        "automation",
         "角色智能体",
         "流程",
         "产物/01-实际交付",
@@ -588,18 +610,11 @@ def ensure_workspace_dirs(company_dir: Path) -> None:
 
 def save_state(company_dir: Path, state: dict[str, Any]) -> None:
     ensure_workspace_dirs(company_dir)
-    write_text(state_path(company_dir), json.dumps(state, ensure_ascii=False, indent=2) + "\n")
+    write_state_v3(company_dir, state)
 
 
 def load_state(company_dir: Path) -> dict[str, Any]:
-    state = load_json(state_path(company_dir))
-    state["language"] = normalize_language(
-        state.get("language"),
-        state.get("company_name"),
-        state.get("product_name"),
-        state.get("stage_label"),
-    )
-    return state
+    return read_state_any_version(company_dir)
 
 
 def role_display_names(role_ids: list[str], role_specs: dict[str, dict[str, Any]], language: str = "zh-CN") -> list[str]:
@@ -880,27 +895,30 @@ def build_round_dashboard(
         state_file = state_path(company_dir)
         if state_file.is_file():
             state = load_state(company_dir)
-            current_round = state.get("current_round", {})
+            focus = state.get("focus", {})
+            product = state.get("product", {})
+            pipeline = state.get("pipeline", {}).get("stage_summary", {})
+            delivery_state = state.get("delivery", {})
             return [
-                (pick_text(language, "当前阶段", "Current Stage"), state.get("stage_label", stage)),
-                (pick_text(language, "当前回合", "Current Round"), current_round.get("name", round_name)),
-                (pick_text(language, "回合状态", "Round Status"), round_status_label(current_round.get("status_id") or current_round.get("status", "undefined"), language)),
-                (pick_text(language, "当前负责角色", "Current Owner"), current_round.get("owner_role_name", role)),
-                (pick_text(language, "关键产物", "Key Artifact"), current_round.get("artifact", artifact)),
-                (pick_text(language, "当前阻塞", "Current Blocker"), current_round.get("blocker", pick_text(language, "无", "None"))),
-                (pick_text(language, "下一步最短动作", "Shortest Next Action"), current_round.get("next_action", next_action)),
-                (pick_text(language, "完成标准", "Success Criteria"), current_round.get("success_criteria", pick_text(language, "待定义", "Undefined"))),
+                (pick_text(language, "当前阶段标签", "Current Stage Label"), state.get("stage_label", stage)),
+                (pick_text(language, "当前主目标", "Current Goal"), focus.get("primary_goal", stage)),
+                (pick_text(language, "当前主战场", "Primary Arena"), primary_arena_label(focus.get("primary_arena", "sales"), language)),
+                (pick_text(language, "产品状态", "Product State"), product_state_label(product.get("state", "idea"), language)),
+                (pick_text(language, "成交概览", "Revenue Pipeline"), f"{pick_text(language, '对话', 'Talking')} {pipeline.get('talking', 0)} / {pick_text(language, '报价', 'Proposal')} {pipeline.get('proposal', 0)} / {pick_text(language, '成交', 'Won')} {pipeline.get('won', 0)}"),
+                (pick_text(language, "交付状态", "Delivery Status"), delivery_state.get("delivery_status", pick_text(language, "待确认", "Pending"))),
+                (pick_text(language, "当前瓶颈", "Current Bottleneck"), focus.get("primary_bottleneck", pick_text(language, "无", "None"))),
+                (pick_text(language, "下一步最短动作", "Shortest Next Action"), focus.get("today_action", next_action)),
             ]
 
     return [
-        (pick_text(language, "当前阶段", "Current Stage"), stage),
-        (pick_text(language, "当前回合", "Current Round"), round_name),
-        (pick_text(language, "回合状态", "Round Status"), pick_text(language, "待确认", "Pending")),
-        (pick_text(language, "当前负责角色", "Current Owner"), role),
-        (pick_text(language, "关键产物", "Key Artifact"), artifact),
-        (pick_text(language, "当前阻塞", "Current Blocker"), pick_text(language, "待确认", "Pending")),
+        (pick_text(language, "当前阶段标签", "Current Stage Label"), stage),
+        (pick_text(language, "当前主目标", "Current Goal"), round_name),
+        (pick_text(language, "当前主战场", "Primary Arena"), primary_arena_label("sales", language)),
+        (pick_text(language, "产品状态", "Product State"), product_state_label("idea", language)),
+        (pick_text(language, "成交概览", "Revenue Pipeline"), pick_text(language, "待确认", "Pending")),
+        (pick_text(language, "交付状态", "Delivery Status"), pick_text(language, "待确认", "Pending")),
+        (pick_text(language, "当前瓶颈", "Current Bottleneck"), pick_text(language, "待确认", "Pending")),
         (pick_text(language, "下一步最短动作", "Shortest Next Action"), next_action),
-        (pick_text(language, "完成标准", "Success Criteria"), pick_text(language, "待确认", "Pending")),
     ]
 
 
@@ -1416,6 +1434,357 @@ def build_ai_fast_loop(language: str) -> str:
     ) + "\n"
 
 
+def primary_arena_label(arena: str, language: str) -> str:
+    labels = {
+        "sales": pick_text(language, "卖前", "Sales"),
+        "product": pick_text(language, "产品", "Product"),
+        "delivery": pick_text(language, "交付", "Delivery"),
+        "cash": pick_text(language, "现金", "Cash"),
+        "asset": pick_text(language, "资产", "Asset"),
+    }
+    return labels.get(arena, arena)
+
+
+def product_state_label(state_id: str, language: str) -> str:
+    labels = {
+        "idea": pick_text(language, "只有想法", "Idea Only"),
+        "defined": pick_text(language, "已定义范围", "Scope Defined"),
+        "prototype": pick_text(language, "原型中", "In Prototype"),
+        "internal": pick_text(language, "内部可用", "Internally Usable"),
+        "external": pick_text(language, "外部可测", "Externally Testable"),
+        "launchable": pick_text(language, "可上线售卖", "Launchable"),
+        "live": pick_text(language, "已上线运行", "Live"),
+    }
+    return labels.get(state_id, state_id)
+
+
+def write_text_if_missing(path: Path, text: str) -> None:
+    if not path.exists():
+        write_text(path, text)
+
+
+def build_operating_dashboard(state: dict[str, Any], company_dir: Path) -> str:
+    language = state["language"]
+    focus = state["focus"]
+    offer = state["offer"]
+    pipeline = state["pipeline"]["stage_summary"]
+    product = state["product"]
+    delivery = state["delivery"]
+    cash = state["cash"]
+    lines = [
+        pick_text(language, "# 经营总盘", "# Operating Dashboard"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 当前结论", "## Current Read"),
+        "",
+        f"- {pick_text(language, '公司', 'Company')}: {state['company_name']}",
+        f"- {pick_text(language, '产品', 'Product')}: {state['product_name']}",
+        f"- {pick_text(language, '头号目标', 'Primary Goal')}: {focus['primary_goal']}",
+        f"- {pick_text(language, '当前主瓶颈', 'Primary Bottleneck')}: {focus['primary_bottleneck']}",
+        f"- {pick_text(language, '当前主战场', 'Primary Arena')}: {primary_arena_label(focus['primary_arena'], language)}",
+        f"- {pick_text(language, '今天最短动作', 'Shortest Action Today')}: {focus['today_action']}",
+        f"- {pick_text(language, '本周唯一结果', 'Single Weekly Outcome')}: {focus['week_outcome']}",
+        "",
+        pick_text(language, "## 闭环健康", "## Loop Health"),
+        "",
+        f"- {pick_text(language, '价值承诺', 'Offer Promise')}: {offer['promise']}",
+        f"- {pick_text(language, '目标客户', 'Target Customer')}: {offer['target_customer']}",
+        f"- {pick_text(language, '产品状态', 'Product State')}: {product_state_label(product['state'], language)} | {pick_text(language, '版本', 'Version')}: {product['current_version']}",
+        f"- {pick_text(language, '成交管道', 'Pipeline')}: {pick_text(language, '发现', 'Discovering')} {pipeline['discovering']} / {pick_text(language, '对话', 'Talking')} {pipeline['talking']} / {pick_text(language, '试用', 'Trial')} {pipeline['trial']} / {pick_text(language, '报价', 'Proposal')} {pipeline['proposal']} / {pick_text(language, '成交', 'Won')} {pipeline['won']}",
+        f"- {pick_text(language, '客户交付', 'Delivery')}: {delivery['delivery_status']}",
+        f"- {pick_text(language, '现金面', 'Cash')}: in {cash['cash_in']} | out {cash['cash_out']} | {pick_text(language, '待回款', 'Receivable')} {cash['receivable']}",
+        "",
+        pick_text(language, "## 现在先看哪里", "## Where To Look Next"),
+        "",
+        f"- [01-创始人约束.md]({display_path(company_dir / '01-创始人约束.md', company_dir)})",
+        f"- [02-价值承诺与报价.md]({display_path(company_dir / '02-价值承诺与报价.md', company_dir)})",
+        f"- [03-机会与成交管道.md]({display_path(company_dir / '03-机会与成交管道.md', company_dir)})",
+        f"- [04-产品与上线状态.md]({display_path(company_dir / '04-产品与上线状态.md', company_dir)})",
+        f"- [05-客户交付与回款.md]({display_path(company_dir / '05-客户交付与回款.md', company_dir)})",
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_founder_constraints_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    founder = state["founder"]
+    lines = [
+        pick_text(language, "# 创始人约束", "# Founder Constraints"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 经营方式", "## Founder Operating Mode"),
+        "",
+        f"- {pick_text(language, '当前模式', 'Current Mode')}: {founder['working_mode']}",
+        f"- {pick_text(language, '目标模式', 'Goal Mode')}: {founder['goal_mode']}",
+        f"- {pick_text(language, '时间预算', 'Time Budget')}: {founder['time_budget']}",
+        f"- {pick_text(language, '现金压力', 'Cash Pressure')}: {founder['cash_pressure']}",
+        "",
+        pick_text(language, "## 优势", "## Strengths"),
+        "",
+        format_list(founder.get("strengths", []), language),
+        "",
+        pick_text(language, "## 约束", "## Constraints"),
+        "",
+        format_list(founder.get("constraints", []), language),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_offer_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    offer = state["offer"]
+    lines = [
+        pick_text(language, "# 价值承诺与报价", "# Value Promise And Pricing"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 当前可卖承诺", "## Current Sellable Promise"),
+        "",
+        f"- {pick_text(language, '卖什么结果', 'Promised Result')}: {offer['promise']}",
+        f"- {pick_text(language, '卖给谁', 'Target Buyer')}: {offer['target_customer']}",
+        f"- {pick_text(language, '高频场景', 'High-Frequency Scenario')}: {offer['scenario']}",
+        f"- {pick_text(language, '定价方式', 'Pricing')}: {offer['pricing']}",
+        "",
+        pick_text(language, "## 为什么现在值得买", "## Why It Is Worth Buying Now"),
+        "",
+        format_list(offer.get("proof", []), language),
+        "",
+        pick_text(language, "## 当前缺口", "## Current Gap"),
+        "",
+        f"- {pick_text(language, '如果还卖不动，优先补价值表达、试用路径和报价，而不是盲加功能。', 'If this still does not sell, improve the value story, trial path, and pricing before adding more features.')}",
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_pipeline_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    pipeline = state["pipeline"]
+    summary = pipeline["stage_summary"]
+    opportunities = pipeline.get("opportunities", [])
+    lines = [
+        pick_text(language, "# 机会与成交管道", "# Opportunity And Revenue Pipeline"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 管道概览", "## Pipeline Summary"),
+        "",
+        f"- {pick_text(language, '发现', 'Discovering')}: {summary['discovering']}",
+        f"- {pick_text(language, '对话', 'Talking')}: {summary['talking']}",
+        f"- {pick_text(language, '试用', 'Trial')}: {summary['trial']}",
+        f"- {pick_text(language, '报价', 'Proposal')}: {summary['proposal']}",
+        f"- {pick_text(language, '成交', 'Won')}: {summary['won']}",
+        f"- {pick_text(language, '丢失', 'Lost')}: {summary['lost']}",
+        "",
+        f"{pick_text(language, '下一条真实成交动作', 'Next Real Revenue Action')}: {pipeline['next_revenue_action']}",
+        "",
+        pick_text(language, "## 当前机会", "## Current Opportunities"),
+        "",
+    ]
+    if opportunities:
+        for item in opportunities:
+            lines.extend(
+                [
+                    f"- {item.get('name', pick_text(language, '未命名机会', 'Untitled Opportunity'))} | "
+                    f"{pick_text(language, '阶段', 'Stage')}: {item.get('stage', pick_text(language, '待确认', 'TBD'))} | "
+                    f"{pick_text(language, '下一步', 'Next Step')}: {item.get('next_action', pick_text(language, '待补充', 'Add next step'))}",
+                ]
+            )
+    else:
+        lines.append(pick_text(language, "- 还没有录入具体机会。先补最早能推进收入的一条。", "- No concrete opportunity is recorded yet. Add the earliest revenue-moving one first."))
+    lines.extend(["", ""])
+    return "\n".join(lines)
+
+
+def build_product_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    product = state["product"]
+    lines = [
+        pick_text(language, "# 产品与上线状态", "# Product And Launch Status"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 当前状态", "## Current State"),
+        "",
+        f"- {pick_text(language, '产品状态', 'Product State')}: {product_state_label(product['state'], language)}",
+        f"- {pick_text(language, '当前版本', 'Current Version')}: {product['current_version']}",
+        f"- {pick_text(language, '上线阻塞', 'Launch Blocker')}: {product['launch_blocker']}",
+        f"- {pick_text(language, '仓库', 'Repository')}: {product['repository'] or pick_text(language, '待补充', 'Add repository path')}",
+        f"- {pick_text(language, '上线入口', 'Launch Entry')}: {product['launch_path'] or pick_text(language, '待补充', 'Add launch path')}",
+        "",
+        pick_text(language, "## 核心能力", "## Core Capability"),
+        "",
+        format_list(product.get("core_capability", []), language),
+        "",
+        pick_text(language, "## 当前缺口", "## Current Gap"),
+        "",
+        format_list(product.get("current_gap", []), language),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_delivery_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    delivery = state["delivery"]
+    cash = state["cash"]
+    lines = [
+        pick_text(language, "# 客户交付与回款", "# Delivery And Cash Collection"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        f"- {pick_text(language, '活跃客户数', 'Active Customers')}: {delivery['active_customers']}",
+        f"- {pick_text(language, '当前交付状态', 'Delivery Status')}: {delivery['delivery_status']}",
+        f"- {pick_text(language, '交付阻塞', 'Delivery Blocker')}: {delivery['blocking_issue']}",
+        f"- {pick_text(language, '下一步交付动作', 'Next Delivery Action')}: {delivery['next_delivery_action']}",
+        f"- {pick_text(language, '待回款', 'Receivable')}: {cash['receivable']}",
+        "",
+        pick_text(language, "## 原则", "## Principle"),
+        "",
+        pick_text(
+            language,
+            "- 一人公司不是卖完就结束。这里要持续看交付质量、回款速度、复购机会和口碑风险。",
+            "- A solo company does not end at the sale. Track delivery quality, collection speed, renewal opportunity, and reputation risk here.",
+        ),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_cash_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    cash = state["cash"]
+    lines = [
+        pick_text(language, "# 现金流与经营健康", "# Cashflow And Business Health"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        f"- cash in: {cash['cash_in']}",
+        f"- cash out: {cash['cash_out']}",
+        f"- {pick_text(language, '待回款', 'Receivable')}: {cash['receivable']}",
+        f"- {pick_text(language, '月目标收入', 'Monthly Target')}: {cash['monthly_target']}",
+        f"- runway: {cash['runway_note']}",
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_asset_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    assets = state["assets"]
+    lines = [
+        pick_text(language, "# 资产与自动化", "# Assets And Automation"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        "## SOP",
+        "",
+        format_list(assets.get("sops", []), language),
+        "",
+        pick_text(language, "## 模板", "## Templates"),
+        "",
+        format_list(assets.get("templates", []), language),
+        "",
+        pick_text(language, "## 案例", "## Cases"),
+        "",
+        format_list(assets.get("cases", []), language),
+        "",
+        pick_text(language, "## 自动化", "## Automations"),
+        "",
+        format_list(assets.get("automations", []), language),
+        "",
+        pick_text(language, "## 可复用代码", "## Reusable Code"),
+        "",
+        format_list(assets.get("reusable_code", []), language),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_risk_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    risk = state["risk"]
+    lines = [
+        pick_text(language, "# 风险与关键决策", "# Risks And Key Decisions"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 顶级风险", "## Top Risks"),
+        "",
+        format_list(risk.get("top_risks", []), language),
+        "",
+        pick_text(language, "## 待决策", "## Pending Decisions"),
+        "",
+        format_list(risk.get("pending_decisions", []), language),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_week_focus_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    focus = state["focus"]
+    lines = [
+        pick_text(language, "# 本周唯一主目标", "# Single Weekly Goal"),
+        "",
+        f"- {pick_text(language, '主目标', 'Primary Goal')}: {focus['primary_goal']}",
+        f"- {pick_text(language, '主战场', 'Primary Arena')}: {primary_arena_label(focus['primary_arena'], language)}",
+        f"- {pick_text(language, '本周唯一结果', 'Weekly Outcome')}: {focus['week_outcome']}",
+        f"- {pick_text(language, '为什么现在先做这个', 'Why This Comes First')}: {focus['primary_bottleneck']}",
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_today_action_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    focus = state["focus"]
+    lines = [
+        pick_text(language, "# 今日最短动作", "# Shortest Action Today"),
+        "",
+        f"- {pick_text(language, '今天只推进这一件事', 'Only Push This Today')}: {focus['today_action']}",
+        f"- {pick_text(language, '当前主瓶颈', 'Primary Bottleneck')}: {focus['primary_bottleneck']}",
+        f"- {pick_text(language, '完成标准', 'Definition Of Done')}: {pick_text(language, '今天结束前，当前主瓶颈至少向前推进一格。', 'By the end of today, the current bottleneck should move forward by at least one step.')}",
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_collaboration_memory_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    lines = [
+        pick_text(language, "# 协作记忆", "# Collaboration Memory"),
+        "",
+        pick_text(language, "- 每次用户纠偏、风格偏好或交付约束，都要及时补到这里。", "- Record every user correction, delivery preference, and collaboration constraint here."),
+        pick_text(language, "- 开工前先读这个文件，再读会话交接。", "- Read this file before starting, then read the session handoff."),
+        pick_text(language, "- 不要把文档规范当成最终文档输出。", "- Do not output document specifications instead of final documents."),
+        pick_text(language, "- 已完成的文件名不要加状态词。", "- Do not add status words to completed file names."),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_session_handoff_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    focus = state["focus"]
+    lines = [
+        pick_text(language, "# 会话交接", "# Session Handoff"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        f"- {pick_text(language, '当前主目标', 'Current Primary Goal')}: {focus['primary_goal']}",
+        f"- {pick_text(language, '当前主瓶颈', 'Current Primary Bottleneck')}: {focus['primary_bottleneck']}",
+        f"- {pick_text(language, '当前主战场', 'Current Primary Arena')}: {primary_arena_label(focus['primary_arena'], language)}",
+        f"- {pick_text(language, '下一步最短动作', 'Shortest Next Action')}: {focus['today_action']}",
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
 def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
     category_names = {
         "01-实际交付": pick_text(language, "实际交付", "Actual Deliverables"),
@@ -1474,20 +1843,39 @@ def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
 
 
 def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
-    role_specs = load_role_specs()
     ensure_workspace_dirs(company_dir)
-
+    role_specs = load_role_specs()
     language = normalize_language(state.get("language"), state.get("company_name"), state.get("product_name"))
     state["language"] = language
-    legacy_root_paths = {
-        company_dir / "07-文档产物规范.md": company_dir / "07-交付物地图.md",
-        company_dir / "11-交付状态总览.md": company_dir / "11-交付目录总览.md",
-    }
-    for legacy_path, current_path in legacy_root_paths.items():
-        if legacy_path.exists() and not current_path.exists():
-            legacy_path.rename(current_path)
-        elif legacy_path.exists() and current_path.exists():
-            legacy_path.unlink()
+    state = sync_legacy_fields(state)
+
+    legacy_root_dir = company_dir / "records" / "legacy-root"
+    legacy_root_dir.mkdir(parents=True, exist_ok=True)
+    for legacy_name in [
+        "00-公司总览.md",
+        "01-产品定位.md",
+        "02-当前阶段.md",
+        "03-组织架构.md",
+        "04-当前回合.md",
+        "05-推进规则.md",
+        "06-触发器与校准规则.md",
+        "07-文档产物规范.md",
+        "07-交付物地图.md",
+        "08-阶段角色与交付矩阵.md",
+        "09-当前阶段交付要求.md",
+        "10-创始人启动卡.md",
+        "11-交付状态总览.md",
+        "11-交付目录总览.md",
+        "12-AI时代快循环.md",
+    ]:
+        legacy_path = company_dir / legacy_name
+        if legacy_path.exists():
+            target = legacy_root_dir / legacy_name
+            if target.exists():
+                legacy_path.unlink()
+            else:
+                legacy_path.rename(target)
+
     artifact_dir = company_dir / ARTIFACT_ROOT
     if artifact_dir.is_dir():
         for path in sorted(artifact_dir.rglob("*.docx")):
@@ -1499,6 +1887,7 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
                 path.unlink()
             else:
                 path.rename(desired)
+
     stage_id = state["stage_id"]
     stage = stage_meta(stage_id, language)
     state["stage_label"] = stage["label"]
@@ -1510,12 +1899,10 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         if role_id not in active_roles
     ]
     current_round = state.get("current_round", {})
-
-    round_name = current_round.get("name", pick_text(language, "未启动", "Not Started"))
-    round_owner = current_round.get("owner_role_name", pick_text(language, "待指定", "Unassigned"))
-    round_next_action = current_round.get("next_action", pick_text(language, "待定义", "Undefined"))
     current_round["status_id"] = normalize_round_status(current_round.get("status_id") or current_round.get("status", "undefined"))
     current_round["status"] = round_status_label(current_round["status_id"], language)
+    round_name = current_round.get("name", pick_text(language, "未启动", "Not Started"))
+    round_next_action = current_round.get("next_action", pick_text(language, "待定义", "Undefined"))
 
     common_values = {
         "LANGUAGE": language,
@@ -1539,43 +1926,42 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         "AVAILABLE_ROLE_LIST": format_list(available_display, language),
         "ACTIVE_ROLE_INLINE": ("、".join(active_display) if language == "zh-CN" else ", ".join(active_display)) or pick_text(language, "无", "None"),
     }
-    matrix_values = build_matrix_values(role_specs, language)
 
-    write_text(company_dir / "00-公司总览.md", render_template("company-overview-template.md", common_values))
-    write_text(company_dir / "01-产品定位.md", render_template("product-positioning-template.md", common_values))
-    write_text(company_dir / "02-当前阶段.md", render_template("current-stage-template.md", common_values))
-    write_text(company_dir / "03-组织架构.md", render_template("organization-template.md", common_values))
+    write_text(company_dir / "00-经营总盘.md", build_operating_dashboard(state, company_dir))
+    write_text(company_dir / "01-创始人约束.md", build_founder_constraints_doc(state))
+    write_text(company_dir / "02-价值承诺与报价.md", build_offer_doc(state))
+    write_text(company_dir / "03-机会与成交管道.md", build_pipeline_doc(state))
+    write_text(company_dir / "04-产品与上线状态.md", build_product_doc(state))
+    write_text(company_dir / "05-客户交付与回款.md", build_delivery_doc(state))
+    write_text(company_dir / "06-现金流与经营健康.md", build_cash_doc(state))
+    write_text(company_dir / "07-资产与自动化.md", build_asset_doc(state))
+    write_text(company_dir / "08-风险与关键决策.md", build_risk_doc(state))
+    write_text(company_dir / "09-本周唯一主目标.md", build_week_focus_doc(state))
+    write_text(company_dir / "10-今日最短动作.md", build_today_action_doc(state))
+    write_text_if_missing(company_dir / "11-协作记忆.md", build_collaboration_memory_doc(state))
+    write_text_if_missing(company_dir / "12-会话交接.md", build_session_handoff_doc(state))
 
-    round_values = dict(common_values)
-    round_values.update(
-        {
-            "ROUND_ID": current_round.get("round_id", pick_text(language, "未启动", "Not Started")),
-            "ROUND_NAME": round_name,
-            "ROUND_STATUS": round_status_label(current_round.get("status_id", "undefined"), language),
-            "ROUND_OWNER": round_owner,
-            "ROUND_GOAL": current_round.get("goal", pick_text(language, "待定义", "Undefined")),
-            "ROUND_ARTIFACT": current_round.get("artifact", pick_text(language, "待定义", "Undefined")),
-            "ROUND_BLOCKER": current_round.get("blocker", pick_text(language, "无", "None")),
-            "ROUND_NEXT_ACTION": round_next_action,
-            "ROUND_SUCCESS_CRITERIA": current_round.get("success_criteria", pick_text(language, "待定义", "Undefined")),
-            "ROUND_STARTED_AT": current_round.get("started_at", pick_text(language, "未启动", "Not Started")),
-            "ROUND_UPDATED_AT": current_round.get("updated_at", pick_text(language, "未启动", "Not Started")),
-        }
-    )
-    write_text(company_dir / "04-当前回合.md", render_template("current-round-template.md", round_values))
-    write_text(company_dir / "05-推进规则.md", render_template("execution-rules-template.md", common_values))
-    write_text(company_dir / "06-触发器与校准规则.md", render_template("calibration-rules-template.md", common_values))
-    write_text(company_dir / "07-交付物地图.md", render_template("artifact-output-guide-template.md", common_values))
+    write_text(company_dir / "records" / "01-当前经营快照.md", build_operating_dashboard(state, company_dir))
+    write_text(company_dir / "sales" / "01-成交动作清单.md", build_pipeline_doc(state))
+    write_text(company_dir / "product" / "01-MVP与上线清单.md", build_product_doc(state))
+    write_text(company_dir / "delivery" / "01-客户交付追踪.md", build_delivery_doc(state))
+    write_text(company_dir / "delivery" / "02-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))
+    write_text(company_dir / "ops" / "01-上线检查清单.md", build_product_doc(state))
+    write_text(company_dir / "assets" / "01-资产沉淀清单.md", build_asset_doc(state))
     write_text(
-        company_dir / "08-阶段角色与交付矩阵.md",
-        render_template("stage-role-deliverable-matrix-template.md", {**common_values, **matrix_values}),
+        company_dir / "automation" / "01-状态说明.md",
+        "\n".join(
+            [
+                pick_text(language, "# 状态说明", "# State Notes"),
+                "",
+                f"- {pick_text(language, '主状态文件', 'Primary State File')}: {display_path(state_path(company_dir), company_dir)}",
+                f"- {pick_text(language, '当前主战场', 'Current Primary Arena')}: {primary_arena_label(state['focus']['primary_arena'], language)}",
+                f"- {pick_text(language, '今天最短动作', 'Shortest Action Today')}: {state['focus']['today_action']}",
+                "",
+            ]
+        )
+        + "\n",
     )
-    write_text(
-        company_dir / "09-当前阶段交付要求.md",
-        render_template("current-stage-deliverable-template.md", common_values),
-    )
-    write_text(company_dir / "10-创始人启动卡.md", build_founder_start_here(language))
-    write_text(company_dir / "12-AI时代快循环.md", build_ai_fast_loop(language))
 
     write_text(company_dir / "角色智能体" / "角色清单.md", render_template("role-index-template.md", common_values))
     for role_id in active_roles:
@@ -1613,5 +1999,3 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         }
         rendered = render_template(spec["template"], docx_values)
         write_docx(output_path, rendered, title=spec["title"])
-
-    write_text(company_dir / "11-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))

@@ -20,6 +20,7 @@ from common import (
     stage_label,
 )
 from localization import normalize_language, pick_text, round_status_label
+from state_v3 import default_state_v3
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -85,35 +86,34 @@ def main() -> int:
         language=language,
     )
     active_roles = default_role_ids_for_stage(stage_id)
-    state = {
-        "version": "2.1",
-        "language": language,
-        "company_name": args.company_name,
-        "product_name": args.product_name,
-        "stage_id": stage_id,
-        "stage_label": stage_label(stage_id, language),
-        "target_user": args.target_user,
-        "core_problem": args.core_problem,
-        "product_pitch": args.product_pitch,
-        "company_goal": args.company_goal,
-        "current_bottleneck": args.current_bottleneck,
-        "active_roles": active_roles,
-        "current_round": {
-            "round_id": pick_text(language, "未启动", "Not Started"),
-            "name": pick_text(language, "未启动", "Not Started"),
-            "goal": pick_text(language, "待定义", "Undefined"),
-            "status_id": "undefined",
-            "status": round_status_label("undefined", language),
-            "owner_role_id": active_roles[1] if len(active_roles) > 1 else active_roles[0],
-            "owner_role_name": pick_text(language, "总控台", "Control Tower"),
-            "artifact": pick_text(language, "待定义", "Undefined"),
-            "blocker": pick_text(language, "无", "None"),
-            "next_action": pick_text(language, "先确认首个推进回合", "Confirm the first active round"),
-            "success_criteria": pick_text(language, "首个回合被明确并进入已拆解", "The first round is clearly defined and broken down"),
-            "started_at": now_string(),
-            "updated_at": now_string(),
-        },
+    current_round = {
+        "round_id": pick_text(language, "未启动", "Not Started"),
+        "name": pick_text(language, "未启动", "Not Started"),
+        "goal": pick_text(language, "定义本周唯一结果", "Define the single weekly outcome"),
+        "status_id": "undefined",
+        "status": round_status_label("undefined", language),
+        "owner_role_id": active_roles[1] if len(active_roles) > 1 else active_roles[0],
+        "owner_role_name": pick_text(language, "总控台", "Control Tower"),
+        "artifact": pick_text(language, "经营总盘与主工作面", "Operating dashboard and main work surfaces"),
+        "blocker": args.current_bottleneck,
+        "next_action": pick_text(language, "先定义今天最短动作", "Define the shortest action for today"),
+        "success_criteria": pick_text(language, "主工作面可直接进入推进", "The main work surfaces are ready for execution"),
+        "started_at": now_string(),
+        "updated_at": now_string(),
     }
+    state = default_state_v3(
+        company_name=args.company_name,
+        product_name=args.product_name,
+        language=language,
+        target_user=args.target_user,
+        core_problem=args.core_problem,
+        product_pitch=args.product_pitch,
+        company_goal=args.company_goal,
+        current_bottleneck=args.current_bottleneck,
+        stage_id=stage_id,
+        active_roles=active_roles,
+        current_round=current_round,
+    )
 
     print_step(4, 5, "执行与落盘", language=language)
     save_state(company_dir, state)
@@ -126,26 +126,25 @@ def main() -> int:
         stage=stage_label(stage_id, language),
         round_name=state["current_round"]["name"],
         role=pick_text(language, "总控台", "Control Tower"),
-        artifact=pick_text(language, "公司工作区骨架", "Company workspace skeleton"),
-        next_action=pick_text(language, "确认首个推进回合或继续生成角色 brief", "Confirm the first round or continue generating role briefs"),
+        artifact=pick_text(language, "经营总盘", "Operating dashboard"),
+        next_action=pick_text(language, "先进入主工作面，继续收敛价值承诺、产品和成交路径", "Enter the main work surfaces and continue tightening the offer, product, and revenue path"),
         needs_confirmation=pick_text(language, "否", "No"),
         persistence_mode="script-execution",
         company_dir=company_dir,
         saved_paths=[
-            company_dir / "00-公司总览.md",
-            company_dir / "04-当前回合.md",
-            company_dir / "07-交付物地图.md",
-            company_dir / "08-阶段角色与交付矩阵.md",
-            company_dir / "10-创始人启动卡.md",
-            company_dir / "11-交付目录总览.md",
-            company_dir / "12-AI时代快循环.md",
+            company_dir / "00-经营总盘.md",
+            company_dir / "01-创始人约束.md",
+            company_dir / "02-价值承诺与报价.md",
+            company_dir / "03-机会与成交管道.md",
+            company_dir / "04-产品与上线状态.md",
+            company_dir / "05-客户交付与回款.md",
             company_dir / "角色智能体" / "角色清单.md",
             company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx",
             state_path(company_dir),
         ],
         work_scope=[
-            pick_text(language, "创建公司工作区骨架与当前状态文件。", "Create the company workspace skeleton and current-state file."),
-            pick_text(language, "生成当前阶段、当前回合、角色矩阵、AI 快循环说明和按最终命名落盘的正式 DOCX 文档。", "Generate the current stage, current round, role matrix, AI fast-loop guide, and formal DOCX documents using their final names."),
+            pick_text(language, "创建一人公司经营工作区与 v3 状态文件。", "Create the one-person-company operating workspace and the v3 state file."),
+            pick_text(language, "直接生成经营总盘、价值承诺、成交管道、产品状态、交付回款等主工作面。", "Generate the main work surfaces for the dashboard, offer, revenue pipeline, product status, and delivery plus cash."),
             pick_text(language, "明确这次是否已真实保存以及下一步怎么继续。", "Explain clearly what was persisted and what should happen next."),
         ],
         non_scope=[
@@ -153,9 +152,9 @@ def main() -> int:
             pick_text(language, "不会跳过确认边界去伪造不存在的角色执行结果。", "Do not fake role execution outcomes by skipping approval boundaries."),
         ],
         changes=[
-            pick_text(language, "已创建公司总览、当前回合、创始人启动卡、交付目录总览、AI 快循环说明和当前状态文件。", "Created the company overview, current round, founder start card, deliverable directory overview, AI fast-loop guide, and current-state file."),
-            pick_text(language, "已生成阶段角色与交付矩阵，以及按最终交付文件名落盘的正式 DOCX 文档集。", "Generated the stage-role deliverable matrix plus a formal DOCX document set persisted with final deliverable file names."),
-            pick_text(language, "当前公司已进入可继续启动回合、按快循环推进 MVP 和继续补齐正式交付的状态。", "The company workspace is now ready to start the next round, push the fast-loop MVP path, and continue filling formal deliverables."),
+            pick_text(language, "已创建经营总盘、价值承诺、成交管道、产品状态、交付回款和当前状态文件。", "Created the operating dashboard, value offer, revenue pipeline, product status, delivery plus cash view, and current-state file."),
+            pick_text(language, "已把工作区切到经营闭环模型，同时保留旧脚本兼容字段。", "Shifted the workspace to the business-loop model while keeping legacy script compatibility fields."),
+            pick_text(language, "当前公司已进入可继续推进产品、成交、交付和回款的状态。", "The company workspace is now ready to advance product, sales, delivery, and cash collection."),
         ],
         language=language,
     )

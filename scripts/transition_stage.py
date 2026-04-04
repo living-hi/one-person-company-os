@@ -87,11 +87,11 @@ def main() -> int:
     save_state(company_dir, state)
     render_workspace(company_dir, state)
     stage_saved_paths = [
-        company_dir / "02-当前阶段.md",
-        company_dir / "04-当前回合.md",
-        company_dir / "08-阶段角色与交付矩阵.md",
-        company_dir / "09-当前阶段交付要求.md",
-        company_dir / "11-交付目录总览.md",
+        company_dir / "00-经营总盘.md",
+        company_dir / "04-产品与上线状态.md",
+        company_dir / "05-客户交付与回款.md",
+        company_dir / "08-风险与关键决策.md",
+        company_dir / "09-本周唯一主目标.md",
     ]
     if new_stage_id == "launch":
         stage_saved_paths.extend(

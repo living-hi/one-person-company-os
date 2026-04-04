@@ -80,7 +80,8 @@ def main() -> int:
         company_dir=company_dir,
         saved_paths=[
             checkpoint,
-            company_dir / "04-当前回合.md",
+            company_dir / "00-经营总盘.md",
+            company_dir / "10-今日最短动作.md",
             state_path(company_dir),
         ],
         work_scope=[

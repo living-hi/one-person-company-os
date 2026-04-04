@@ -107,13 +107,7 @@ def validate_workspace_scripts() -> None:
         )
         print(ensure_runtime.stdout.strip())
 
-        preflight = run(
-            str(SCRIPTS_DIR / "preflight_check.py"),
-            "--mode",
-            "创建公司",
-            "--company-dir",
-            str(workspace / "北辰实验室"),
-        )
+        preflight = run(str(SCRIPTS_DIR / "preflight_check.py"), "--mode", "创建公司", "--company-dir", str(workspace / "北辰实验室"))
         assert_contains(
             preflight.stdout,
             "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]",
@@ -133,7 +127,7 @@ def validate_workspace_scripts() -> None:
         print(preflight.stdout.strip())
 
         init = run(
-            str(SCRIPTS_DIR / "init_company.py"),
+            str(SCRIPTS_DIR / "init_business.py"),
             "北辰实验室",
             "--path",
             str(workspace),
@@ -144,9 +138,9 @@ def validate_workspace_scripts() -> None:
             "--target-user",
             "独立开发者",
             "--core-problem",
-            "缺少持续推进的一人公司系统",
+            "还没有一个真正能持续推进产品和成交的一人公司系统",
             "--product-pitch",
-            "一个帮助独立开发者持续推进业务的总控台",
+            "一个帮助独立开发者把产品做出来并卖出去的一人公司控制系统",
         )
         assert_contains(
             init.stdout,
@@ -156,20 +150,29 @@ def validate_workspace_scripts() -> None:
             "保存解释:",
             "运行解释:",
             "文件名:",
-            "07-交付物地图.md",
+            "00-经营总盘.md",
         )
         print(init.stdout.strip())
 
         company_dir = workspace / "北辰实验室"
-        assert_exists(company_dir / "00-公司总览.md")
-        assert_exists(company_dir / "04-当前回合.md")
-        assert_exists(company_dir / "07-交付物地图.md")
-        assert_exists(company_dir / "08-阶段角色与交付矩阵.md")
-        assert_exists(company_dir / "09-当前阶段交付要求.md")
-        assert_exists(company_dir / "10-创始人启动卡.md")
-        assert_exists(company_dir / "11-交付目录总览.md")
-        assert_exists(company_dir / "12-AI时代快循环.md")
+        assert_exists(company_dir / "00-经营总盘.md")
+        assert_exists(company_dir / "01-创始人约束.md")
+        assert_exists(company_dir / "02-价值承诺与报价.md")
+        assert_exists(company_dir / "03-机会与成交管道.md")
+        assert_exists(company_dir / "04-产品与上线状态.md")
+        assert_exists(company_dir / "05-客户交付与回款.md")
+        assert_exists(company_dir / "06-现金流与经营健康.md")
+        assert_exists(company_dir / "07-资产与自动化.md")
+        assert_exists(company_dir / "08-风险与关键决策.md")
+        assert_exists(company_dir / "09-本周唯一主目标.md")
+        assert_exists(company_dir / "10-今日最短动作.md")
+        assert_exists(company_dir / "11-协作记忆.md")
+        assert_exists(company_dir / "12-会话交接.md")
         assert_exists(company_dir / "角色智能体" / "角色清单.md")
+        assert_exists(company_dir / "sales" / "01-成交动作清单.md")
+        assert_exists(company_dir / "product" / "01-MVP与上线清单.md")
+        assert_exists(company_dir / "delivery" / "01-客户交付追踪.md")
+        assert_exists(company_dir / "delivery" / "02-交付目录总览.md")
         assert_exists(company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx")
         assert_exists(company_dir / "产物" / "02-软件与代码" / "01-代码与功能交付清单.docx")
         assert_exists(company_dir / "产物" / "02-软件与代码" / "02-测试与验收记录.docx")
@@ -186,60 +189,72 @@ def validate_workspace_scripts() -> None:
             "起始版",
         )
         assert_contains(
-            (company_dir / "11-交付目录总览.md").read_text(encoding="utf-8"),
-            "01-实际产出总表.docx",
-            "02-测试与验收记录.docx",
+            (company_dir / "00-经营总盘.md").read_text(encoding="utf-8"),
+            "当前结论",
+            "闭环健康",
         )
         assert_contains(
-            (company_dir / "12-AI时代快循环.md").read_text(encoding="utf-8"),
-            "最小可上线 MVP",
-            "阶段只用来标记当前主瓶颈",
+            (company_dir / "04-产品与上线状态.md").read_text(encoding="utf-8"),
+            "产品与上线状态",
+            "当前状态",
         )
 
-        start = run(
-            str(SCRIPTS_DIR / "start_round.py"),
+        focus_update = run(
+            str(SCRIPTS_DIR / "update_focus.py"),
             str(company_dir),
-            "--round-name",
-            "完成首页首屏",
-            "--goal",
-            "完成首页首屏结构与注册入口",
-            "--owner",
-            "product-strategist",
-            "--artifact",
-            "产物/02-软件与代码/03-首页首屏规范.docx",
-            "--next-action",
-            "先确定首屏价值主张",
+            "--primary-goal",
+            "把 MVP 推到可演示并拿到第一批对话",
+            "--primary-bottleneck",
+            "价值表达和产品演示都还不够可卖",
+            "--primary-arena",
+            "product",
+            "--today-action",
+            "先补 homepage hero 的价值表达和 CTA 路径",
+            "--week-outcome",
+            "拿到可演示的首版首页与注册入口",
         )
-        assert_contains(start.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "启动回合", "回合仪表盘:")
-        print(start.stdout.strip())
+        assert_contains(focus_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "更新主焦点", "00-经营总盘.md")
+        print(focus_update.stdout.strip())
 
-        update = run(
-            str(SCRIPTS_DIR / "update_round.py"),
+        product_update = run(
+            str(SCRIPTS_DIR / "advance_product.py"),
             str(company_dir),
-            "--status",
-            "执行中",
-            "--blocker",
-            "首屏信息层级仍不稳定",
-            "--next-action",
-            "重写首屏主标题与副标题",
-            "--note",
-            "进入执行阶段",
+            "--state",
+            "prototype",
+            "--current-version",
+            "v0.1 hero",
+            "--core-capability",
+            "首页首屏价值表达",
+            "--core-capability",
+            "注册 CTA 路径",
+            "--current-gap",
+            "首屏证明点不够强",
+            "--launch-blocker",
+            "还没有对外可演示链接",
+            "--repository",
+            "workspace/北辰实验室",
         )
-        assert_contains(update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "推进回合", "运行解释:")
-        print(update.stdout.strip())
+        assert_contains(product_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "推进产品与上线", "04-产品与上线状态.md")
+        print(product_update.stdout.strip())
 
-        calibrate = run(
-            str(SCRIPTS_DIR / "calibrate_round.py"),
+        pipeline_update = run(
+            str(SCRIPTS_DIR / "advance_pipeline.py"),
             str(company_dir),
-            "--reason",
-            "30 分钟内无法确定首屏价值主张",
-            "--finding",
-            "需要产品负责人先收敛目标用户表达",
-            "--next-action",
-            "把目标用户缩小到做 AI SaaS 的独立开发者",
+            "--talking",
+            "3",
+            "--proposal",
+            "1",
+            "--next-revenue-action",
+            "把首版 demo 发给 3 位独立开发者并约反馈",
+            "--opportunity-name",
+            "首批独立开发者用户",
+            "--opportunity-stage",
+            "talking",
+            "--opportunity-next-action",
+            "约一次 20 分钟看 demo 的通话",
         )
-        assert_contains(calibrate.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "校准回合", "保存解释:")
-        print(calibrate.stdout.strip())
+        assert_contains(pipeline_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "推进成交管道", "03-机会与成交管道.md")
+        print(pipeline_update.stdout.strip())
 
         artifact_docs = run(
             str(SCRIPTS_DIR / "generate_artifact_document.py"),
@@ -287,41 +302,52 @@ def validate_workspace_scripts() -> None:
         assert_exists(generated_docx)
         assert_contains(read_docx_text(generated_docx), "首页首屏规范", "实际软件与代码产出", "证据与验收路径", "交付就绪版")
         assert_contains(
-            (company_dir / "11-交付目录总览.md").read_text(encoding="utf-8"),
+            (company_dir / "delivery" / "02-交付目录总览.md").read_text(encoding="utf-8"),
             "03-首页首屏规范.docx",
             "文档成熟度: 交付就绪版",
         )
 
-        checkpoint = run(
-            str(SCRIPTS_DIR / "checkpoint_save.py"),
+        delivery_update = run(
+            str(SCRIPTS_DIR / "advance_delivery.py"),
             str(company_dir),
-            "--reason",
-            "准备结束当前会话，保存一次可恢复检查点",
-            "--note",
-            "验证 checkpoint save 能力",
+            "--active-customers",
+            "1",
+            "--delivery-status",
+            "首位试用客户已进入 onboarding",
+            "--blocking-issue",
+            "缺少标准化开通说明",
+            "--next-delivery-action",
+            "补 onboarding 引导和反馈回收",
+            "--receivable",
+            "2999",
         )
+        assert_contains(delivery_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "推进交付与回款", "05-客户交付与回款.md")
+        print(delivery_update.stdout.strip())
+
+        cash_update = run(
+            str(SCRIPTS_DIR / "update_cash.py"),
+            str(company_dir),
+            "--cash-in",
+            "2999",
+            "--cash-out",
+            "500",
+            "--receivable",
+            "2999",
+            "--monthly-target",
+            "10000",
+            "--runway-note",
+            "当前仍需优先盯住回款和下一个成交动作",
+        )
+        assert_contains(cash_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "更新现金状态", "06-现金流与经营健康.md")
+        print(cash_update.stdout.strip())
+
+        asset_record = run(str(SCRIPTS_DIR / "record_asset.py"), str(company_dir), "--kind", "templates", "--item", "首位试用客户 onboarding 话术")
+        assert_contains(asset_record.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "记录资产沉淀", "07-资产与自动化.md")
+        print(asset_record.stdout.strip())
+
+        checkpoint = run(str(SCRIPTS_DIR / "checkpoint_save.py"), str(company_dir), "--reason", "准备结束当前会话，保存一次可恢复检查点", "--note", "验证 checkpoint save 能力")
         assert_contains(checkpoint.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "保存检查点", "记录/检查点")
         print(checkpoint.stdout.strip())
-
-        transition = run(
-            str(SCRIPTS_DIR / "transition_stage.py"),
-            str(company_dir),
-            "--stage",
-            "上线期",
-            "--reason",
-            "关键功能与首屏已经具备对外测试条件",
-            "--first-round-name",
-            "准备首轮外部测试",
-            "--first-round-goal",
-            "整理测试入口、反馈表单和告知文案",
-            "--first-round-owner",
-            "growth-sales",
-        )
-        assert_contains(transition.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "切换阶段", "保存状态:")
-        print(transition.stdout.strip())
-        assert_exists(company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx")
-        assert_exists(company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx")
-        assert_exists(company_dir / "产物" / "05-上线与增长" / "01-上线公告与反馈回收清单.docx")
 
         single_brief = run(
             str(SCRIPTS_DIR / "build_agent_brief.py"),
@@ -406,7 +432,7 @@ def validate_workspace_scripts() -> None:
         print(english_preflight.stdout.strip())
 
         english_init = run(
-            str(SCRIPTS_DIR / "init_company.py"),
+            str(SCRIPTS_DIR / "init_business.py"),
             "North Star Lab",
             "--path",
             str(workspace),
@@ -422,13 +448,13 @@ def validate_workspace_scripts() -> None:
             "User Navigation View:",
             "Current Mode: Create Company",
             "Current Stage: Build",
-            "Current Artifact: Company workspace skeleton",
+            "Current Artifact: Operating dashboard",
         )
         print(english_init.stdout.strip())
 
         english_company_dir = workspace / "North Star Lab"
-        assert_exists(english_company_dir / "00-公司总览.md")
-        assert_contains((english_company_dir / "00-公司总览.md").read_text(encoding="utf-8"), "Company Overview", "Current Focus")
+        assert_exists(english_company_dir / "00-经营总盘.md")
+        assert_contains((english_company_dir / "00-经营总盘.md").read_text(encoding="utf-8"), "Operating Dashboard", "Current Read")
         assert_contains((english_company_dir / "角色智能体" / "工程负责人.md").read_text(encoding="utf-8"), "Engineering Lead", "Outputs")
 
         english_artifact = run(

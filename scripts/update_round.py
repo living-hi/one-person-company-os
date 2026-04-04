@@ -105,13 +105,15 @@ def main() -> int:
         persistence_mode="script-execution",
         company_dir=company_dir,
         saved_paths=[
-            company_dir / "04-当前回合.md",
+            company_dir / "09-本周唯一主目标.md",
+            company_dir / "10-今日最短动作.md",
+            company_dir / "00-经营总盘.md",
             record,
             state_path(company_dir),
         ],
         work_scope=[
             pick_text(language, "更新当前回合的状态、负责人、阻塞或下一步动作。", "Update the current round status, owner, blocker, or next action."),
-            pick_text(language, "把回合变化真实写回工作区。", "Write the round changes back into the workspace."),
+            pick_text(language, "把变化真实写回经营总盘、本周目标和今日动作。", "Write the changes back into the dashboard, weekly goal, and today's action."),
             pick_text(language, "明确这次更新后是否需要创始人确认。", "State clearly whether founder confirmation is required after this update."),
         ],
         non_scope=[

@@ -178,7 +178,7 @@ def main() -> int:
         current_round["updated_at"] = now_string()
         save_state(company_dir, state)
         render_workspace(company_dir, state)
-    write_text(company_dir / "11-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))
+    write_text(company_dir / "delivery" / "02-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))
 
     record = write_record(
         company_dir,
@@ -209,7 +209,7 @@ def main() -> int:
         needs_confirmation=pick_text(language, "否", "No"),
         persistence_mode="script-execution",
         company_dir=company_dir,
-        saved_paths=[output_path, record],
+        saved_paths=[output_path, company_dir / "delivery" / "02-交付目录总览.md", record],
         work_scope=[
             pick_text(language, "为关键产物生成带序号的正式 DOCX 文件。", "Generate a numbered formal DOCX file for the key artifact."),
             pick_text(language, "把软件产出、非软件产出、证据以及部署/生产资料写成可交付格式。", "Write software outputs, non-software outputs, evidence, and deployment or production material into a deliverable format."),

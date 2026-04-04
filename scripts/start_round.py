@@ -111,13 +111,15 @@ def main() -> int:
         persistence_mode="script-execution",
         company_dir=company_dir,
         saved_paths=[
-            company_dir / "04-当前回合.md",
+            company_dir / "09-本周唯一主目标.md",
+            company_dir / "10-今日最短动作.md",
+            company_dir / "04-产品与上线状态.md",
             record,
             state_path(company_dir),
         ],
         work_scope=[
-            pick_text(language, "定义一个新的当前回合，并把负责人、目标和产物写清楚。", "Define a new current round and make the owner, goal, and artifact explicit."),
-            pick_text(language, "更新当前回合文件和状态文件。", "Update the current-round file and state file."),
+            pick_text(language, "定义一个新的当前推进回合，并把负责人、目标和产物写清楚。", "Define a new execution round and make the owner, goal, and artifact explicit."),
+            pick_text(language, "同步刷新本周主目标、今日动作和主工作面。", "Refresh the weekly goal, today's action, and the main work surfaces."),
             pick_text(language, "给出这回合的下一步最短动作。", "Set the shortest next action for this round."),
         ],
         non_scope=[

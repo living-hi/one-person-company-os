@@ -1,5 +1,32 @@
 # Release Notes
 
+## v0.6.0 - Business-Loop Operating System
+
+`v0.5.8` fixed the file surface so deliverables looked like real documents instead of document specification.
+
+`v0.6.0` fixes the deeper product mismatch: the system still behaved too much like a stage-and-round startup shell instead of a real one-person-company operating system.
+
+This release rebuilds the product around a business loop:
+
+- promise
+- buyer
+- product capability
+- delivery
+- cash
+- learning
+- asset
+
+This release adds and updates:
+
+- a new v3 state model centered on `founder / focus / offer / pipeline / product / delivery / cash / assets / risk`
+- a new workspace surface led by `00-经营总盘.md`, `02-价值承诺与报价.md`, `03-机会与成交管道.md`, `04-产品与上线状态.md`, and `05-客户交付与回款.md`
+- new business scripts such as `init_business.py`, `update_focus.py`, `advance_product.py`, `advance_pipeline.py`, `advance_delivery.py`, `update_cash.py`, and `record_asset.py`
+- migration support for old workspaces and compatibility writes for old round/stage scripts
+- updated release validation so the generated package must pass through the new business-loop workflow locally
+- rewritten README, release README, listing copy, skill metadata, and publishing notes so the repository surface now matches the actual product
+
+The result is a system that can support a founder starting from an idea, pushing an MVP toward something sellable, managing real buyers and delivery, and recovering cash while building reusable assets.
+
 ## v0.5.8 - Final-Named Deliverables And Real Document Surface
 
 `v0.5.7` made the operating model lighter.
