@@ -1,5 +1,18 @@
 # Release Notes
 
+## v0.6.3 - Lock-Artifact Cleanup
+
+`v0.6.2` added merge-safe locked persistence for overlapping founder actions.
+
+`v0.6.3` closes the remaining surface issue: the lock file itself should not remain in the founder workspace after a successful run.
+
+This release adds and updates:
+
+- automatic cleanup of the temporary state lock file after each save
+- the same safer merged persistence behavior from `v0.6.2`, but without polluting the workspace with `.lock` artifacts
+
+The result is a cleaner founder workspace surface: the concurrency protection stays, but the user only sees final working files.
+
 ## v0.6.2 - Founder Conversion Surfaces And Safer Parallel Persistence
 
 `v0.6.1` fixed stage drift and shallow support work surfaces.

@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6.3 - 2026-04-04
+
+- removed leftover state lock artifacts from founder workspaces so merge-safe persistence no longer leaves `当前状态.json.lock` behind after script runs
+- kept the merged-save and file-lock protection from `v0.6.2` while cleaning the user-visible workspace surface back to final deliverables only
+
 ## v0.6.2 - 2026-04-04
 
 - added founder-facing growth assets to the workspace renderer: `sales/04-对外落地页文案.md`, `sales/05-访谈冲刺看板.md`, `sales/06-试用申请问卷.md`, `delivery/04-试用反馈回收表.md`, and `product/demo/index.html`

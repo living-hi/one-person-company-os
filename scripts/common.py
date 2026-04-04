@@ -658,6 +658,10 @@ def save_state(company_dir: Path, state: dict[str, Any]) -> None:
             merged_state = prepared
         saved_state = write_state_v3(company_dir, merged_state)
         fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
+    try:
+        lock_path.unlink()
+    except FileNotFoundError:
+        pass
     state.clear()
     state.update(saved_state)
     state[STATE_BASE_KEY] = deepcopy(saved_state)
