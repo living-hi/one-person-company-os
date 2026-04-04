@@ -1,5 +1,26 @@
 # Release Notes
 
+## v0.5.8 - Final-Named Deliverables And Real Document Surface
+
+`v0.5.7` made the operating model lighter.
+
+`v0.5.8` fixes the next serious problem: generated output still looked too much like document specification and placeholder management instead of real deliverable documents.
+
+This release upgrades the artifact model around one rule:
+
+- formal documents should use their final deliverable names from the start
+
+This release adds and updates:
+
+- final-named DOCX files without `[待生成]` or `[已生成]` in the file name
+- a new `07-交付物地图.md` instead of `07-文档产物规范.md`
+- a new `11-交付目录总览.md` instead of `11-交付状态总览.md`
+- removal of the workspace-level deliverable-template starter directory from the default generated pack
+- document-maturity tracking inside file content rather than in file names
+- updated artifact generation, stage transition, workspace rendering, sample outputs, and release validation
+
+The result is a project that now reads and behaves more like a real delivery system: fewer placeholder semantics, clearer file paths, and a stronger final-output feel across the workspace.
+
 ## v0.5.7 - AI-Era Fast Loop And Lightweight Stages
 
 `v0.5.6` made the first-run and deliverable board clearer.

@@ -43,7 +43,7 @@ The system first gives you a company setup draft that includes:
 - the first executable round
 
 Only after you confirm will it create the workspace, role briefs, and process files.
-After creation, start with `10-创始人启动卡.md`, `11-交付状态总览.md`, and `12-AI时代快循环.md`.
+After creation, start with `10-创始人启动卡.md`, `11-交付目录总览.md`, and `12-AI时代快循环.md`.
 
 ## How It Differs From A Generic Startup Assistant
 

@@ -152,8 +152,8 @@ def main() -> int:
         "ARTIFACT_DECISIONS": to_bullets(args.decision, pick_text(language, "待补充关键决策", "Add the key decisions")),
         "ARTIFACT_RISKS": to_bullets(args.risk, pick_text(language, "待补充风险与待确认事项", "Add risks and pending confirmations")),
         "ARTIFACT_NEXT_ACTION": next_action,
-        "ARTIFACT_STATUS": pick_text(language, "已生成", "Generated"),
-        "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "本文件已经生成正式版本，可继续补充细节，但不再属于待生成占位。", "This file has been generated as a formal version. It can still be refined, but it is no longer a pending placeholder."),
+        "ARTIFACT_STATUS": pick_text(language, "交付就绪版", "Delivery-Ready"),
+        "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "本文件已经进入可交付版本，后续如有改动，直接继续在当前正式文件内精修即可。", "This document is now in a delivery-ready state. Continue refining the same formal file directly if more changes are needed."),
         "ARTIFACT_MISSING_ITEMS": to_bullets(
             args.risk,
             pick_text(language, "如仍有空缺，请补齐证据、负责人或验收结论", "If anything is still missing, complete the evidence, owner, or acceptance conclusion"),
@@ -178,7 +178,7 @@ def main() -> int:
         current_round["updated_at"] = now_string()
         save_state(company_dir, state)
         render_workspace(company_dir, state)
-    write_text(company_dir / "11-交付状态总览.md", artifact_status_summary_markdown(company_dir, language))
+    write_text(company_dir / "11-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))
 
     record = write_record(
         company_dir,
@@ -220,7 +220,7 @@ def main() -> int:
             pick_text(language, "不会把缺少实际证据的内容说成已经完成交付。", "Do not claim delivery is complete when actual evidence is missing."),
         ],
         changes=[
-            pick_text(language, f"已生成编号化 DOCX：{output_path.name}。", f"Generated a numbered DOCX: {output_path.name}."),
+            pick_text(language, f"已生成正式 DOCX：{output_path.name}。", f"Generated a formal DOCX: {output_path.name}."),
             pick_text(language, "已把实际软件/非软件产出、证据、部署与生产资料纳入正式结构。", "Included real software or non-software outputs, evidence, and deployment or production material in the formal structure."),
             pick_text(language, "已新增一条文档产物生成记录，便于审计和回看。", "Added an artifact-generation record for auditing and later review."),
         ],

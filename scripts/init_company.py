@@ -134,18 +134,18 @@ def main() -> int:
         saved_paths=[
             company_dir / "00-公司总览.md",
             company_dir / "04-当前回合.md",
-            company_dir / "07-文档产物规范.md",
+            company_dir / "07-交付物地图.md",
             company_dir / "08-阶段角色与交付矩阵.md",
             company_dir / "10-创始人启动卡.md",
-            company_dir / "11-交付状态总览.md",
+            company_dir / "11-交付目录总览.md",
             company_dir / "12-AI时代快循环.md",
             company_dir / "角色智能体" / "角色清单.md",
-            company_dir / "产物" / "01-实际交付" / "01-[待生成]实际产出总表.docx",
+            company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx",
             state_path(company_dir),
         ],
         work_scope=[
             pick_text(language, "创建公司工作区骨架与当前状态文件。", "Create the company workspace skeleton and current-state file."),
-            pick_text(language, "生成当前阶段、当前回合、角色矩阵、AI 快循环说明和编号化 DOCX 交付包。", "Generate the current stage, current round, role matrix, AI fast-loop guide, and numbered DOCX deliverable pack."),
+            pick_text(language, "生成当前阶段、当前回合、角色矩阵、AI 快循环说明和按最终命名落盘的正式 DOCX 文档。", "Generate the current stage, current round, role matrix, AI fast-loop guide, and formal DOCX documents using their final names."),
             pick_text(language, "明确这次是否已真实保存以及下一步怎么继续。", "Explain clearly what was persisted and what should happen next."),
         ],
         non_scope=[
@@ -153,8 +153,8 @@ def main() -> int:
             pick_text(language, "不会跳过确认边界去伪造不存在的角色执行结果。", "Do not fake role execution outcomes by skipping approval boundaries."),
         ],
         changes=[
-            pick_text(language, "已创建公司总览、当前回合、创始人启动卡、交付状态总览、AI 快循环说明和当前状态文件。", "Created the company overview, current round, founder start card, deliverable-status overview, AI fast-loop guide, and current-state file."),
-            pick_text(language, "已生成阶段角色与交付矩阵，以及带 `[待生成]` 标记的编号化 DOCX starter pack。", "Generated the stage-role deliverable matrix plus a numbered DOCX starter pack marked with `[待生成]`."),
+            pick_text(language, "已创建公司总览、当前回合、创始人启动卡、交付目录总览、AI 快循环说明和当前状态文件。", "Created the company overview, current round, founder start card, deliverable directory overview, AI fast-loop guide, and current-state file."),
+            pick_text(language, "已生成阶段角色与交付矩阵，以及按最终交付文件名落盘的正式 DOCX 文档集。", "Generated the stage-role deliverable matrix plus a formal DOCX document set persisted with final deliverable file names."),
             pick_text(language, "当前公司已进入可继续启动回合、按快循环推进 MVP 和继续补齐正式交付的状态。", "The company workspace is now ready to start the next round, push the fast-loop MVP path, and continue filling formal deliverables."),
         ],
         language=language,

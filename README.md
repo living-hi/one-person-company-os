@@ -195,23 +195,24 @@ After workspace initialization, the system creates three clear file groups.
 
 ### Root Navigation Files
 
-- artifact output spec: `07-文档产物规范.md`
+- deliverable map: `07-交付物地图.md`
 - stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
 - current-stage delivery requirements: `09-当前阶段交付要求.md`
 - founder start card: `10-创始人启动卡.md`
-- deliverable status overview: `11-交付状态总览.md`
+- deliverable directory overview: `11-交付目录总览.md`
 - AI fast-loop guide: `12-AI时代快循环.md`
 
-### Formal Deliverable Starter Files
+### Formal Deliverable Files
 
-- formal deliverable template: `产物/00-交付模板/01-[待生成]正式交付文档模板.docx`
-- actual deliverables index: `产物/01-实际交付/01-[待生成]实际产出总表.docx`
+- actual deliverables index: `产物/01-实际交付/01-实际产出总表.docx`
+- software and code register: `产物/02-软件与代码/01-代码与功能交付清单.docx`
+- non-software register: `产物/03-非软件与业务/01-非软件交付清单.docx`
 
 ### Stage-Dependent Operational Files
 
-- when the stage requires it, the workspace also auto-adds the matching starter docs under `产物/04-部署与生产/` and `产物/05-上线与增长/`
+- when the stage requires it, the workspace also auto-adds the matching formal documents under `产物/04-部署与生产/` and `产物/05-上线与增长/`
 
-Starter deliverables land as `[待生成]` placeholder DOCX files so the founder can see the full formal output plan immediately. Once a deliverable is formally produced, it switches to `[已生成]`.
+These documents are written with their final deliverable file names from the start. Document maturity is expressed inside the file content instead of in the file name.
 
 To generate artifact documents directly:
 
@@ -254,11 +255,11 @@ Canonical root files on disk remain:
 - current round: `04-当前回合.md`
 - execution rules: `05-推进规则.md`
 - trigger and calibration rules: `06-触发器与校准规则.md`
-- artifact output spec: `07-文档产物规范.md`
+- deliverable map: `07-交付物地图.md`
 - stage-role deliverable matrix: `08-阶段角色与交付矩阵.md`
 - current-stage delivery requirements: `09-当前阶段交付要求.md`
 - founder start card: `10-创始人启动卡.md`
-- deliverable status overview: `11-交付状态总览.md`
+- deliverable directory overview: `11-交付目录总览.md`
 - AI fast-loop guide: `12-AI时代快循环.md`
 
 Core design rules:

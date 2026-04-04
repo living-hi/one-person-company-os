@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.5.8 - 2026-04-04
+
+- removed status markers such as `[待生成]` and `[已生成]` from generated DOCX file names so artifacts now use their final deliverable names from the start
+- replaced `07-文档产物规范.md` and `11-交付状态总览.md` with `07-交付物地图.md` and `11-交付目录总览.md` to make the workspace read like real output instead of output specification
+- dropped the workspace-level deliverable-template directory and shifted the generated artifact pack toward actual formal documents
+- upgraded artifact templates, workspace rendering, stage transition logic, and release validation to track document maturity inside content rather than in file names
+- refreshed README, guides, release collateral, and publishing notes so the project surface matches the new final-document model end to end
+
 ## v0.5.7 - 2026-04-04
 
 - repositioned the visible workflow around an AI-era fast loop: validate demand, ship the smallest useful MVP, launch narrowly, capture feedback, improve, then scale

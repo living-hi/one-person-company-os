@@ -526,7 +526,7 @@ Updated At: {{UPDATED_AT}}
 ## Registry Rules
 
 - Formal deliverables use a two-digit numbered `.docx` file name.
-- Placeholder files are marked `[待生成]`, and completed files move to `[已生成]`.
+- File names use the final deliverable name directly instead of carrying status markers.
 - Do not mark a deliverable complete without a file path, repository link, demo link, or acceptance evidence.
 
 ## Suggested Registry Fields
@@ -591,7 +591,7 @@ Updated At: {{UPDATED_AT}}
 - Round Status: {{ROUND_STATUS}}
 - Artifact Type: {{ARTIFACT_TYPE}}
 - Owner: {{ARTIFACT_OWNER}}
-- Status: {{ARTIFACT_STATUS}}
+- Document Maturity: {{ARTIFACT_STATUS}}
 - File Path: {{ARTIFACT_FILE_PATH}}
 
 ## Progress Summary
@@ -806,7 +806,7 @@ Updated At: {{UPDATED_AT}}
 
 - {{ARTIFACT_NEXT_ACTION}}
 """,
-    "artifact-output-guide-template.md": """# Artifact Output Guide
+    "artifact-output-guide-template.md": """# Deliverable Map
 
 Updated At: {{UPDATED_AT}}
 
@@ -826,7 +826,6 @@ Updated At: {{UPDATED_AT}}
 
 ## Directory Intent
 
-- `00-交付模板`: reusable formal-deliverable templates
 - `01-实际交付`: current-round delivery indexes and primary deliverables
 - `02-软件与代码`: code, functionality, quality, and test deliverables
 - `03-非软件与业务`: research, services, sales, training, and other non-software outputs
@@ -1025,7 +1024,7 @@ Updated At: {{UPDATED_AT}}
 2. Turn that lightweight input into a proposed company direction, stage, and first round
 3. Keep the reply burden low and the output easy to scan
 4. Wait for founder approval
-5. Create the standardized workspace and starter deliverable pack
+5. Create the standardized workspace and the first set of final-named deliverable documents
 6. Generate the starter role set and launch the first round
 """,
     "calibration-flow-template.md": """# Calibration Flow
@@ -1080,7 +1079,7 @@ Updated At: {{UPDATED_AT}}
 ## Quick Paths
 
 - Founder Start Card: `10-创始人启动卡.md`
-- Deliverable Status Overview: `11-交付状态总览.md`
+- Deliverable Directory Overview: `11-交付目录总览.md`
 - AI Fast Loop Guide: `12-AI时代快循环.md`
 - Formal Deliverables: `产物/`
 """,
@@ -1116,7 +1115,7 @@ Updated At: {{UPDATED_AT}}
 ## Review Order
 
 - Read `10-创始人启动卡.md` first for direction and minimum input.
-- Read `11-交付状态总览.md` next to see which DOCX files are completed and which are still placeholders.
+- Read `11-交付目录总览.md` next to see which formal DOCX files already exist and which one to improve next.
 - Read `12-AI时代快循环.md` when you need the high-level operating loop and stage meaning.
 - Then complete the matching files under `产物/`.
 
@@ -1131,7 +1130,7 @@ Updated At: {{UPDATED_AT}}
 ## Deliverable Rules
 
 - Formal files under `产物/` use numbered `.docx` names.
-- Placeholder files may start as `[待生成]` and should switch to `[已生成]` when formally produced.
+- File names use the final deliverable name directly instead of carrying status markers.
 - Software work must leave real code, scripts, interfaces, config, or automation outputs.
 - Non-software work must leave formal business deliverables instead of chat-only summaries.
 """,

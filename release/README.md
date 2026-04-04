@@ -43,7 +43,7 @@ I am building an AI-native solo company. Use one-person-company-os. Do not make 
 - a three-layer navigation model
 - user-navigation and audit views
 - explicit state, save, and runtime explanations
-- status-marked placeholder DOCX deliverables plus software/non-software evidence and post-launch deployment materials
+- final-named DOCX deliverables plus software/non-software evidence and post-launch deployment materials
 - `12-AI时代快循环.md` inside the workspace so the operating model is visible on disk
 
 ## Language Behavior
@@ -60,7 +60,7 @@ I am building an AI-native solo company. Use one-person-company-os. Do not make 
 - explicit persistence instead of chat-only output
 - preflight checks plus Python recovery
 - fallback modes for execution, manual persistence, and chat-only operation
-- standard document templates plus a visible pending/completed deliverable map
+- a visible deliverable map plus a deliverable directory overview
 - a visible AI fast-loop guide that keeps stages in the background as bottleneck labels
 
 ## Architecture

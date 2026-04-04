@@ -8,14 +8,14 @@
 - 当前回合: {{CURRENT_ROUND_NAME}}
 - 文档类型: {{ARTIFACT_TYPE}}
 - 负责人: {{ARTIFACT_OWNER}}
-- 文档状态: {{ARTIFACT_STATUS}}
+- 文档成熟度: {{ARTIFACT_STATUS}}
 - 文件路径: {{ARTIFACT_FILE_PATH}}
 
-## 0. 当前进度说明
+## 0. 文档当前判断
 
 {{ARTIFACT_PROGRESS_SUMMARY}}
 
-## 0.1 当前仍缺失的关键项
+## 0.1 当前仍应补齐的关键项
 
 {{ARTIFACT_MISSING_ITEMS}}
 
@@ -78,10 +78,10 @@
 
 - {{ARTIFACT_NEXT_ACTION}}
 
-## 14. DOCX 提交要求
+## 14. DOCX 使用要求
 
 - 文件名使用两位序号开头
-- 初始化时允许生成 `[待生成]` 占位文件，正式完成后切换为 `[已生成]`
+- 文件名直接使用最终交付名，不再把状态写进文件名
 - `产物/` 目录只保留 `.docx` 正式交付文件
 - 软件产品必须补齐代码/脚本/配置/接口等至少一类真实产出
 - 上线后必须补齐部署、回滚、监控、告警和生产运行资料

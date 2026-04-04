@@ -109,17 +109,19 @@ def numbered_name(index: int, title: str, suffix: str) -> str:
 
 
 def planned_docx_name(index: int, title: str, status: str) -> str:
-    status_marker = "已生成" if status == "done" else "待生成"
-    return f"{index:02d}-[{status_marker}]{safe_document_name(title)}.docx"
+    _ = status
+    return f"{index:02d}-{safe_document_name(title)}.docx"
 
 
 def parse_planned_docx_name(filename: str) -> Optional[dict[str, Any]]:
-    match = re.match(r"^(?P<index>\d{2})-\[(?P<status>待生成|已生成)\](?P<title>.+)\.docx$", filename)
+    match = re.match(r"^(?P<index>\d{2})-(?:\[(?P<status>待生成|已生成)\])?(?P<title>.+)\.docx$", filename)
     if not match:
         return None
+    marker = match.group("status")
     return {
         "index": int(match.group("index")),
-        "status": "done" if match.group("status") == "已生成" else "pending",
+        "status": "done" if marker in (None, "已生成") else "pending",
+        "legacy_status": marker,
         "title": match.group("title"),
     }
 
@@ -512,6 +514,31 @@ def write_docx(path: Path, markdown_text: str, *, title: Optional[str] = None) -
         archive.writestr("word/document.xml", markdown_to_docx_xml(markdown_text))
 
 
+def read_docx_text(path: Path) -> str:
+    with zipfile.ZipFile(path) as archive:
+        return archive.read("word/document.xml").decode("utf-8")
+
+
+def artifact_maturity_label(path: Path, language: str = "zh-CN") -> str:
+    parsed = parse_planned_docx_name(path.name)
+    legacy_status = parsed.get("legacy_status") if parsed else None
+    if legacy_status == "已生成":
+        return pick_text(language, "交付就绪版", "Delivery-Ready")
+    if legacy_status == "待生成":
+        return pick_text(language, "起始版", "Starter Formal Doc")
+
+    try:
+        text = read_docx_text(path)
+    except (KeyError, OSError, zipfile.BadZipFile):
+        return pick_text(language, "已建档", "Filed")
+
+    if "交付就绪版" in text or "Delivery-Ready" in text:
+        return pick_text(language, "交付就绪版", "Delivery-Ready")
+    if "起始版" in text or "Starter Formal Doc" in text:
+        return pick_text(language, "起始版", "Starter Formal Doc")
+    return pick_text(language, "已建档", "Filed")
+
+
 def load_role_specs() -> dict[str, dict[str, Any]]:
     specs: dict[str, dict[str, Any]] = {}
     for path in sorted(ROLE_DIR.glob("*.json")):
@@ -545,7 +572,6 @@ def ensure_workspace_dirs(company_dir: Path) -> None:
         "",
         "角色智能体",
         "流程",
-        "产物/00-交付模板",
         "产物/01-实际交付",
         "产物/02-软件与代码",
         "产物/03-非软件与业务",
@@ -1060,12 +1086,6 @@ def build_matrix_values(role_specs: dict[str, dict[str, Any]], language: str) ->
 def stage_artifact_specs(stage_id: str) -> list[dict[str, str]]:
     common_specs = [
         {
-            "subdir": "00-交付模板",
-            "index": "01",
-            "title": "正式交付文档模板",
-            "template": "artifact-docx-ready-template.md",
-        },
-        {
             "subdir": "01-实际交付",
             "index": "01",
             "title": "实际产出总表",
@@ -1183,11 +1203,11 @@ def artifact_template_values(common_values: dict[str, str], state: dict[str, Any
     language = state.get("language", "zh-CN")
     return {
         **common_values,
-        "ARTIFACT_TITLE": pick_text(language, "正式交付文档模板", "Formal Deliverable Template"),
+        "ARTIFACT_TITLE": pick_text(language, "正式交付文件", "Formal Deliverable"),
         "ARTIFACT_TYPE": pick_text(language, "正式交付文档", "Formal Deliverable Document"),
         "ARTIFACT_OWNER": current_round.get("owner_role_name", pick_text(language, "总控台", "Control Tower")),
-        "ARTIFACT_OBJECTIVE": current_round.get("goal", pick_text(language, "记录一个可真正交付的实际产出", "Record a real deliverable that can actually be handed off")),
-        "ARTIFACT_SUMMARY": pick_text(language, "这是一份正式交付文档模板。交付时必须写清真实产出、证据、责任人和下一步动作。", "This is a formal deliverable template. Every delivery should state the real outputs, evidence, owner, and next action clearly."),
+        "ARTIFACT_OBJECTIVE": current_round.get("goal", pick_text(language, "沉淀一个可直接继续补齐的正式交付文档", "Create a formal deliverable that can be completed directly in place")),
+        "ARTIFACT_SUMMARY": pick_text(language, "这份文档已经按最终交付文件命名落盘，接下来直接在原文件里补齐真实产出、证据、责任人和下一步动作。", "This document already uses its final deliverable name. Continue refining the real outputs, evidence, owner, and next action in place."),
         "ARTIFACT_SCOPE_IN": format_list(
             [
                 pick_text(language, "实际软件产出或实际非软件产出", "Real software outputs or real non-software outputs"),
@@ -1207,6 +1227,7 @@ def artifact_template_values(common_values: dict[str, str], state: dict[str, Any
         "ARTIFACT_CHANGES": format_list(
             [
                 pick_text(language, "文件名使用两位序号开头。", "File names should start with a two-digit index."),
+                pick_text(language, "文件名直接使用最终交付名，不再把状态写进文件名。", "Use the final deliverable name directly instead of encoding document status in the file name."),
                 pick_text(language, "产物目录默认只落 DOCX。", "Artifact directories default to DOCX-only formal outputs."),
                 pick_text(language, "上线后自动要求部署与生产资料。", "Deployment and production materials become mandatory after launch."),
             ],
@@ -1224,8 +1245,8 @@ def artifact_template_values(common_values: dict[str, str], state: dict[str, Any
             language,
         ),
         "ARTIFACT_NEXT_ACTION": current_round.get("next_action", pick_text(language, "补齐本轮真实交付与证据。", "Fill in the real deliverables and evidence for this round.")),
-        "ARTIFACT_STATUS": pick_text(language, "待生成", "Pending"),
-        "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "当前只生成了正式文件骨架，请按标题补齐实际内容后再标记完成。", "Only the formal file skeleton exists right now. Fill in the real content before marking it complete."),
+        "ARTIFACT_STATUS": pick_text(language, "起始版", "Starter Formal Doc"),
+        "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "当前已经生成正式文档起始版，文件名和目录均按最终交付结构落盘，后续直接在原文件内补齐实际内容。", "A starter formal document has been created in the final folder and with the final file name. Continue completing the real content in place."),
         "ARTIFACT_MISSING_ITEMS": format_list(
             [
                 pick_text(language, "真实文件、代码、材料或业务证据", "Real files, code, materials, or business evidence"),
@@ -1234,7 +1255,7 @@ def artifact_template_values(common_values: dict[str, str], state: dict[str, Any
             ],
             language,
         ),
-        "ARTIFACT_FILE_PATH": pick_text(language, "待生成后补齐", "Fill in after the file is finalized"),
+        "ARTIFACT_FILE_PATH": pick_text(language, "落盘后回填", "Filled after the file is written"),
     }
 
 
@@ -1274,8 +1295,8 @@ def build_founder_start_here(language: str) -> str:
                 "",
                 "## After You Reply",
                 "",
-                "- I will propose the company direction, the current bottleneck stage, the first round, and the starter deliverable pack.",
-                "- Review `11-交付状态总览.md` and `12-AI时代快循环.md` in this workspace next.",
+                "- I will propose the company direction, the current bottleneck stage, the first round, and the first set of formal deliverable documents.",
+                "- Review `11-交付目录总览.md` and `12-AI时代快循环.md` in this workspace next.",
                 "- If the files, naming, or scope feel off, tell me what to tighten and I will keep refining it.",
             ]
         ) + "\n"
@@ -1313,8 +1334,8 @@ def build_founder_start_here(language: str) -> str:
             "",
             "## 你回复后我会做什么",
             "",
-            "- 我会给出方向建议、当前主瓶颈阶段、首个回合和 starter 交付包。",
-            "- 你可以先看 `11-交付状态总览.md` 和 `12-AI时代快循环.md`，再告诉我还要怎么收紧或改进。",
+            "- 我会给出方向建议、当前主瓶颈阶段、首个回合和首批正式交付文档。",
+            "- 你可以先看 `11-交付目录总览.md` 和 `12-AI时代快循环.md`，再告诉我还要怎么收紧或改进。",
         ]
     ) + "\n"
 
@@ -1351,7 +1372,7 @@ def build_ai_fast_loop(language: str) -> str:
                 "## How To Use This Workspace",
                 "",
                 "- Start from `10-创始人启动卡.md` if the idea is still fuzzy.",
-                "- Use `11-交付状态总览.md` to see what has been created and what is still pending.",
+                "- Use `11-交付目录总览.md` to see which formal documents already exist and which one to improve next.",
                 "- Keep one round to roughly 2 to 3 hours, then update the current state.",
                 "- Trigger calibration when blocked, drifting, or when a key artifact has just completed.",
                 "- Keep formal outputs in `产物/`, and keep software, non-software, and post-launch operations evidence auditable.",
@@ -1387,7 +1408,7 @@ def build_ai_fast_loop(language: str) -> str:
             "## 在这个工作区里怎么跑",
             "",
             "- 如果想法还模糊，先看 `10-创始人启动卡.md`。",
-            "- 用 `11-交付状态总览.md` 看哪些文件已生成，哪些还在待生成。",
+            "- 用 `11-交付目录总览.md` 看当前正式文档目录、文档成熟度和下一步要补哪一份。",
             "- 单个回合建议控制在 2 到 3 小时，再回来更新当前状态。",
             "- 卡住、偏航或刚完成关键产物时再触发校准。",
             "- 正式件统一进 `产物/`，软件、非软件和上线后生产资料都必须可审计。",
@@ -1397,7 +1418,6 @@ def build_ai_fast_loop(language: str) -> str:
 
 def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
     category_names = {
-        "00-交付模板": pick_text(language, "交付模板", "Deliverable Templates"),
         "01-实际交付": pick_text(language, "实际交付", "Actual Deliverables"),
         "02-软件与代码": pick_text(language, "软件与代码", "Software And Code"),
         "03-非软件与业务": pick_text(language, "非软件与业务", "Non-Software And Business"),
@@ -1405,19 +1425,19 @@ def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
         "05-上线与增长": pick_text(language, "上线与增长", "Launch And Growth"),
     }
     lines = [
-        pick_text(language, "# 交付状态总览", "# Deliverable Status Overview"),
+        pick_text(language, "# 交付目录总览", "# Deliverable Directory Overview"),
         "",
         f"{pick_text(language, '更新于', 'Updated At')}: {now_string()}",
         "",
         pick_text(
             language,
-            "- 看到 `[待生成]` 表示文件骨架已经创建，但内容还需要继续补齐。",
-            "- `[待生成]` means the formal file shell exists, but the content still needs to be completed.",
+            "- 这里列的是当前工作区内已经落盘的正式交付文档，以及每份文档当前的成熟度。",
+            "- This page lists the formal deliverable documents already written into the workspace and the current maturity of each one.",
         ),
         pick_text(
             language,
-            "- 看到 `[已生成]` 表示该文件已经被正式生成，可继续精修。",
-            "- `[已生成]` means the document has been formally generated and can be refined further.",
+            "- 文件名直接使用最终交付名，不再额外写 `[待生成]` 或 `[已生成]`。",
+            "- File names use the final deliverable name directly instead of carrying `[待生成]` or `[已生成]` markers.",
         ),
         "",
     ]
@@ -1428,18 +1448,12 @@ def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
         entries = []
         if artifact_dir.is_dir():
             for path in sorted(artifact_dir.glob("*.docx")):
-                parsed = parse_planned_docx_name(path.name)
-                if parsed:
-                    status_text = pick_text(language, "已完成" if parsed["status"] == "done" else "待生成", "Completed" if parsed["status"] == "done" else "Pending")
-                    title = parsed["title"].replace("-", " ")
-                else:
-                    status_text = pick_text(language, "已生成", "Generated")
-                    title = path.stem
+                status_text = artifact_maturity_label(path, language)
                 entries.append(
                     pick_text(
                         language,
-                        f"- {path.name} | 状态: {status_text} | 路径: {display_path(path, company_dir)}",
-                        f"- {path.name} | Status: {status_text} | Path: {display_path(path, company_dir)}",
+                        f"- {path.name} | 文档成熟度: {status_text} | 路径: {display_path(path, company_dir)}",
+                        f"- {path.name} | Document Maturity: {status_text} | Path: {display_path(path, company_dir)}",
                     )
                 )
         if not entries:
@@ -1449,9 +1463,9 @@ def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
 
     lines.extend(
         [
-            pick_text(language, "## 使用说明", "## How To Use"),
+            pick_text(language, "## 使用方式", "## How To Use"),
             "",
-            pick_text(language, "- 先打开本文件看清有哪些交付件，再进入对应目录补齐内容。", "- Open this file first to see the deliverable plan, then complete the content in the matching directories."),
+            pick_text(language, "- 先打开本文件看清当前有哪些正式件，再进入对应目录直接补齐内容。", "- Open this file first to see the formal documents that already exist, then continue refining the matching files directly."),
             pick_text(language, "- 如果文件名、顺序或内容边界不合适，直接告诉我你要怎么改，我会继续收口。", "- If the file names, ordering, or scope feel wrong, tell me what to adjust and I will tighten the system further."),
             "",
         ]
@@ -1465,6 +1479,26 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
 
     language = normalize_language(state.get("language"), state.get("company_name"), state.get("product_name"))
     state["language"] = language
+    legacy_root_paths = {
+        company_dir / "07-文档产物规范.md": company_dir / "07-交付物地图.md",
+        company_dir / "11-交付状态总览.md": company_dir / "11-交付目录总览.md",
+    }
+    for legacy_path, current_path in legacy_root_paths.items():
+        if legacy_path.exists() and not current_path.exists():
+            legacy_path.rename(current_path)
+        elif legacy_path.exists() and current_path.exists():
+            legacy_path.unlink()
+    artifact_dir = company_dir / ARTIFACT_ROOT
+    if artifact_dir.is_dir():
+        for path in sorted(artifact_dir.rglob("*.docx")):
+            parsed = parse_planned_docx_name(path.name)
+            if not parsed or parsed.get("legacy_status") is None:
+                continue
+            desired = path.with_name(f"{parsed['index']:02d}-{parsed['title']}.docx")
+            if desired.exists():
+                path.unlink()
+            else:
+                path.rename(desired)
     stage_id = state["stage_id"]
     stage = stage_meta(stage_id, language)
     state["stage_label"] = stage["label"]
@@ -1531,7 +1565,7 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text(company_dir / "04-当前回合.md", render_template("current-round-template.md", round_values))
     write_text(company_dir / "05-推进规则.md", render_template("execution-rules-template.md", common_values))
     write_text(company_dir / "06-触发器与校准规则.md", render_template("calibration-rules-template.md", common_values))
-    write_text(company_dir / "07-文档产物规范.md", render_template("artifact-output-guide-template.md", common_values))
+    write_text(company_dir / "07-交付物地图.md", render_template("artifact-output-guide-template.md", common_values))
     write_text(
         company_dir / "08-阶段角色与交付矩阵.md",
         render_template("stage-role-deliverable-matrix-template.md", {**common_values, **matrix_values}),
@@ -1573,11 +1607,11 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         docx_values = {
             **artifact_template_values(common_values, state),
             "ARTIFACT_TITLE": spec["title"],
-            "ARTIFACT_STATUS": pick_text(language, "待生成", "Pending"),
-            "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "当前是占位交付件，标题和路径已锁定，等待填充真实内容。", "This is currently a placeholder deliverable. The title and path are locked, and the real content still needs to be filled in."),
+            "ARTIFACT_STATUS": pick_text(language, "起始版", "Starter Formal Doc"),
+            "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "当前已经生成正式文档起始版，可直接在本文件继续补齐真实内容、证据和验收结论。", "A starter formal document has been created. Continue filling in the real content, evidence, and acceptance result in this file directly."),
             "ARTIFACT_FILE_PATH": display_path(output_path, company_dir),
         }
         rendered = render_template(spec["template"], docx_values)
         write_docx(output_path, rendered, title=spec["title"])
 
-    write_text(company_dir / "11-交付状态总览.md", artifact_status_summary_markdown(company_dir, language))
+    write_text(company_dir / "11-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))

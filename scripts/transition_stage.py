@@ -91,31 +91,31 @@ def main() -> int:
         company_dir / "04-当前回合.md",
         company_dir / "08-阶段角色与交付矩阵.md",
         company_dir / "09-当前阶段交付要求.md",
-        company_dir / "11-交付状态总览.md",
+        company_dir / "11-交付目录总览.md",
     ]
     if new_stage_id == "launch":
         stage_saved_paths.extend(
             [
-                company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx",
-                company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx",
-                company_dir / "产物" / "05-上线与增长" / "01-[待生成]上线公告与反馈回收清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx",
+                company_dir / "产物" / "05-上线与增长" / "01-上线公告与反馈回收清单.docx",
             ]
         )
     elif new_stage_id == "operate":
         stage_saved_paths.extend(
             [
-                company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx",
-                company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx",
-                company_dir / "产物" / "04-部署与生产" / "03-[待生成]事故响应与复盘记录.docx",
-                company_dir / "产物" / "05-上线与增长" / "01-[待生成]上线公告与反馈回收清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "03-事故响应与复盘记录.docx",
+                company_dir / "产物" / "05-上线与增长" / "01-上线公告与反馈回收清单.docx",
             ]
         )
     elif new_stage_id == "grow":
         stage_saved_paths.extend(
             [
-                company_dir / "产物" / "04-部署与生产" / "01-[待生成]部署与回滚清单.docx",
-                company_dir / "产物" / "04-部署与生产" / "02-[待生成]生产观测与告警清单.docx",
-                company_dir / "产物" / "05-上线与增长" / "01-[待生成]增长实验与经营复盘.docx",
+                company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx",
+                company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx",
+                company_dir / "产物" / "05-上线与增长" / "01-增长实验与经营复盘.docx",
             ]
         )
 
@@ -151,7 +151,7 @@ def main() -> int:
         work_scope=[
             pick_text(language, "切换公司当前阶段，并刷新默认激活角色。", "Transition the company into a new stage and refresh the default active roles."),
             pick_text(language, "如果指定了新阶段首回合，就同步创建首回合定义。", "If a first round for the new stage was provided, create it in the same run."),
-            pick_text(language, "同步刷新该阶段要求的实际产出、部署与生产资料模板。", "Refresh the stage-specific deliverable, deployment, and production templates."),
+            pick_text(language, "同步刷新该阶段要求的实际交付文档、部署资料和生产资料。", "Refresh the stage-specific deliverable documents, deployment materials, and production materials."),
             pick_text(language, "把阶段切换的理由与结果写入工作区。", "Write the transition reason and outcome into the workspace."),
         ],
         non_scope=[
