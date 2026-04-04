@@ -1655,6 +1655,95 @@ def build_delivery_doc(state: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def build_mvp_checklist_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    product = state["product"]
+    focus = state["focus"]
+    lines = [
+        pick_text(language, "# MVP 与上线清单", "# MVP And Launch Checklist"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 这版先交付什么", "## What This Version Must Deliver"),
+        "",
+        f"- {pick_text(language, '当前版本', 'Current Version')}: {product['current_version']}",
+        f"- {pick_text(language, '当前状态', 'Current State')}: {product_state_label(product['state'], language)}",
+        f"- {pick_text(language, '当前主瓶颈', 'Primary Bottleneck')}: {focus['primary_bottleneck']}",
+        "",
+        pick_text(language, "## Demo 必须出现", "## Demo Must Show"),
+        "",
+        format_list(product.get("core_capability", []), language),
+        "",
+        pick_text(language, "## 上线前必须补齐", "## Must Be Closed Before Launch"),
+        "",
+        format_list(product.get("current_gap", []), language),
+        "",
+        pick_text(language, "## 当前发版原则", "## Current Release Principle"),
+        "",
+        pick_text(language, "- 先做能演示、能试用、能收反馈的最小版本，不先堆完整功能。", "- Ship the smallest version that can be demoed, trialed, and observed before building out the full product."),
+        pick_text(language, "- 先把价值边界、试用入口、反馈闭环跑通，再决定要不要重投入工程化。", "- Get the value boundary, trial entry, and feedback loop working before committing to heavy engineering."),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_sales_action_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    pipeline = state["pipeline"]
+    summary = pipeline["stage_summary"]
+    lines = [
+        pick_text(language, "# 成交动作清单", "# Revenue Action Checklist"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 当前漏斗", "## Current Funnel"),
+        "",
+        f"- {pick_text(language, '发现', 'Discovering')}: {summary['discovering']}",
+        f"- {pick_text(language, '对话', 'Talking')}: {summary['talking']}",
+        f"- {pick_text(language, '试用', 'Trial')}: {summary['trial']}",
+        f"- {pick_text(language, '报价', 'Proposal')}: {summary['proposal']}",
+        f"- {pick_text(language, '成交', 'Won')}: {summary['won']}",
+        "",
+        f"- {pick_text(language, '下一条真实成交动作', 'Next Real Revenue Action')}: {pipeline['next_revenue_action']}",
+        "",
+        pick_text(language, "## 本周必须推进", "## Must Move This Week"),
+        "",
+        pick_text(language, "- 锁定 10 个真实目标客户或渠道对象。", "- Lock 10 real target buyers or channel partners."),
+        pick_text(language, "- 完成 5 次深访，记录原话、卡点和付费信号。", "- Run 5 interviews and capture exact words, blockers, and buying signals."),
+        pick_text(language, "- 约出至少 3 个愿意看 demo 的对象。", "- Book at least 3 people willing to watch the demo."),
+        pick_text(language, "- 给每个机会都写清楚下一步，而不是只记名字。", "- Give every opportunity a next step instead of just a name."),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def build_launch_checklist_doc(state: dict[str, Any]) -> str:
+    language = state["language"]
+    product = state["product"]
+    offer = state["offer"]
+    lines = [
+        pick_text(language, "# 上线检查清单", "# Launch Checklist"),
+        "",
+        f"{pick_text(language, '更新时间', 'Updated At')}: {now_string()}",
+        "",
+        pick_text(language, "## 上线前要确认", "## Confirm Before Launch"),
+        "",
+        f"- {pick_text(language, '卖什么结果', 'Promised Result')}: {offer['promise']}",
+        f"- {pick_text(language, '面向谁', 'Target Buyer')}: {offer['target_customer']}",
+        f"- {pick_text(language, '上线入口', 'Launch Entry')}: {product['launch_path'] or pick_text(language, '待补充', 'Add launch path')}",
+        f"- {pick_text(language, '当前阻塞', 'Current Blocker')}: {product['launch_blocker']}",
+        "",
+        pick_text(language, "## 最低上线标准", "## Minimum Launch Bar"),
+        "",
+        pick_text(language, "- 能被解释清楚：用户 30 秒内知道你解决什么问题。", "- Explainable: the user understands the promised result within 30 seconds."),
+        pick_text(language, "- 能被试用：有明确 demo、表单、预约或开通入口。", "- Trialable: there is a clear demo, form, booking, or activation path."),
+        pick_text(language, "- 能被收集反馈：知道看什么数据、问什么问题。", "- Observable: you know which feedback and signals to collect."),
+        pick_text(language, "- 能解释边界：不做什么、风险在哪里、谁来承担最终决策。", "- Bounded: you can explain what the product does not do, the risks, and who keeps final responsibility."),
+        "",
+    ]
+    return "\n".join(lines) + "\n"
+
+
 def build_cash_doc(state: dict[str, Any]) -> str:
     language = state["language"]
     cash = state["cash"]
@@ -1942,11 +2031,11 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text_if_missing(company_dir / "12-会话交接.md", build_session_handoff_doc(state))
 
     write_text(company_dir / "records" / "01-当前经营快照.md", build_operating_dashboard(state, company_dir))
-    write_text(company_dir / "sales" / "01-成交动作清单.md", build_pipeline_doc(state))
-    write_text(company_dir / "product" / "01-MVP与上线清单.md", build_product_doc(state))
+    write_text(company_dir / "sales" / "01-成交动作清单.md", build_sales_action_doc(state))
+    write_text(company_dir / "product" / "01-MVP与上线清单.md", build_mvp_checklist_doc(state))
     write_text(company_dir / "delivery" / "01-客户交付追踪.md", build_delivery_doc(state))
     write_text(company_dir / "delivery" / "02-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))
-    write_text(company_dir / "ops" / "01-上线检查清单.md", build_product_doc(state))
+    write_text(company_dir / "ops" / "01-上线检查清单.md", build_launch_checklist_doc(state))
     write_text(company_dir / "assets" / "01-资产沉淀清单.md", build_asset_doc(state))
     write_text(
         company_dir / "automation" / "01-状态说明.md",

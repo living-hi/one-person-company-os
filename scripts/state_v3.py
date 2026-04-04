@@ -167,15 +167,19 @@ def product_state_from_stage(stage_id: str) -> str:
 
 
 def stage_from_product_and_focus(product_state: str, primary_arena: str, won: int, active_customers: int) -> str:
-    if active_customers > 0 and primary_arena in {"delivery", "asset"}:
-        return "operate"
-    if primary_arena == "cash":
-        return "grow" if won > 0 or active_customers > 0 else "operate"
-    if product_state in {"live"}:
-        return "operate" if active_customers > 0 else "launch"
+    if product_state in {"defined", "prototype", "internal"}:
+        return "build"
     if product_state in {"external", "launchable"}:
         return "launch"
-    if primary_arena == "product" or product_state in {"defined", "prototype", "internal"}:
+    if product_state == "live":
+        if primary_arena == "cash" and (won > 0 or active_customers > 0):
+            return "grow"
+        return "operate" if active_customers > 0 else "launch"
+    if active_customers > 0 and primary_arena in {"delivery", "asset"}:
+        return "operate"
+    if primary_arena == "cash" and (won > 0 or active_customers > 0):
+        return "grow"
+    if primary_arena == "product":
         return "build"
     return "validate"
 

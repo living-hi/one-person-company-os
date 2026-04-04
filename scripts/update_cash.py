@@ -47,7 +47,6 @@ def main() -> int:
     if args.runway_note:
         cash["runway_note"] = args.runway_note
 
-    state["focus"]["primary_arena"] = "cash"
     print_step(4, 5, "执行与落盘", language=language)
     save_state(company_dir, state)
     render_workspace(company_dir, state)

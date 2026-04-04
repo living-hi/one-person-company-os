@@ -345,6 +345,56 @@ def validate_workspace_scripts() -> None:
         assert_contains(asset_record.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "记录资产沉淀", "07-资产与自动化.md")
         print(asset_record.stdout.strip())
 
+        deploy_artifact = run(
+            str(SCRIPTS_DIR / "generate_artifact_document.py"),
+            str(company_dir),
+            "--title",
+            "部署与回滚清单",
+            "--artifact-type",
+            "部署清单",
+            "--category",
+            "ops",
+            "--summary",
+            "明确首版产品演示环境的部署入口、配置项、回滚方式和验证步骤。",
+            "--deployment-item",
+            "演示环境部署步骤",
+            "--deployment-item",
+            "关键环境变量检查",
+            "--deployment-item",
+            "回滚触发条件与回退流程",
+            "--evidence",
+            "workspace/北辰实验室/ops/01-上线检查清单.md",
+            "--risk",
+            "部署说明与实际入口可能仍需继续校准",
+        )
+        assert_contains(deploy_artifact.stdout, "生成正式交付文档", "部署与回滚清单", ".docx")
+        print(deploy_artifact.stdout.strip())
+
+        production_artifact = run(
+            str(SCRIPTS_DIR / "generate_artifact_document.py"),
+            str(company_dir),
+            "--title",
+            "生产观测与告警清单",
+            "--artifact-type",
+            "生产运维清单",
+            "--category",
+            "ops",
+            "--summary",
+            "明确首版产品上线后的监控、告警、值守与故障观察要点。",
+            "--production-item",
+            "关键成功事件监控",
+            "--production-item",
+            "错误告警与升级路径",
+            "--production-item",
+            "试用与回款转化观察项",
+            "--evidence",
+            "workspace/北辰实验室/06-现金流与经营健康.md",
+            "--risk",
+            "告警口径仍需结合真实上线环境继续细化",
+        )
+        assert_contains(production_artifact.stdout, "生成正式交付文档", "生产观测与告警清单", ".docx")
+        print(production_artifact.stdout.strip())
+
         checkpoint = run(str(SCRIPTS_DIR / "checkpoint_save.py"), str(company_dir), "--reason", "准备结束当前会话，保存一次可恢复检查点", "--note", "验证 checkpoint save 能力")
         assert_contains(checkpoint.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "保存检查点", "记录/检查点")
         print(checkpoint.stdout.strip())

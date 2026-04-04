@@ -1,5 +1,23 @@
 # Release Notes
 
+## v0.6.1 - Support-Surface Upgrade And Stage-Inference Fix
+
+`v0.6.0` rebuilt the product around a business loop.
+
+`v0.6.1` fixes two practical issues that appeared during a real founder-style run:
+
+- stage inference could drift when cash updates changed focus metadata
+- supporting work surfaces under `product/`, `sales/`, and `ops/` were still too shallow and duplicated the root docs
+
+This release adds and updates:
+
+- a safer `stage_from_product_and_focus()` rule so build-stage products stay in build unless real launch or live signals exist
+- a fix in `update_cash.py` so cash updates stop hijacking the main arena by default
+- actionable generated checklists for MVP, revenue actions, and launch readiness
+- stronger release validation that explicitly generates and verifies deployment and production DOCX artifacts
+
+The result is a system that behaves more coherently during real execution, especially when a founder is moving between product, sales, delivery, and cash views inside one ongoing company loop.
+
 ## v0.6.0 - Business-Loop Operating System
 
 `v0.5.8` fixed the file surface so deliverables looked like real documents instead of document specification.
