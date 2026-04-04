@@ -43,7 +43,7 @@
 - 下一步最短动作
 - 是否需要创始人确认
 
-以 [orchestration/handoff-schema.json](/home/living/.openclaw/workspace/one-person-company-os/orchestration/handoff-schema.json) 为准。
+以 [orchestration/handoff-schema.json](/home/living/.openclaw/workspace/skills/one-person-company-os/orchestration/handoff-schema.json) 为准。
 
 ## 推荐执行顺序
 

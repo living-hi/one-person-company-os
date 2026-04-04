@@ -6,7 +6,7 @@ This directory lives inside a larger workspace repository, so publish it as its 
 
 If you are working in this machine, keep the local folder names aligned with the skill slug:
 
-- repo dir: `/home/living/.openclaw/workspace/one-person-company-os`
+- repo dir: `/home/living/.openclaw/workspace/skills/one-person-company-os`
 - private release dir: `/home/living/.openclaw/workspace/one-person-company-os-release`
 
 Do not keep local names like `one-person-company` while the actual skill slug is `one-person-company-os`. That mismatch is easy to forget and makes ClawHub publish and follow-up verification more error-prone.
@@ -45,7 +45,7 @@ Before pushing, make sure `python3 scripts/validate_release.py` passes locally s
 For later updates on this machine, the practical flow is:
 
 ```bash
-cd /home/living/.openclaw/workspace/one-person-company-os
+cd /home/living/.openclaw/workspace/skills/one-person-company-os
 python3 scripts/preflight_check.py --mode 创建公司
 python3 scripts/ensure_python_runtime.py
 python3 scripts/validate_release.py
@@ -53,7 +53,7 @@ git status --short
 git add .
 git commit -m "release: rebuild as one-person-company business loop"
 git push origin main
-clawhub publish /home/living/.openclaw/workspace/one-person-company-os \
+clawhub publish /home/living/.openclaw/workspace/skills/one-person-company-os \
   --slug one-person-company-os \
   --name "One Person Company OS" \
   --version 0.6.0 \
