@@ -1,5 +1,19 @@
 # Release Notes
 
+## v0.6.4 - Direction-First Bootstrap And Vertical-Neutral Defaults
+
+`v0.6.3` cleaned the lock-file artifact left by safer persistence.
+
+`v0.6.4` fixes the deeper founder-trust problem exposed in the next audit: the package still looked direction-first in documentation, but the generated default surfaces were effectively bound to one leaked vertical case.
+
+This release adds and updates:
+
+- vertical-neutral landing-copy, interview-board, trial-intake, feedback, and demo templates
+- a confirmed-input gate in `scripts/init_company.py` so workspace creation requires real founder direction instead of placeholder defaults
+- updated README, release docs, ClawHub prompt copy, and validation so the public contract matches the actual runtime behavior
+
+The result is a cleaner product boundary: the system now asks for direction first, waits for confirmation, and only then writes a reusable one-person-company workspace.
+
 ## v0.6.3 - Lock-Artifact Cleanup
 
 `v0.6.2` added merge-safe locked persistence for overlapping founder actions.

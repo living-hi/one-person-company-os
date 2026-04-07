@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.4 - 2026-04-07
+
+- removed the hard-coded leaked vertical case from generated founder-facing surfaces such as landing copy, interview board, trial intake, feedback capture, and demo HTML
+- enforced a direction-first bootstrap contract in `scripts/init_company.py` so workspace creation now requires confirmed founder inputs instead of placeholder defaults
+- updated validation, README, release collateral, prompt metadata, and first-run docs so the public surface matches the real runtime behavior
+
 ## v0.6.3 - 2026-04-04
 
 - removed leftover state lock artifacts from founder workspaces so merge-safe persistence no longer leaves `当前状态.json.lock` behind after script runs
