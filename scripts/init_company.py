@@ -35,6 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--company-goal", default="先跑通最小闭环并拿到第一轮真实反馈", help="当前主目标")
     parser.add_argument("--current-bottleneck", default="尚未定义首个回合", help="当前瓶颈")
     parser.add_argument("--language", default="auto", help="工作语言，如 zh-CN、en-US 或 auto")
+    parser.add_argument("--confirmed", action="store_true", help="确认创始人已确认方向与创建草案")
     parser.add_argument("--force", action="store_true", help="允许写入已存在目录")
     return parser
 
@@ -63,6 +64,34 @@ def main() -> int:
         args.company_goal = "Ship the smallest useful loop and collect the first real feedback"
     if args.current_bottleneck == "尚未定义首个回合" and language == "en-US":
         args.current_bottleneck = "The first round has not been defined yet"
+    if not args.confirmed:
+        parser.error(
+            pick_text(
+                language,
+                "初始化前必须先确认创业方向与创建草案。先和创始人澄清一句话想法、首批买家与核心问题，确认后再带上 --confirmed 创建工作区。",
+                "Direction confirmation is required before initialization. Clarify the one-line idea, first buyer, and core problem with the founder, then rerun with --confirmed to create the workspace.",
+            )
+        )
+
+    placeholder_values = {
+        "product_name": {"未命名产品", "Untitled Product"},
+        "target_user": {"待确认用户", "Target user to be confirmed"},
+        "core_problem": {"待确认核心问题", "Core problem to be confirmed"},
+        "product_pitch": {"待补充产品一句话定义", "Add the one-line product pitch"},
+    }
+    missing_fields = [
+        key
+        for key, values in placeholder_values.items()
+        if getattr(args, key) in values
+    ]
+    if missing_fields:
+        parser.error(
+            pick_text(
+                language,
+                f"创建前还缺少关键信息：{', '.join(missing_fields)}。请先补齐方向草案，再执行初始化。",
+                f"Key founder inputs are still missing before creation: {', '.join(missing_fields)}. Complete the direction draft first, then initialize.",
+            )
+        )
 
     print_step(1, 5, "模式判定", language=language)
     stage_id = normalize_stage(args.stage)

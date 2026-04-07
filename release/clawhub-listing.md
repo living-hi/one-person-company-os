@@ -59,12 +59,12 @@ The first serious run should produce:
 ## Quick Start Prompts
 
 - `clawhub install one-person-company-os`
-- `I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.`
+- `I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace, tell me the current bottleneck, and update the real files directly.`
 - `Update the focus, then push the product to a demoable MVP.`
 - `Advance the revenue pipeline and tell me the next real revenue action.`
 - `Advance delivery, receivables, and cash health.`
 - `Record this SOP as a reusable asset.`
-- `我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先帮我定义可卖承诺、第一批买家、以及把 MVP 推到可演示和可售卖的最短路径，然后直接创建工作区、告诉我当前主瓶颈，并把真实文件改出来。`
+- `我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先主动问我一句创业想法；如果我还没想好，就给我 3 到 4 个方向让我选。等我们确认可卖承诺、第一批买家和核心问题后，再创建工作区、告诉我当前主瓶颈，并把真实文件改出来。`
 - `先更新主焦点，再继续推进产品与上线。`
 - `继续推进成交管道，并告诉我下一条真实成交动作。`
 - `继续推进交付、回款和现金状态。`
@@ -86,6 +86,6 @@ The system can draft, update, persist, and tighten the loop, but pricing changes
 
 ## Default Prompt
 
-I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace, tell me the current bottleneck, and update the real files directly.
 
-我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先帮我定义可卖承诺、第一批买家、以及把 MVP 推到可演示和可售卖的最短路径，然后直接创建工作区、告诉我当前主瓶颈，并把真实文件改出来。
+我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先主动问我一句创业想法；如果我还没想好，就给我 3 到 4 个方向让我选。等我们确认可卖承诺、第一批买家和核心问题后，再创建工作区、告诉我当前主瓶颈，并把真实文件改出来。

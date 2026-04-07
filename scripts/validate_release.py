@@ -141,6 +141,7 @@ def validate_workspace_scripts() -> None:
             "还没有一个真正能持续推进产品和成交的一人公司系统",
             "--product-pitch",
             "一个帮助独立开发者把产品做出来并卖出去的一人公司控制系统",
+            "--confirmed",
         )
         assert_contains(
             init.stdout,
@@ -490,8 +491,15 @@ def validate_workspace_scripts() -> None:
             "North Star Assistant",
             "--stage",
             "build",
+            "--target-user",
+            "independent developers",
+            "--core-problem",
+            "still lacks a real one-person-company system that keeps product and revenue moving",
+            "--product-pitch",
+            "a one-person-company control system that helps independent developers build and sell their product",
             "--language",
             "en-US",
+            "--confirmed",
         )
         assert_contains(
             english_init.stdout,

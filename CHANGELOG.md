@@ -19,7 +19,7 @@
 - stopped `update_cash.py` from forcibly overwriting the founder's primary arena
 - upgraded generated support work surfaces so `product/01-MVP与上线清单.md`, `sales/01-成交动作清单.md`, and `ops/01-上线检查清单.md` are now actionable checklists instead of duplicated root docs
 - tightened release validation to generate and verify deployment and production DOCX artifacts explicitly instead of relying on stage side effects
-- validated the improved workflow against a realistic regulated-market founder scenario around an AI medical assistant for Chinese clinicians pursuing Australia pathways
+- validated the improved workflow against a realistic narrow-founder scenario without binding the package to any leaked or hard-coded vertical case
 
 ## v0.6.0 - 2026-04-04
 

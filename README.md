@@ -85,7 +85,7 @@ The fixed `Step 1/5 -> Step 5/5` execution flow, persistence reporting, and runt
 ```bash
 python3 scripts/preflight_check.py --mode create-company
 python3 scripts/ensure_python_runtime.py
-python3 scripts/init_business.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
+python3 scripts/init_business.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期 --target-user "independent developers" --core-problem "still lacks a real one-person-company system that keeps product and revenue moving" --product-pitch "a one-person-company control system that helps independent developers build and sell their product" --confirmed
 python3 scripts/update_focus.py ./workspace/北辰实验室 --primary-goal "把 MVP 推到可演示并拿到第一批对话" --primary-arena product --today-action "先补 homepage hero 的价值表达和 CTA 路径"
 python3 scripts/advance_product.py ./workspace/北辰实验室 --state prototype --current-version "v0.1 hero"
 python3 scripts/advance_pipeline.py ./workspace/北辰实验室 --talking 3 --proposal 1 --next-revenue-action "把首版 demo 发给 3 位独立开发者并约反馈"
@@ -106,7 +106,7 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace, tell me the current bottleneck, and update the real files directly.
 ```
 
 ## Language Behavior

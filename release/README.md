@@ -16,7 +16,7 @@ clawhub install one-person-company-os
 Best start prompt:
 
 ```text
-I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First help me define the sellable promise, the first buyer, and the shortest path to a demoable and sellable MVP. Then create the operating workspace, tell me the current bottleneck, and update the real files directly.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace, tell me the current bottleneck, and update the real files directly.
 ```
 
 The generated workspace now opens with:

@@ -85,7 +85,7 @@
 ```bash
 python3 scripts/preflight_check.py --mode 创建公司
 python3 scripts/ensure_python_runtime.py
-python3 scripts/init_business.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期
+python3 scripts/init_business.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期 --target-user "独立开发者" --core-problem "还没有一个真正能持续推进产品和成交的一人公司系统" --product-pitch "一个帮助独立开发者把产品做出来并卖出去的一人公司控制系统" --confirmed
 python3 scripts/update_focus.py ./workspace/北辰实验室 --primary-goal "把 MVP 推到可演示并拿到第一批对话" --primary-arena product --today-action "先补 homepage hero 的价值表达和 CTA 路径"
 python3 scripts/advance_product.py ./workspace/北辰实验室 --state prototype --current-version "v0.1 hero"
 python3 scripts/advance_pipeline.py ./workspace/北辰实验室 --talking 3 --proposal 1 --next-revenue-action "把首版 demo 发给 3 位独立开发者并约反馈"
@@ -106,7 +106,7 @@ clawhub install one-person-company-os
 ## 一句话启动
 
 ```text
-我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先帮我定义可卖承诺、第一批买家、以及把 MVP 推到可演示和可售卖的最短路径，然后直接创建工作区、告诉我当前主瓶颈，并把真实文件改出来。
+我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先主动问我一句创业想法；如果我还没想好，就给我 3 到 4 个方向让我选。等我们确认可卖承诺、第一批买家和核心问题后，再创建工作区、告诉我当前主瓶颈，并把真实文件改出来。
 ```
 
 ## 语言行为
