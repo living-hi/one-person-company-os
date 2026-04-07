@@ -14,7 +14,8 @@ This skill is not a generic startup advisor. It is a business-loop operating sys
 
 - Chinese in -> Chinese runtime and materials by default.
 - English in -> English runtime and materials by default.
-- Keep canonical on-disk paths stable for automation.
+- Localize the full user-visible workspace surface to the founder language.
+- Keep only the hidden machine-state path stable at `.opcos/state/current-state.json`.
 - Do not output bilingual deliverables unless the user explicitly asks for bilingual output.
 
 ## Primary Entry Intents
@@ -59,7 +60,7 @@ Every serious run should clarify:
 
 ## Main Workspace Files
 
-The primary generated workspace should center on:
+The primary generated workspace should center on language-matched files:
 
 - `00-经营总盘.md`
 - `01-创始人约束.md`
@@ -74,6 +75,15 @@ The primary generated workspace should center on:
 - `10-今日最短动作.md`
 - `11-协作记忆.md`
 - `12-会话交接.md`
+
+English workspaces should use the matching English-visible names such as:
+
+- `00-operating-dashboard.md`
+- `01-founder-constraints.md`
+- `02-value-promise-and-pricing.md`
+- `03-opportunity-and-revenue-pipeline.md`
+- `04-product-and-launch-status.md`
+- `05-delivery-and-cash-collection.md`
 
 Legacy stage and round files may still exist for compatibility, but they are not the primary product surface.
 

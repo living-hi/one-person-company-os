@@ -19,7 +19,17 @@ Best start prompt:
 I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace, tell me the current bottleneck, and update the real files directly.
 ```
 
-The generated workspace now opens with:
+The generated workspace now opens with a language-matched surface.
+
+For English founders:
+
+- `00-operating-dashboard.md`
+- `02-value-promise-and-pricing.md`
+- `03-opportunity-and-revenue-pipeline.md`
+- `04-product-and-launch-status.md`
+- `05-delivery-and-cash-collection.md`
+
+For Chinese founders:
 
 - `00-经营总盘.md`
 - `02-价值承诺与报价.md`
@@ -32,5 +42,6 @@ This release line supports:
 - business-loop state v3
 - direct product build and launch coordination
 - pipeline, delivery, cash, and asset updates
+- language-localized founder workspaces plus hidden machine-state storage at `.opcos/state/current-state.json`
 - legacy stage/round compatibility
 - numbered final-named DOCX deliverables

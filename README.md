@@ -22,7 +22,28 @@ On a serious run, the system helps a solo founder:
 
 ## The Real Workspace Model
 
-The generated workspace now centers on operating surfaces instead of stage-first guidance:
+The generated workspace now centers on operating surfaces instead of stage-first guidance.
+
+English workspaces use an English-visible surface:
+
+- `00-operating-dashboard.md`
+- `01-founder-constraints.md`
+- `02-value-promise-and-pricing.md`
+- `03-opportunity-and-revenue-pipeline.md`
+- `04-product-and-launch-status.md`
+- `05-delivery-and-cash-collection.md`
+- `sales/`
+- `product/`
+- `delivery/`
+- `operations/`
+- `assets/`
+- `records/`
+- `automation/`
+- `artifacts/`
+- `roles/`
+- `flows/`
+
+Chinese workspaces use the Chinese-visible equivalents:
 
 - `00-经营总盘.md`
 - `01-创始人约束.md`
@@ -30,30 +51,23 @@ The generated workspace now centers on operating surfaces instead of stage-first
 - `03-机会与成交管道.md`
 - `04-产品与上线状态.md`
 - `05-客户交付与回款.md`
-- `06-现金流与经营健康.md`
-- `07-资产与自动化.md`
-- `08-风险与关键决策.md`
-- `09-本周唯一主目标.md`
-- `10-今日最短动作.md`
-- `11-协作记忆.md`
-- `12-会话交接.md`
-
-Supporting directories:
-
-- `product/`
-- `sales/`
-- `delivery/`
-- `ops/`
-- `assets/`
-- `records/`
-- `automation/`
+- `销售/`
+- `产品/`
+- `交付/`
+- `运营/`
+- `资产/`
+- `记录/`
+- `自动化/`
 - `产物/`
+- `角色智能体/`
+- `流程/`
 
 Legacy stage and round materials are still supported for compatibility, but they are no longer the primary product surface.
 
 ## State Model
 
-The state file stays at `自动化/当前状态.json`, but the core model is now v3 and business-loop driven:
+The founder-visible workspace is localized per language.
+The machine state now lives in the hidden internal path `.opcos/state/current-state.json`, while the core model stays v3 and business-loop driven:
 
 - `founder`
 - `focus`
@@ -113,7 +127,8 @@ I am building a one-person company around an AI product. Use one-person-company-
 
 - Chinese prompt in -> Chinese runtime and materials out by default
 - English prompt in -> English runtime and materials out by default
-- canonical on-disk paths stay stable for automation
+- user-visible workspace files and directories localize to the founder language
+- hidden machine-state storage stays stable at `.opcos/state/current-state.json`
 
 ## Validation
 
@@ -127,6 +142,8 @@ It validates:
 
 - runtime recovery logic
 - business-loop workspace generation
+- Chinese-visible workspace generation
+- English-visible workspace generation
 - new business scripts
 - legacy compatibility path
 - DOCX artifact generation

@@ -11,6 +11,8 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
+from common import artifact_dir_path, root_doc_path, state_path, workspace_dir_path, workspace_file_path
+
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS_DIR = ROOT / "scripts"
@@ -30,6 +32,11 @@ def run(*args: str) -> subprocess.CompletedProcess[str]:
 def assert_exists(path: Path) -> None:
     if not path.is_file():
         raise FileNotFoundError(f"expected file not found: {path}")
+
+
+def assert_not_exists(path: Path) -> None:
+    if path.exists():
+        raise AssertionError(f"unexpected path exists: {path}")
 
 
 def assert_contains(text: str, *snippets: str) -> None:
@@ -156,46 +163,52 @@ def validate_workspace_scripts() -> None:
         print(init.stdout.strip())
 
         company_dir = workspace / "北辰实验室"
-        assert_exists(company_dir / "00-经营总盘.md")
-        assert_exists(company_dir / "01-创始人约束.md")
-        assert_exists(company_dir / "02-价值承诺与报价.md")
-        assert_exists(company_dir / "03-机会与成交管道.md")
-        assert_exists(company_dir / "04-产品与上线状态.md")
-        assert_exists(company_dir / "05-客户交付与回款.md")
-        assert_exists(company_dir / "06-现金流与经营健康.md")
-        assert_exists(company_dir / "07-资产与自动化.md")
-        assert_exists(company_dir / "08-风险与关键决策.md")
-        assert_exists(company_dir / "09-本周唯一主目标.md")
-        assert_exists(company_dir / "10-今日最短动作.md")
-        assert_exists(company_dir / "11-协作记忆.md")
-        assert_exists(company_dir / "12-会话交接.md")
-        assert_exists(company_dir / "角色智能体" / "角色清单.md")
-        assert_exists(company_dir / "sales" / "01-成交动作清单.md")
-        assert_exists(company_dir / "product" / "01-MVP与上线清单.md")
-        assert_exists(company_dir / "delivery" / "01-客户交付追踪.md")
-        assert_exists(company_dir / "delivery" / "02-交付目录总览.md")
-        assert_exists(company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx")
-        assert_exists(company_dir / "产物" / "02-软件与代码" / "01-代码与功能交付清单.docx")
-        assert_exists(company_dir / "产物" / "02-软件与代码" / "02-测试与验收记录.docx")
-        assert_exists(company_dir / "产物" / "03-非软件与业务" / "01-非软件交付清单.docx")
-        assert_exists(company_dir / "自动化" / "当前状态.json")
+        for legacy_dir in ("sales", "product", "delivery", "operations", "ops", "assets", "records", "roles", "flows", "automation", "artifacts"):
+            assert_not_exists(company_dir / legacy_dir)
+        assert_not_exists(company_dir / "自动化" / "当前状态.json")
+        for key in (
+            "dashboard",
+            "founder_constraints",
+            "offer",
+            "pipeline",
+            "product_status",
+            "delivery_cash",
+            "cash_health",
+            "assets_automation",
+            "risks",
+            "week_focus",
+            "today_action",
+            "collaboration_memory",
+            "session_handoff",
+        ):
+            assert_exists(root_doc_path(company_dir, key, "zh-CN"))
+        assert_exists(workspace_file_path(company_dir, "role_index", "zh-CN"))
+        assert_exists(workspace_file_path(company_dir, "sales_actions", "zh-CN"))
+        assert_exists(workspace_file_path(company_dir, "product_checklist", "zh-CN"))
+        assert_exists(workspace_file_path(company_dir, "delivery_tracker", "zh-CN"))
+        assert_exists(workspace_file_path(company_dir, "delivery_directory", "zh-CN"))
+        assert_exists(artifact_dir_path(company_dir, "delivery", "zh-CN") / "01-实际产出总表.docx")
+        assert_exists(artifact_dir_path(company_dir, "software", "zh-CN") / "01-代码与功能交付清单.docx")
+        assert_exists(artifact_dir_path(company_dir, "software", "zh-CN") / "02-测试与验收记录.docx")
+        assert_exists(artifact_dir_path(company_dir, "business", "zh-CN") / "01-非软件交付清单.docx")
+        assert_exists(state_path(company_dir))
         if (company_dir / "产物" / "产品").exists() or (company_dir / "产物" / "增长").exists() or (company_dir / "产物" / "运营").exists():
             raise AssertionError("legacy unnumbered artifact directories should not be created")
-        artifact_md_files = list((company_dir / "产物").rglob("*.md"))
+        artifact_md_files = list(workspace_dir_path(company_dir, "artifacts_root", "zh-CN").rglob("*.md"))
         if artifact_md_files:
             raise AssertionError(f"expected only docx files under artifacts, found markdown: {artifact_md_files}")
         assert_contains(
-            read_docx_text(company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx"),
+            read_docx_text(artifact_dir_path(company_dir, "delivery", "zh-CN") / "01-实际产出总表.docx"),
             "实际产出总表",
             "起始版",
         )
         assert_contains(
-            (company_dir / "00-经营总盘.md").read_text(encoding="utf-8"),
+            root_doc_path(company_dir, "dashboard", "zh-CN").read_text(encoding="utf-8"),
             "当前结论",
             "闭环健康",
         )
         assert_contains(
-            (company_dir / "04-产品与上线状态.md").read_text(encoding="utf-8"),
+            root_doc_path(company_dir, "product_status", "zh-CN").read_text(encoding="utf-8"),
             "产品与上线状态",
             "当前状态",
         )
@@ -214,7 +227,7 @@ def validate_workspace_scripts() -> None:
             "--week-outcome",
             "拿到可演示的首版首页与注册入口",
         )
-        assert_contains(focus_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "更新主焦点", "00-经营总盘.md")
+        assert_contains(focus_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "更新主焦点", root_doc_path(company_dir, "dashboard", "zh-CN").name)
         print(focus_update.stdout.strip())
 
         product_update = run(
@@ -235,7 +248,7 @@ def validate_workspace_scripts() -> None:
             "--repository",
             "workspace/北辰实验室",
         )
-        assert_contains(product_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "推进产品与上线", "04-产品与上线状态.md")
+        assert_contains(product_update.stdout, "Step 5/5 核对结果、说明变化并给出回报 [验证与回报]", "推进产品与上线", root_doc_path(company_dir, "product_status", "zh-CN").name)
         print(product_update.stdout.strip())
 
         pipeline_update = run(
@@ -299,11 +312,11 @@ def validate_workspace_scripts() -> None:
             ".docx",
         )
         print(artifact_docs.stdout.strip())
-        generated_docx = company_dir / "产物" / "02-软件与代码" / "03-首页首屏规范.docx"
+        generated_docx = artifact_dir_path(company_dir, "software", "zh-CN") / "03-首页首屏规范.docx"
         assert_exists(generated_docx)
         assert_contains(read_docx_text(generated_docx), "首页首屏规范", "实际软件与代码产出", "证据与验收路径", "交付就绪版")
         assert_contains(
-            (company_dir / "delivery" / "02-交付目录总览.md").read_text(encoding="utf-8"),
+            workspace_file_path(company_dir, "delivery_directory", "zh-CN").read_text(encoding="utf-8"),
             "03-首页首屏规范.docx",
             "文档成熟度: 交付就绪版",
         )
@@ -364,7 +377,7 @@ def validate_workspace_scripts() -> None:
             "--deployment-item",
             "回滚触发条件与回退流程",
             "--evidence",
-            "workspace/北辰实验室/ops/01-上线检查清单.md",
+            "workspace/北辰实验室/运营/01-上线检查清单.md",
             "--risk",
             "部署说明与实际入口可能仍需继续校准",
         )
@@ -433,7 +446,7 @@ def validate_workspace_scripts() -> None:
             "当前内容仅输出到标准输出，未指定 --output-dir",
         )
 
-        output_dir = company_dir / "角色智能体"
+        output_dir = workspace_dir_path(company_dir, "roles", "zh-CN")
         stage_briefs = run(
             str(SCRIPTS_DIR / "build_agent_brief.py"),
             "--stage",
@@ -462,9 +475,9 @@ def validate_workspace_scripts() -> None:
         assert_exists(output_dir / "增长负责人.md")
         assert_exists(output_dir / "运维保障.md")
         assert_exists(output_dir / "用户运营.md")
-        assert_exists(company_dir / "产物" / "04-部署与生产" / "01-部署与回滚清单.docx")
-        assert_exists(company_dir / "产物" / "04-部署与生产" / "02-生产观测与告警清单.docx")
-        assert_exists(next((company_dir / "记录" / "检查点").glob("*-检查点.md")))
+        assert_exists(artifact_dir_path(company_dir, "ops", "zh-CN") / "01-部署与回滚清单.docx")
+        assert_exists(artifact_dir_path(company_dir, "ops", "zh-CN") / "02-生产观测与告警清单.docx")
+        assert_exists(next(workspace_dir_path(company_dir, "records_checkpoint", "zh-CN").glob("*-检查点.md")))
 
         english_preflight = run(
             str(SCRIPTS_DIR / "preflight_check.py"),
@@ -511,9 +524,20 @@ def validate_workspace_scripts() -> None:
         print(english_init.stdout.strip())
 
         english_company_dir = workspace / "North Star Lab"
-        assert_exists(english_company_dir / "00-经营总盘.md")
-        assert_contains((english_company_dir / "00-经营总盘.md").read_text(encoding="utf-8"), "Operating Dashboard", "Current Read")
-        assert_contains((english_company_dir / "角色智能体" / "工程负责人.md").read_text(encoding="utf-8"), "Engineering Lead", "Outputs")
+        for legacy_dir in ("销售", "产品", "交付", "运营", "资产", "记录", "角色智能体", "流程", "自动化", "产物"):
+            assert_not_exists(english_company_dir / legacy_dir)
+        for legacy_root_file in (
+            "00-经营总盘.md",
+            "01-创始人约束.md",
+            "02-价值承诺与报价.md",
+            "03-机会与成交管道.md",
+            "04-产品与上线状态.md",
+        ):
+            assert_not_exists(english_company_dir / legacy_root_file)
+        assert_not_exists(english_company_dir / "自动化" / "当前状态.json")
+        assert_exists(root_doc_path(english_company_dir, "dashboard", "en-US"))
+        assert_contains(root_doc_path(english_company_dir, "dashboard", "en-US").read_text(encoding="utf-8"), "Operating Dashboard", "Current Read")
+        assert_contains((workspace_dir_path(english_company_dir, "roles", "en-US") / "engineering-lead.md").read_text(encoding="utf-8"), "Engineering Lead", "Outputs")
 
         english_artifact = run(
             str(SCRIPTS_DIR / "generate_artifact_document.py"),
@@ -533,7 +557,7 @@ def validate_workspace_scripts() -> None:
             "Generated a formal DOCX",
             "Mode A: Script Execution",
         )
-        english_generated_docx = english_company_dir / "产物" / "02-软件与代码" / "03-Homepage-Hero-Spec.docx"
+        english_generated_docx = artifact_dir_path(english_company_dir, "software", "en-US") / "03-Homepage-Hero-Spec.docx"
         assert_exists(english_generated_docx)
         assert_contains(read_docx_text(english_generated_docx), "Homepage Hero Spec", "Evidence And Acceptance Paths", "Delivery-Ready")
 

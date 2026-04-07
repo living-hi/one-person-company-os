@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.5 - 2026-04-07
+
+- localized the entire founder-visible workspace surface so Chinese founders now get Chinese file and directory names while English founders get English-visible equivalents
+- moved machine state to the hidden internal path `.opcos/state/current-state.json` and removed the old visible state-file leak from founder workspaces
+- added path-layout helpers, migration-safe workspace harmonization, localized artifact names, and stricter release validation for Chinese and English workspace separation
+
 ## v0.6.4 - 2026-04-07
 
 - removed the hard-coded leaked vertical case from generated founder-facing surfaces such as landing copy, interview board, trial intake, feedback capture, and demo HTML

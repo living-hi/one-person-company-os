@@ -2,41 +2,34 @@
 
 ## X / Short Post
 
-I rebuilt `one-person-company-os`.
+I upgraded `one-person-company-os` to `v0.6.5`.
 
-It is now a language-aware control system for AI-native solo companies:
+It now asks for founder direction first, then creates a real operating workspace that matches the founder language all the way down to visible file and directory names.
 
-- validate demand
-- ship a small MVP
-- launch narrowly
-- improve from real feedback
-
-Not a prompt bundle. Not a weekly review ritual.
+Not a prompt bundle. Not a mixed-language workspace with translated text on top.
 
 ## X / 中文短帖
 
-我把 `one-person-company-os` 重写了。
+我把 `one-person-company-os` 升级到 `v0.6.5`。
 
-现在它不是“按周复盘的一人公司文档包”，而是：
+这一版补上了一个很关键的产品缺口：
 
-- 先验证需求
-- 再做最小 MVP
-- 再小范围上线
-- 再根据反馈持续改进
+- 中文用户拿到纯中文可见工作区
+- 英文用户拿到纯英文可见工作区
+- 机器状态隐藏到 `.opcos/state/current-state.json`
 
-中文用户默认得到中文运行过程和中文资料。
-英文用户默认得到英文运行过程和英文资料。
+不再是“内容翻译了，但路径还是中英混合”。
 
 ## LinkedIn / Longer Post
 
-`one-person-company-os` has been rebuilt around a faster loop:
+`one-person-company-os` now closes a subtle but important trust gap.
 
-- company setup draft first
-- fast validation
-- smallest useful MVP
-- narrow launch
-- feedback-driven iteration
+The runtime had already become direction-first and bilingual, but the generated workspace still mixed Chinese and English visible paths and exposed internal state in the founder surface.
 
-The result is much closer to how an AI-native solo company should actually run.
+`v0.6.5` fixes that:
 
-It now serves both Chinese and English founders with language-matched runtime output and generated materials.
+- founder-visible workspaces localize fully by language
+- internal machine state moves to `.opcos/state/current-state.json`
+- release validation now checks Chinese and English workspace separation directly
+
+The result is a product that behaves more like a serious founder operating system and less like a translated wrapper around one filesystem layout.

@@ -41,6 +41,22 @@ from localization import (
     template_text,
 )
 from state_v3 import read_state_any_version, sync_legacy_fields, write_state_v3
+from workspace_layout import (
+    CORE_WORKSPACE_FILE_KEYS,
+    ROOT_DOC_KEYS,
+    artifact_category_path,
+    candidate_container_paths,
+    candidate_user_file_paths,
+    existing_state_path,
+    legacy_container_path,
+    legacy_user_file_path,
+    legacy_state_paths,
+    record_dir_path,
+    role_brief_path,
+    state_path as layout_state_path,
+    user_container_path,
+    user_file_path,
+)
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -48,16 +64,6 @@ SCRIPT_DIR = ROOT / "scripts"
 TEMPLATE_DIR = ROOT / "assets" / "templates"
 ROLE_DIR = ROOT / "agents" / "roles"
 ORCHESTRATION_DIR = ROOT / "orchestration"
-STATE_PATH_PARTS = ("自动化", "当前状态.json")
-CORE_WORKSPACE_FILES = (
-    "00-经营总盘.md",
-    "02-价值承诺与报价.md",
-    "03-机会与成交管道.md",
-    "04-产品与上线状态.md",
-    "05-客户交付与回款.md",
-    "自动化/当前状态.json",
-)
-ARTIFACT_ROOT = "产物"
 REQUIRED_SCRIPT_NAMES = (
     "init_company.py",
     "init_business.py",
@@ -579,37 +585,177 @@ def stage_label(stage_id: str, language: str = "zh-CN") -> str:
 
 
 def state_path(company_dir: Path) -> Path:
-    return company_dir.joinpath(*STATE_PATH_PARTS)
+    return layout_state_path(company_dir)
 
 
-def workspace_core_paths(company_dir: Path) -> list[Path]:
-    return [company_dir / relative for relative in CORE_WORKSPACE_FILES]
+def root_doc_path(company_dir: Path, doc_key: str, language: str) -> Path:
+    return user_file_path(company_dir, doc_key, language)
 
 
-def ensure_workspace_dirs(company_dir: Path) -> None:
-    for relative in [
-        "",
-        "product",
+def workspace_file_path(company_dir: Path, file_key: str, language: str) -> Path:
+    return user_file_path(company_dir, file_key, language)
+
+
+def workspace_dir_path(company_dir: Path, dir_key: str, language: str) -> Path:
+    return user_container_path(company_dir, dir_key, language)
+
+
+def artifact_dir_path(company_dir: Path, category: str, language: str) -> Path:
+    return artifact_category_path(company_dir, category, language)
+
+
+def workspace_core_paths(company_dir: Path, language: str) -> list[Path]:
+    paths = [root_doc_path(company_dir, key, language) for key in CORE_WORKSPACE_FILE_KEYS]
+    paths.append(state_path(company_dir))
+    return paths
+
+
+def _existing_language(company_dir: Path) -> Optional[str]:
+    path = existing_state_path(company_dir)
+    if path.is_file():
+        try:
+            return normalize_language(load_json(path).get("language"))
+        except (json.JSONDecodeError, OSError, ValueError, AttributeError):
+            return None
+    return None
+
+
+def workspace_persisted(company_dir: Optional[Path], language: Optional[str] = None) -> bool:
+    if company_dir is None:
+        return False
+    active_language = normalize_language(language, _existing_language(company_dir))
+    if all(path.is_file() for path in workspace_core_paths(company_dir, active_language)):
+        return True
+    legacy_core = [legacy_user_file_path(company_dir, key) for key in CORE_WORKSPACE_FILE_KEYS]
+    legacy_core.extend(path for path in legacy_state_paths(company_dir))
+    return all(path.is_file() for path in legacy_core)
+
+
+def _move_path(source: Path, target: Path) -> None:
+    if source == target or not source.exists():
+        return
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if target.exists():
+        if source.is_dir() and target.is_dir():
+            for child in sorted(source.iterdir()):
+                _move_path(child, target / child.name)
+            try:
+                source.rmdir()
+            except OSError:
+                pass
+        return
+    source.rename(target)
+
+
+def _cleanup_empty_dirs(paths: list[Path]) -> None:
+    for path in sorted(paths, key=lambda item: len(item.parts), reverse=True):
+        if path.is_dir():
+            try:
+                path.rmdir()
+            except OSError:
+                continue
+
+
+def harmonize_workspace_layout(company_dir: Path, language: str) -> None:
+    container_keys = [
+        "product_demo",
+        "records_progress",
+        "records_decision",
+        "records_calibration",
+        "records_checkpoint",
+        "legacy_root",
+        "artifact_delivery",
+        "artifact_software",
+        "artifact_business",
+        "artifact_ops",
+        "artifact_growth",
         "sales",
+        "product",
         "delivery",
         "ops",
         "assets",
         "records",
-        "automation",
-        "角色智能体",
-        "流程",
-        "产物/01-实际交付",
-        "产物/02-软件与代码",
-        "产物/03-非软件与业务",
-        "产物/04-部署与生产",
-        "产物/05-上线与增长",
-        "记录/推进日志",
-        "记录/决策记录",
-        "记录/校准记录",
-        "记录/检查点",
-        "自动化",
-        ]:
-        (company_dir / relative).mkdir(parents=True, exist_ok=True)
+        "roles",
+        "flows",
+        "artifacts_root",
+    ]
+    touched_dirs: list[Path] = []
+    for key in container_keys:
+        target = workspace_dir_path(company_dir, key, language)
+        for candidate in candidate_container_paths(company_dir, key):
+            if candidate == target:
+                continue
+            _move_path(candidate, target)
+            touched_dirs.append(candidate)
+
+    for key in [
+        *ROOT_DOC_KEYS,
+        "record_snapshot",
+        "sales_actions",
+        "sales_landing",
+        "sales_interview",
+        "sales_trial_application",
+        "product_checklist",
+        "product_demo_index",
+        "delivery_tracker",
+        "delivery_directory",
+        "delivery_feedback",
+        "ops_launch_checklist",
+        "assets_inventory",
+        "automation_notes",
+        "role_index",
+        "flow_bootstrap",
+        "flow_round",
+        "flow_calibration",
+        "flow_stage",
+        "automation_reminders",
+        "automation_scheduler",
+    ]:
+        target = workspace_file_path(company_dir, key, language)
+        for candidate in candidate_user_file_paths(company_dir, key):
+            if candidate == target:
+                continue
+            _move_path(candidate, target)
+            touched_dirs.append(candidate.parent)
+
+    target_automation_dir = workspace_dir_path(company_dir, "automation", language)
+    legacy_automation_dir = legacy_container_path(company_dir, "automation")
+    if legacy_automation_dir != target_automation_dir:
+        for filename in ("提醒规则.md", "定时任务定义.md"):
+            _move_path(legacy_automation_dir / filename, target_automation_dir / filename)
+        touched_dirs.append(legacy_automation_dir)
+
+    _cleanup_empty_dirs(touched_dirs + [legacy_automation_dir])
+
+
+def ensure_workspace_dirs(company_dir: Path, language: str) -> None:
+    directories = [
+        company_dir,
+        workspace_dir_path(company_dir, "sales", language),
+        workspace_dir_path(company_dir, "product", language),
+        workspace_dir_path(company_dir, "product_demo", language),
+        workspace_dir_path(company_dir, "delivery", language),
+        workspace_dir_path(company_dir, "ops", language),
+        workspace_dir_path(company_dir, "assets", language),
+        workspace_dir_path(company_dir, "records", language),
+        workspace_dir_path(company_dir, "records_progress", language),
+        workspace_dir_path(company_dir, "records_decision", language),
+        workspace_dir_path(company_dir, "records_calibration", language),
+        workspace_dir_path(company_dir, "records_checkpoint", language),
+        workspace_dir_path(company_dir, "legacy_root", language),
+        workspace_dir_path(company_dir, "roles", language),
+        workspace_dir_path(company_dir, "flows", language),
+        workspace_dir_path(company_dir, "automation", language),
+        workspace_dir_path(company_dir, "artifacts_root", language),
+        artifact_dir_path(company_dir, "delivery", language),
+        artifact_dir_path(company_dir, "software", language),
+        artifact_dir_path(company_dir, "business", language),
+        artifact_dir_path(company_dir, "ops", language),
+        artifact_dir_path(company_dir, "growth", language),
+        state_path(company_dir).parent,
+    ]
+    for path in directories:
+        path.mkdir(parents=True, exist_ok=True)
 
 
 def _strip_internal_state(value: Any) -> Any:
@@ -643,7 +789,9 @@ def _merge_state_changes(base: Any, updated: Any, latest: Any) -> Any:
 
 
 def save_state(company_dir: Path, state: dict[str, Any]) -> None:
-    ensure_workspace_dirs(company_dir)
+    language = normalize_language(state.get("language"))
+    harmonize_workspace_layout(company_dir, language)
+    ensure_workspace_dirs(company_dir, language)
     path = state_path(company_dir)
     lock_path = path.with_suffix(path.suffix + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -657,6 +805,9 @@ def save_state(company_dir: Path, state: dict[str, Any]) -> None:
         else:
             merged_state = prepared
         saved_state = write_state_v3(company_dir, merged_state)
+        for legacy_path in legacy_state_paths(company_dir):
+            if legacy_path != path and legacy_path.exists():
+                legacy_path.unlink()
         fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
     try:
         lock_path.unlink()
@@ -688,16 +839,32 @@ def role_spec(role_id: str, role_specs: dict[str, dict[str, Any]], language: str
 
 
 def write_record(company_dir: Path, subdir: str, suffix: str, title: str, lines: list[str]) -> Path:
+    language = _existing_language(company_dir) or "zh-CN"
+    record_aliases = {
+        "经营日志": "progress",
+        "business-log": "progress",
+        "推进日志": "progress",
+        "progress-log": "progress",
+        "经营决策": "decision",
+        "business-decision": "decision",
+        "决策记录": "decision",
+        "decision-log": "decision",
+        "校准记录": "calibration",
+        "calibration-log": "calibration",
+        "检查点": "checkpoint",
+        "checkpoints": "checkpoint",
+    }
+    record_key = record_aliases.get(subdir, subdir)
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    path = company_dir / "记录" / subdir / f"{timestamp}-{suffix}.md"
+    path = record_dir_path(company_dir, record_key, language) / f"{timestamp}-{suffix}.md"
     content = "\n".join([f"# {title}", "", *lines]) + "\n"
     write_text(path, content)
     return path
 
 
 def preflight_status(company_dir: Optional[Path] = None, language: Optional[str] = None) -> dict[str, Any]:
-    if company_dir and state_path(company_dir).is_file():
-        language = normalize_language(language, load_json(state_path(company_dir)).get("language"))
+    if company_dir and existing_state_path(company_dir).is_file():
+        language = normalize_language(language, load_json(existing_state_path(company_dir)).get("language"))
     language = normalize_language(language)
     current_version = tuple(sys.version_info[:3])
     current_supported = is_python_version_supported(current_version)
@@ -774,7 +941,7 @@ def preflight_status(company_dir: Optional[Path] = None, language: Optional[str]
         )
 
     workspace_created = bool(company_dir and company_dir.exists())
-    persisted = bool(company_dir and all(path.is_file() for path in workspace_core_paths(company_dir)))
+    persisted = workspace_persisted(company_dir, language)
 
     if runnable and writable:
         recommended_mode_id = "script-execution"
@@ -1157,115 +1324,44 @@ def build_matrix_values(role_specs: dict[str, dict[str, Any]], language: str) ->
     return values
 
 
-def stage_artifact_specs(stage_id: str) -> list[dict[str, str]]:
+def stage_artifact_specs(stage_id: str, language: str = "zh-CN") -> list[dict[str, str]]:
+    def spec(category: str, subdir: str, index: str, title_zh: str, title_en: str, template: str) -> dict[str, str]:
+        return {
+            "category": category,
+            "subdir": subdir,
+            "index": index,
+            "title": pick_text(language, title_zh, title_en),
+            "template": template,
+        }
+
     common_specs = [
-        {
-            "subdir": "01-实际交付",
-            "index": "01",
-            "title": "实际产出总表",
-            "template": "artifact-delivery-index-template.md",
-        },
-        {
-            "subdir": "02-软件与代码",
-            "index": "01",
-            "title": "代码与功能交付清单",
-            "template": "artifact-software-delivery-template.md",
-        },
-        {
-            "subdir": "03-非软件与业务",
-            "index": "01",
-            "title": "非软件交付清单",
-            "template": "artifact-non-software-delivery-template.md",
-        },
+        spec("delivery", "01-实际交付", "01", "实际产出总表", "actual-deliverables-index", "artifact-delivery-index-template.md"),
+        spec("software", "02-软件与代码", "01", "代码与功能交付清单", "software-and-code-delivery-checklist", "artifact-software-delivery-template.md"),
+        spec("business", "03-非软件与业务", "01", "非软件交付清单", "business-and-service-delivery-checklist", "artifact-non-software-delivery-template.md"),
     ]
     stage_specific = {
         "validate": [
-            {
-                "subdir": "01-实际交付",
-                "index": "02",
-                "title": "问题与用户证据包",
-                "template": "artifact-validate-evidence-template.md",
-            },
+            spec("delivery", "01-实际交付", "02", "问题与用户证据包", "problem-and-user-evidence-pack", "artifact-validate-evidence-template.md"),
         ],
         "build": [
-            {
-                "subdir": "02-软件与代码",
-                "index": "02",
-                "title": "测试与验收记录",
-                "template": "artifact-quality-template.md",
-            },
+            spec("software", "02-软件与代码", "02", "测试与验收记录", "test-and-acceptance-record", "artifact-quality-template.md"),
         ],
         "launch": [
-            {
-                "subdir": "02-软件与代码",
-                "index": "02",
-                "title": "测试与验收记录",
-                "template": "artifact-quality-template.md",
-            },
-            {
-                "subdir": "04-部署与生产",
-                "index": "01",
-                "title": "部署与回滚清单",
-                "template": "artifact-deployment-template.md",
-            },
-            {
-                "subdir": "04-部署与生产",
-                "index": "02",
-                "title": "生产观测与告警清单",
-                "template": "artifact-production-template.md",
-            },
-            {
-                "subdir": "05-上线与增长",
-                "index": "01",
-                "title": "上线公告与反馈回收清单",
-                "template": "artifact-launch-feedback-template.md",
-            },
+            spec("software", "02-软件与代码", "02", "测试与验收记录", "test-and-acceptance-record", "artifact-quality-template.md"),
+            spec("ops", "04-部署与生产", "01", "部署与回滚清单", "deployment-and-rollback-checklist", "artifact-deployment-template.md"),
+            spec("ops", "04-部署与生产", "02", "生产观测与告警清单", "production-observability-and-alerting-checklist", "artifact-production-template.md"),
+            spec("growth", "05-上线与增长", "01", "上线公告与反馈回收清单", "launch-announcement-and-feedback-capture-checklist", "artifact-launch-feedback-template.md"),
         ],
         "operate": [
-            {
-                "subdir": "04-部署与生产",
-                "index": "01",
-                "title": "部署与回滚清单",
-                "template": "artifact-deployment-template.md",
-            },
-            {
-                "subdir": "04-部署与生产",
-                "index": "02",
-                "title": "生产观测与告警清单",
-                "template": "artifact-production-template.md",
-            },
-            {
-                "subdir": "04-部署与生产",
-                "index": "03",
-                "title": "事故响应与复盘记录",
-                "template": "artifact-production-template.md",
-            },
-            {
-                "subdir": "05-上线与增长",
-                "index": "01",
-                "title": "上线公告与反馈回收清单",
-                "template": "artifact-launch-feedback-template.md",
-            },
+            spec("ops", "04-部署与生产", "01", "部署与回滚清单", "deployment-and-rollback-checklist", "artifact-deployment-template.md"),
+            spec("ops", "04-部署与生产", "02", "生产观测与告警清单", "production-observability-and-alerting-checklist", "artifact-production-template.md"),
+            spec("ops", "04-部署与生产", "03", "事故响应与复盘记录", "incident-response-and-retrospective-record", "artifact-production-template.md"),
+            spec("growth", "05-上线与增长", "01", "上线公告与反馈回收清单", "launch-announcement-and-feedback-capture-checklist", "artifact-launch-feedback-template.md"),
         ],
         "grow": [
-            {
-                "subdir": "04-部署与生产",
-                "index": "01",
-                "title": "部署与回滚清单",
-                "template": "artifact-deployment-template.md",
-            },
-            {
-                "subdir": "04-部署与生产",
-                "index": "02",
-                "title": "生产观测与告警清单",
-                "template": "artifact-production-template.md",
-            },
-            {
-                "subdir": "05-上线与增长",
-                "index": "01",
-                "title": "增长实验与经营复盘",
-                "template": "artifact-growth-template.md",
-            },
+            spec("ops", "04-部署与生产", "01", "部署与回滚清单", "deployment-and-rollback-checklist", "artifact-deployment-template.md"),
+            spec("ops", "04-部署与生产", "02", "生产观测与告警清单", "production-observability-and-alerting-checklist", "artifact-production-template.md"),
+            spec("growth", "05-上线与增长", "01", "增长实验与经营复盘", "growth-experiments-and-business-retrospective", "artifact-growth-template.md"),
         ],
     }
     return common_specs + stage_specific.get(stage_id, [])
@@ -1553,21 +1649,21 @@ def build_operating_dashboard(state: dict[str, Any], company_dir: Path) -> str:
         "",
         pick_text(language, "## 现在先看哪里", "## Where To Look Next"),
         "",
-        f"- [01-创始人约束.md]({display_path(company_dir / '01-创始人约束.md', company_dir)})",
-        f"- [02-价值承诺与报价.md]({display_path(company_dir / '02-价值承诺与报价.md', company_dir)})",
-        f"- [03-机会与成交管道.md]({display_path(company_dir / '03-机会与成交管道.md', company_dir)})",
-        f"- [04-产品与上线状态.md]({display_path(company_dir / '04-产品与上线状态.md', company_dir)})",
-        f"- [05-客户交付与回款.md]({display_path(company_dir / '05-客户交付与回款.md', company_dir)})",
+        f"- [{root_doc_path(company_dir, 'founder_constraints', language).name}]({display_path(root_doc_path(company_dir, 'founder_constraints', language), company_dir)})",
+        f"- [{root_doc_path(company_dir, 'offer', language).name}]({display_path(root_doc_path(company_dir, 'offer', language), company_dir)})",
+        f"- [{root_doc_path(company_dir, 'pipeline', language).name}]({display_path(root_doc_path(company_dir, 'pipeline', language), company_dir)})",
+        f"- [{root_doc_path(company_dir, 'product_status', language).name}]({display_path(root_doc_path(company_dir, 'product_status', language), company_dir)})",
+        f"- [{root_doc_path(company_dir, 'delivery_cash', language).name}]({display_path(root_doc_path(company_dir, 'delivery_cash', language), company_dir)})",
         "",
         pick_text(language, "## 关键支撑文档", "## Key Support Documents"),
         "",
-        f"- [{pick_text(language, '对外落地页文案', 'Landing Page Copy')}]({display_path(company_dir / 'sales' / '04-对外落地页文案.md', company_dir)})",
-        f"- [{pick_text(language, '访谈冲刺看板', 'Interview Sprint Board')}]({display_path(company_dir / 'sales' / '05-访谈冲刺看板.md', company_dir)})",
-        f"- [{pick_text(language, '试用申请问卷', 'Trial Application Form')}]({display_path(company_dir / 'sales' / '06-试用申请问卷.md', company_dir)})",
-        f"- [{pick_text(language, '可演示静态页', 'Demo Page')}]({display_path(company_dir / 'product' / 'demo' / 'index.html', company_dir)})",
-        f"- [{pick_text(language, 'MVP 与上线清单', 'MVP And Launch Checklist')}]({display_path(company_dir / 'product' / '01-MVP与上线清单.md', company_dir)})",
-        f"- [{pick_text(language, '上线检查清单', 'Launch Checklist')}]({display_path(company_dir / 'ops' / '01-上线检查清单.md', company_dir)})",
-        f"- [{pick_text(language, '试用反馈回收表', 'Trial Feedback Capture')}]({display_path(company_dir / 'delivery' / '04-试用反馈回收表.md', company_dir)})",
+        f"- [{pick_text(language, '对外落地页文案', 'Landing Page Copy')}]({display_path(workspace_file_path(company_dir, 'sales_landing', language), company_dir)})",
+        f"- [{pick_text(language, '访谈冲刺看板', 'Interview Sprint Board')}]({display_path(workspace_file_path(company_dir, 'sales_interview', language), company_dir)})",
+        f"- [{pick_text(language, '试用申请问卷', 'Trial Application Form')}]({display_path(workspace_file_path(company_dir, 'sales_trial_application', language), company_dir)})",
+        f"- [{pick_text(language, '可演示静态页', 'Demo Page')}]({display_path(workspace_file_path(company_dir, 'product_demo_index', language), company_dir)})",
+        f"- [{pick_text(language, 'MVP 与上线清单', 'MVP And Launch Checklist')}]({display_path(workspace_file_path(company_dir, 'product_checklist', language), company_dir)})",
+        f"- [{pick_text(language, '上线检查清单', 'Launch Checklist')}]({display_path(workspace_file_path(company_dir, 'ops_launch_checklist', language), company_dir)})",
+        f"- [{pick_text(language, '试用反馈回收表', 'Trial Feedback Capture')}]({display_path(workspace_file_path(company_dir, 'delivery_feedback', language), company_dir)})",
         "",
     ]
     return "\n".join(lines) + "\n"
@@ -1698,9 +1794,9 @@ def build_product_doc(state: dict[str, Any]) -> str:
         "",
         pick_text(language, "## 现在直接打开", "## Open Next"),
         "",
-        f"- [product/01-MVP与上线清单.md](product/01-MVP与上线清单.md)",
-        f"- [product/demo/index.html](product/demo/index.html)",
-        f"- [ops/01-上线检查清单.md](ops/01-上线检查清单.md)",
+        f"- [{display_path(workspace_file_path(Path('.'), 'product_checklist', language), Path('.'))}]({display_path(workspace_file_path(Path('.'), 'product_checklist', language), Path('.'))})",
+        f"- [{display_path(workspace_file_path(Path('.'), 'product_demo_index', language), Path('.'))}]({display_path(workspace_file_path(Path('.'), 'product_demo_index', language), Path('.'))})",
+        f"- [{display_path(workspace_file_path(Path('.'), 'ops_launch_checklist', language), Path('.'))}]({display_path(workspace_file_path(Path('.'), 'ops_launch_checklist', language), Path('.'))})",
         "",
     ]
     return "\n".join(lines) + "\n"
@@ -2359,11 +2455,11 @@ def build_session_handoff_doc(state: dict[str, Any]) -> str:
 
 def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
     category_names = {
-        "01-实际交付": pick_text(language, "实际交付", "Actual Deliverables"),
-        "02-软件与代码": pick_text(language, "软件与代码", "Software And Code"),
-        "03-非软件与业务": pick_text(language, "非软件与业务", "Non-Software And Business"),
-        "04-部署与生产": pick_text(language, "部署与生产", "Deployment And Production"),
-        "05-上线与增长": pick_text(language, "上线与增长", "Launch And Growth"),
+        "delivery": pick_text(language, "实际交付", "Actual Deliverables"),
+        "software": pick_text(language, "软件与代码", "Software And Code"),
+        "business": pick_text(language, "非软件与业务", "Non-Software And Business"),
+        "ops": pick_text(language, "部署与生产", "Deployment And Production"),
+        "growth": pick_text(language, "上线与增长", "Launch And Growth"),
     }
     lines = [
         pick_text(language, "# 交付目录总览", "# Deliverable Directory Overview"),
@@ -2383,9 +2479,9 @@ def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
         "",
     ]
 
-    for subdir, label in category_names.items():
+    for category, label in category_names.items():
         lines.extend([f"## {label}", ""])
-        artifact_dir = company_dir / ARTIFACT_ROOT / subdir
+        artifact_dir = artifact_dir_path(company_dir, category, language)
         entries = []
         if artifact_dir.is_dir():
             for path in sorted(artifact_dir.glob("*.docx")):
@@ -2415,13 +2511,14 @@ def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
 
 
 def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
-    ensure_workspace_dirs(company_dir)
     role_specs = load_role_specs()
     language = normalize_language(state.get("language"), state.get("company_name"), state.get("product_name"))
     state["language"] = language
     state = sync_legacy_fields(state)
+    harmonize_workspace_layout(company_dir, language)
+    ensure_workspace_dirs(company_dir, language)
 
-    legacy_root_dir = company_dir / "records" / "legacy-root"
+    legacy_root_dir = workspace_dir_path(company_dir, "legacy_root", language)
     legacy_root_dir.mkdir(parents=True, exist_ok=True)
     for legacy_name in [
         "00-公司总览.md",
@@ -2448,7 +2545,7 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
             else:
                 legacy_path.rename(target)
 
-    artifact_dir = company_dir / ARTIFACT_ROOT
+    artifact_dir = workspace_dir_path(company_dir, "artifacts_root", language)
     if artifact_dir.is_dir():
         for path in sorted(artifact_dir.rglob("*.docx")):
             parsed = parse_planned_docx_name(path.name)
@@ -2499,34 +2596,34 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         "ACTIVE_ROLE_INLINE": ("、".join(active_display) if language == "zh-CN" else ", ".join(active_display)) or pick_text(language, "无", "None"),
     }
 
-    write_text(company_dir / "00-经营总盘.md", build_operating_dashboard(state, company_dir))
-    write_text(company_dir / "01-创始人约束.md", build_founder_constraints_doc(state))
-    write_text(company_dir / "02-价值承诺与报价.md", build_offer_doc(state))
-    write_text(company_dir / "03-机会与成交管道.md", build_pipeline_doc(state))
-    write_text(company_dir / "04-产品与上线状态.md", build_product_doc(state))
-    write_text(company_dir / "05-客户交付与回款.md", build_delivery_doc(state))
-    write_text(company_dir / "06-现金流与经营健康.md", build_cash_doc(state))
-    write_text(company_dir / "07-资产与自动化.md", build_asset_doc(state))
-    write_text(company_dir / "08-风险与关键决策.md", build_risk_doc(state))
-    write_text(company_dir / "09-本周唯一主目标.md", build_week_focus_doc(state))
-    write_text(company_dir / "10-今日最短动作.md", build_today_action_doc(state))
-    write_text_if_missing(company_dir / "11-协作记忆.md", build_collaboration_memory_doc(state))
-    write_text_if_missing(company_dir / "12-会话交接.md", build_session_handoff_doc(state))
+    write_text(root_doc_path(company_dir, "dashboard", language), build_operating_dashboard(state, company_dir))
+    write_text(root_doc_path(company_dir, "founder_constraints", language), build_founder_constraints_doc(state))
+    write_text(root_doc_path(company_dir, "offer", language), build_offer_doc(state))
+    write_text(root_doc_path(company_dir, "pipeline", language), build_pipeline_doc(state))
+    write_text(root_doc_path(company_dir, "product_status", language), build_product_doc(state))
+    write_text(root_doc_path(company_dir, "delivery_cash", language), build_delivery_doc(state))
+    write_text(root_doc_path(company_dir, "cash_health", language), build_cash_doc(state))
+    write_text(root_doc_path(company_dir, "assets_automation", language), build_asset_doc(state))
+    write_text(root_doc_path(company_dir, "risks", language), build_risk_doc(state))
+    write_text(root_doc_path(company_dir, "week_focus", language), build_week_focus_doc(state))
+    write_text(root_doc_path(company_dir, "today_action", language), build_today_action_doc(state))
+    write_text_if_missing(root_doc_path(company_dir, "collaboration_memory", language), build_collaboration_memory_doc(state))
+    write_text_if_missing(root_doc_path(company_dir, "session_handoff", language), build_session_handoff_doc(state))
 
-    write_text(company_dir / "records" / "01-当前经营快照.md", build_operating_dashboard(state, company_dir))
-    write_text(company_dir / "sales" / "01-成交动作清单.md", build_sales_action_doc(state))
-    write_text(company_dir / "sales" / "04-对外落地页文案.md", build_landing_copy_doc(state))
-    write_text(company_dir / "sales" / "05-访谈冲刺看板.md", build_interview_sprint_doc(state))
-    write_text(company_dir / "sales" / "06-试用申请问卷.md", build_trial_application_doc(state))
-    write_text(company_dir / "product" / "01-MVP与上线清单.md", build_mvp_checklist_doc(state))
-    write_text(company_dir / "product" / "demo" / "index.html", build_demo_html(state))
-    write_text(company_dir / "delivery" / "01-客户交付追踪.md", build_delivery_doc(state))
-    write_text(company_dir / "delivery" / "02-交付目录总览.md", artifact_status_summary_markdown(company_dir, language))
-    write_text(company_dir / "delivery" / "04-试用反馈回收表.md", build_trial_feedback_doc(state))
-    write_text(company_dir / "ops" / "01-上线检查清单.md", build_launch_checklist_doc(state))
-    write_text(company_dir / "assets" / "01-资产沉淀清单.md", build_asset_doc(state))
+    write_text(workspace_file_path(company_dir, "record_snapshot", language), build_operating_dashboard(state, company_dir))
+    write_text(workspace_file_path(company_dir, "sales_actions", language), build_sales_action_doc(state))
+    write_text(workspace_file_path(company_dir, "sales_landing", language), build_landing_copy_doc(state))
+    write_text(workspace_file_path(company_dir, "sales_interview", language), build_interview_sprint_doc(state))
+    write_text(workspace_file_path(company_dir, "sales_trial_application", language), build_trial_application_doc(state))
+    write_text(workspace_file_path(company_dir, "product_checklist", language), build_mvp_checklist_doc(state))
+    write_text(workspace_file_path(company_dir, "product_demo_index", language), build_demo_html(state))
+    write_text(workspace_file_path(company_dir, "delivery_tracker", language), build_delivery_doc(state))
+    write_text(workspace_file_path(company_dir, "delivery_directory", language), artifact_status_summary_markdown(company_dir, language))
+    write_text(workspace_file_path(company_dir, "delivery_feedback", language), build_trial_feedback_doc(state))
+    write_text(workspace_file_path(company_dir, "ops_launch_checklist", language), build_launch_checklist_doc(state))
+    write_text(workspace_file_path(company_dir, "assets_inventory", language), build_asset_doc(state))
     write_text(
-        company_dir / "automation" / "01-状态说明.md",
+        workspace_file_path(company_dir, "automation_notes", language),
         "\n".join(
             [
                 pick_text(language, "# 状态说明", "# State Notes"),
@@ -2540,7 +2637,7 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         + "\n",
     )
 
-    write_text(company_dir / "角色智能体" / "角色清单.md", render_template("role-index-template.md", common_values))
+    write_text(workspace_file_path(company_dir, "role_index", language), render_template("role-index-template.md", common_values))
     for role_id in active_roles:
         spec = role_spec(role_id, role_specs, language)
         role_values = {
@@ -2555,17 +2652,24 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
             "ROLE_HANDOFFS": format_list(role_display_names(spec["handoff_to"], role_specs, language), language),
         }
         filename = spec.get("workspace_filename", spec["display_name"])
-        write_text(company_dir / "角色智能体" / f"{filename}.md", render_template("role-brief-template.md", role_values))
+        target_role_path = role_brief_path(company_dir, filename, language)
+        write_text(target_role_path, render_template("role-brief-template.md", role_values))
+        for other_language in ("zh-CN", "en-US"):
+            other_spec = role_spec(role_id, role_specs, other_language)
+            other_filename = other_spec.get("workspace_filename", other_spec["display_name"])
+            other_path = role_brief_path(company_dir, other_filename, other_language)
+            if other_path != target_role_path and other_path.exists():
+                other_path.unlink()
 
-    write_text(company_dir / "流程" / "创建公司流程.md", render_template("bootstrap-flow-template.md", common_values))
-    write_text(company_dir / "流程" / "推进回合流程.md", render_template("round-flow-template.md", common_values))
-    write_text(company_dir / "流程" / "校准回合流程.md", render_template("calibration-flow-template.md", common_values))
-    write_text(company_dir / "流程" / "阶段切换流程.md", render_template("stage-flow-template.md", common_values))
-    write_text(company_dir / "自动化" / "提醒规则.md", render_template("reminder-rules-template.md", common_values))
-    write_text(company_dir / "自动化" / "定时任务定义.md", render_template("scheduler-spec-template.md", common_values))
+    write_text(workspace_file_path(company_dir, "flow_bootstrap", language), render_template("bootstrap-flow-template.md", common_values))
+    write_text(workspace_file_path(company_dir, "flow_round", language), render_template("round-flow-template.md", common_values))
+    write_text(workspace_file_path(company_dir, "flow_calibration", language), render_template("calibration-flow-template.md", common_values))
+    write_text(workspace_file_path(company_dir, "flow_stage", language), render_template("stage-flow-template.md", common_values))
+    write_text(workspace_file_path(company_dir, "automation_reminders", language), render_template("reminder-rules-template.md", common_values))
+    write_text(workspace_file_path(company_dir, "automation_scheduler", language), render_template("scheduler-spec-template.md", common_values))
 
-    for spec in stage_artifact_specs(stage_id):
-        output_dir = company_dir / ARTIFACT_ROOT / spec["subdir"]
+    for spec in stage_artifact_specs(stage_id, language):
+        output_dir = artifact_dir_path(company_dir, spec["category"], language)
         output_path = ensure_planned_docx_path(output_dir, int(spec["index"]), spec["title"], completed=False)
         docx_values = {
             **artifact_template_values(common_values, state),

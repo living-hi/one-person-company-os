@@ -8,6 +8,7 @@ from pathlib import Path
 
 from common import emit_runtime_report, load_state, preflight_status, print_step
 from localization import normalize_language, pick_text
+from workspace_layout import existing_state_path
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -22,7 +23,7 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     company_dir = Path(args.company_dir).expanduser().resolve() if args.company_dir else None
-    state = load_state(company_dir) if company_dir and (company_dir / "自动化" / "当前状态.json").is_file() else None
+    state = load_state(company_dir) if company_dir and existing_state_path(company_dir).is_file() else None
     language = normalize_language(args.language, args.mode, state.get("language") if state else None)
 
     print_step(1, 5, "模式判定", language=language)

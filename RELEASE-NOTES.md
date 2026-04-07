@@ -1,5 +1,21 @@
 # Release Notes
 
+## v0.6.5 - Fully Localized Workspace Surface
+
+`v0.6.4` fixed the direction-first contract and neutralized leaked default cases.
+
+`v0.6.5` fixes the next serious product mismatch: the runtime could already speak Chinese or English, but the generated workspace still mixed Chinese and English paths and exposed the machine state file in the founder-visible surface.
+
+This release adds and updates:
+
+- fully localized Chinese-visible and English-visible workspace files and directories
+- a hidden stable machine-state path at `.opcos/state/current-state.json`
+- localized default artifact names, role brief filenames, support work surfaces, and flow files
+- stronger layout harmonization for migrated workspaces
+- release validation that explicitly checks Chinese and English workspace separation
+
+The result is a cleaner and more trustworthy product surface: founders now get a workspace that actually matches their language, while automation still has one hidden stable state path.
+
 ## v0.6.4 - Direction-First Bootstrap And Vertical-Neutral Defaults
 
 `v0.6.3` cleaned the lock-file artifact left by safer persistence.

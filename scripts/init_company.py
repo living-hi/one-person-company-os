@@ -7,6 +7,7 @@ import argparse
 from pathlib import Path
 
 from common import (
+    artifact_dir_path,
     default_role_ids_for_stage,
     emit_runtime_report,
     normalize_stage,
@@ -14,10 +15,13 @@ from common import (
     preflight_status,
     print_step,
     render_workspace,
+    root_doc_path,
     safe_workspace_name,
     save_state,
+    stage_artifact_specs,
     state_path,
     stage_label,
+    workspace_file_path,
 )
 from localization import normalize_language, pick_text, round_status_label
 from state_v3 import default_state_v3
@@ -161,14 +165,14 @@ def main() -> int:
         persistence_mode="script-execution",
         company_dir=company_dir,
         saved_paths=[
-            company_dir / "00-经营总盘.md",
-            company_dir / "01-创始人约束.md",
-            company_dir / "02-价值承诺与报价.md",
-            company_dir / "03-机会与成交管道.md",
-            company_dir / "04-产品与上线状态.md",
-            company_dir / "05-客户交付与回款.md",
-            company_dir / "角色智能体" / "角色清单.md",
-            company_dir / "产物" / "01-实际交付" / "01-实际产出总表.docx",
+            root_doc_path(company_dir, "dashboard", language),
+            root_doc_path(company_dir, "founder_constraints", language),
+            root_doc_path(company_dir, "offer", language),
+            root_doc_path(company_dir, "pipeline", language),
+            root_doc_path(company_dir, "product_status", language),
+            root_doc_path(company_dir, "delivery_cash", language),
+            workspace_file_path(company_dir, "role_index", language),
+            artifact_dir_path(company_dir, "delivery", language) / f"{stage_artifact_specs(stage_id, language)[0]['index']}-{stage_artifact_specs(stage_id, language)[0]['title']}.docx",
             state_path(company_dir),
         ],
         work_scope=[

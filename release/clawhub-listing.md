@@ -41,7 +41,7 @@ The system now generates and maintains a real operating workspace centered on:
 - assets and automation
 - risks and decisions
 
-It also keeps runtime transparency, file persistence, Python recovery, and final-named DOCX deliverables when formal delivery evidence is needed.
+It also keeps runtime transparency, file persistence, Python recovery, language-matched founder workspaces, and final-named DOCX deliverables when formal delivery evidence is needed.
 
 ## First-Run Promise
 
@@ -52,9 +52,10 @@ The first serious run should produce:
 - the primary bottleneck
 - the primary arena to push next
 - the operating workspace
+- a workspace surface that matches the founder language instead of mixing Chinese and English paths
 - the shortest action for today
 - the single result for this week
-- a real state file on disk
+- a real hidden machine state file on disk
 
 ## Quick Start Prompts
 
