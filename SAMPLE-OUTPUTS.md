@@ -1,6 +1,6 @@
 # Sample Outputs
 
-These excerpts show the current behavior: direction-first setup, business-loop execution, and a fully localized founder-visible workspace surface.
+These excerpts show the current behavior: direction-first setup, business-loop execution, a fully localized founder-visible workspace surface, and a download-friendly HTML reading layer.
 
 ## Interaction Output Structure
 
@@ -51,6 +51,10 @@ Every major operation includes:
   资产/
   记录/
   自动化/
+  阅读版/
+    00-先看这里.html
+    00-经营总盘.html
+    02-价值承诺与报价.html
   产物/
   角色智能体/
   流程/
@@ -74,8 +78,22 @@ North Star Lab/
   assets/
   records/
   automation/
+  reading/
+    00-start-here.html
+    00-operating-dashboard.html
+    02-value-promise-and-pricing.html
   artifacts/
   roles/
   flows/
   .opcos/state/current-state.json
 ```
+
+## Reading Layer Entry
+
+```text
+阅读版/00-先看这里.html
+reading/00-start-here.html
+```
+
+The reading layer is the first stop after download.
+It points founders to the core HTML views, explains how the workspace is split between HTML, markdown, and DOCX, and keeps the language-matched surface intact.

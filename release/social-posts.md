@@ -2,36 +2,38 @@
 
 ## X / Short Post
 
-I upgraded `one-person-company-os` to `v0.6.6`.
+I upgraded `one-person-company-os` to `v0.6.7`.
 
-This patch hardens the marketplace safety boundary:
+The workspace is no longer markdown-only after download:
 
-- no automatic system-package installation
-- persisted writes stay inside the approved workspace
-- public docs now match the real runtime contract
+- localized HTML reading layer
+- markdown stays editable
+- DOCX stays formal
+
+Chinese founders get `阅读版/00-先看这里.html`.
+English founders get `reading/00-start-here.html`.
 
 ## X / 中文短帖
 
-我把 `one-person-company-os` 升级到 `v0.6.6`。
+我把 `one-person-company-os` 升级到 `v0.6.7`。
 
-这一版补的是公开发布面的安全边界：
+这次补的是“下载回来直接看”的体验：
 
-- marketplace 版不再自动安装系统级依赖
-- 持久化写入只留在确认过的工作区里
-- README、SKILL、ClawHub listing 和真实运行契约终于对齐
+- 新增本地化 HTML 阅读层
+- Markdown 继续做工作底稿
+- DOCX 继续做正式交付件
 
-不是只改文案，也不是只改代码，而是把公开面和真实行为一起收紧。
+中文工作区现在会带 `阅读版/00-先看这里.html`。
+英文工作区会带 `reading/00-start-here.html`。
 
 ## LinkedIn / Longer Post
 
-`one-person-company-os` now closes an important marketplace trust gap.
+`one-person-company-os` now has a clearer output stack.
 
-The package was already direction-first and language-localized, but the public surface still left too much ambiguity around host changes and write scope.
+Instead of asking founders to inspect a markdown-heavy workspace first, the package now generates a reading layer for direct viewing after download:
 
-`v0.6.6` fixes that:
+- localized HTML reading pages
+- markdown working files for continued edits
+- DOCX formal deliverables for handoff
 
-- `scripts/ensure_python_runtime.py` now stays in compatibility-guidance mode and does not auto-install system packages
-- persisted write paths are tightened to the approved company workspace
-- public docs, prompts, metadata, and release material now describe the same safety boundary the runtime actually follows
-
-The result is a package that is easier to audit, easier to trust, and more likely to clear platform security review without diluting the core founder workflow.
+This keeps the system runnable for the agent while making the download much more usable for the founder.

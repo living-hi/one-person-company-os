@@ -27,7 +27,7 @@ Safety boundary:
 - persisted files stay inside the approved workspace
 - normal use does not require API keys
 
-The generated workspace now opens with a language-matched surface.
+The generated workspace now opens with a language-matched surface and a download-friendly reading layer.
 
 For English founders:
 
@@ -36,6 +36,7 @@ For English founders:
 - `03-opportunity-and-revenue-pipeline.md`
 - `04-product-and-launch-status.md`
 - `05-delivery-and-cash-collection.md`
+- `reading/00-start-here.html`
 
 For Chinese founders:
 
@@ -44,6 +45,7 @@ For Chinese founders:
 - `03-机会与成交管道.md`
 - `04-产品与上线状态.md`
 - `05-客户交付与回款.md`
+- `阅读版/00-先看这里.html`
 
 This release line supports:
 
@@ -51,5 +53,6 @@ This release line supports:
 - direct product build and launch coordination
 - pipeline, delivery, cash, and asset updates
 - language-localized founder workspaces plus hidden machine-state storage at `.opcos/state/current-state.json`
+- localized HTML reading exports for direct viewing after download
 - legacy stage/round compatibility
 - numbered final-named DOCX deliverables

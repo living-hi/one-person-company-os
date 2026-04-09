@@ -279,6 +279,11 @@ CONTAINER_PATHS = {
         "en-US": ("automation",),
         "legacy": ("自动化",),
     },
+    "reading_root": {
+        "zh-CN": ("阅读版",),
+        "en-US": ("reading",),
+        "legacy": ("阅读版",),
+    },
     "artifacts_root": {
         "zh-CN": ("产物",),
         "en-US": ("artifacts",),
@@ -309,6 +314,12 @@ CONTAINER_PATHS = {
         "en-US": ("artifacts", "05-launch-and-growth"),
         "legacy": ("产物", "05-上线与增长"),
     },
+}
+
+READING_START_FILENAMES = {
+    "zh-CN": "00-先看这里.html",
+    "en-US": "00-start-here.html",
+    "legacy": "00-先看这里.html",
 }
 
 
@@ -354,6 +365,14 @@ def role_brief_path(company_dir: Path, filename: str, language: str) -> Path:
 
 def state_path(company_dir: Path) -> Path:
     return company_dir.joinpath(*INTERNAL_STATE_PATH_PARTS)
+
+
+def reading_root_path(company_dir: Path, language: str) -> Path:
+    return user_container_path(company_dir, "reading_root", language)
+
+
+def reading_start_path(company_dir: Path, language: str) -> Path:
+    return reading_root_path(company_dir, language) / READING_START_FILENAMES[_normalized_language(language)]
 
 
 def legacy_state_paths(company_dir: Path) -> list[Path]:

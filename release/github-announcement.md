@@ -1,18 +1,17 @@
 # GitHub Announcement
 
-I upgraded `one-person-company-os` to `v0.6.6`.
+I upgraded `one-person-company-os` to `v0.6.7`.
 
-The previous release fixed the language-localized workspace surface.
-This release fixes the next trust mismatch: the public marketplace surface still left too much ambiguity around host-environment changes and write boundaries.
+The previous release fixed marketplace trust and safety boundaries.
+This release fixes the next usability gap: a downloaded workspace still looked too much like a pile of markdown source files.
 
 What changed:
 
-- `scripts/ensure_python_runtime.py` now stays in compatibility-guidance mode and does not auto-install system packages
-- persisted artifact output paths are constrained to stay inside the approved company workspace
-- `agents/openai.yaml` now disables implicit invocation for this higher-authority skill
-- README, SKILL, release README, listing copy, publishing notes, and validation all now describe the same safety boundary
+- every generated workspace now includes a localized HTML reading layer
+- Chinese founders now get `阅读版/00-先看这里.html`
+- English founders now get `reading/00-start-here.html`
+- the core dashboard, offer, pipeline, product, delivery, cash, asset, and deliverable-overview pages now export as reading-friendly HTML files
+- markdown remains the editable working source, while numbered DOCX files still carry the formal deliverables
 
-This matters because platform trust is not only about whether code is malicious.
-It is also about whether the package makes its requirements and authority explicit before users run it.
-
-`v0.6.6` makes that contract explicit and enforceable.
+This matters because a one-person-company operating system should not only be runnable.
+It should also be easy to download, open, and understand immediately.

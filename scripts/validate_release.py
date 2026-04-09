@@ -11,7 +11,15 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
-from common import artifact_dir_path, root_doc_path, state_path, workspace_dir_path, workspace_file_path
+from common import (
+    artifact_dir_path,
+    reading_entry_path,
+    reading_export_path,
+    root_doc_path,
+    state_path,
+    workspace_dir_path,
+    workspace_file_path,
+)
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -187,6 +195,10 @@ def validate_workspace_scripts() -> None:
         assert_exists(workspace_file_path(company_dir, "product_checklist", "zh-CN"))
         assert_exists(workspace_file_path(company_dir, "delivery_tracker", "zh-CN"))
         assert_exists(workspace_file_path(company_dir, "delivery_directory", "zh-CN"))
+        assert_exists(reading_entry_path(company_dir, "zh-CN"))
+        assert_exists(reading_export_path(company_dir, root_doc_path(company_dir, "dashboard", "zh-CN"), "zh-CN"))
+        assert_exists(reading_export_path(company_dir, root_doc_path(company_dir, "offer", "zh-CN"), "zh-CN"))
+        assert_exists(reading_export_path(company_dir, workspace_file_path(company_dir, "delivery_directory", "zh-CN"), "zh-CN"))
         assert_exists(artifact_dir_path(company_dir, "delivery", "zh-CN") / "01-实际产出总表.docx")
         assert_exists(artifact_dir_path(company_dir, "software", "zh-CN") / "01-代码与功能交付清单.docx")
         assert_exists(artifact_dir_path(company_dir, "software", "zh-CN") / "02-测试与验收记录.docx")
@@ -211,6 +223,18 @@ def validate_workspace_scripts() -> None:
             root_doc_path(company_dir, "product_status", "zh-CN").read_text(encoding="utf-8"),
             "产品与上线状态",
             "当前状态",
+        )
+        assert_contains(
+            reading_entry_path(company_dir, "zh-CN").read_text(encoding="utf-8"),
+            "下载阅读版",
+            "文件分层说明",
+            "阅读版 HTML",
+        )
+        assert_contains(
+            reading_export_path(company_dir, root_doc_path(company_dir, "dashboard", "zh-CN"), "zh-CN").read_text(encoding="utf-8"),
+            "经营总盘",
+            "下载阅读版",
+            "先看这里",
         )
 
         focus_update = run(
@@ -538,8 +562,24 @@ def validate_workspace_scripts() -> None:
             assert_not_exists(english_company_dir / legacy_root_file)
         assert_not_exists(english_company_dir / "自动化" / "当前状态.json")
         assert_exists(root_doc_path(english_company_dir, "dashboard", "en-US"))
+        assert_exists(reading_entry_path(english_company_dir, "en-US"))
+        assert_exists(reading_export_path(english_company_dir, root_doc_path(english_company_dir, "dashboard", "en-US"), "en-US"))
+        assert_exists(reading_export_path(english_company_dir, root_doc_path(english_company_dir, "offer", "en-US"), "en-US"))
+        assert_exists(reading_export_path(english_company_dir, workspace_file_path(english_company_dir, "delivery_directory", "en-US"), "en-US"))
         assert_contains(root_doc_path(english_company_dir, "dashboard", "en-US").read_text(encoding="utf-8"), "Operating Dashboard", "Current Read")
         assert_contains((workspace_dir_path(english_company_dir, "roles", "en-US") / "engineering-lead.md").read_text(encoding="utf-8"), "Engineering Lead", "Outputs")
+        assert_contains(
+            reading_entry_path(english_company_dir, "en-US").read_text(encoding="utf-8"),
+            "Download Reading Layer",
+            "Output Layer Guide",
+            "Reading HTML",
+        )
+        assert_contains(
+            reading_export_path(english_company_dir, root_doc_path(english_company_dir, "dashboard", "en-US"), "en-US").read_text(encoding="utf-8"),
+            "Operating Dashboard",
+            "Download Reading Layer",
+            "Start Here",
+        )
 
         english_artifact = run(
             str(SCRIPTS_DIR / "generate_artifact_document.py"),

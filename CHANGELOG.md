@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.7 - 2026-04-09
+
+- added a localized HTML reading layer so every generated workspace now includes `阅读版/00-先看这里.html` or `reading/00-start-here.html` for direct viewing after download
+- kept markdown as the editable workspace source while preserving numbered DOCX files for formal deliverables
+- updated validation, README, SKILL, release collateral, and sample outputs so the public contract matches the new three-layer output model
+
 ## v0.6.6 - 2026-04-09
 
 - disabled automatic host-package installation in the marketplace-facing Python compatibility helper so `scripts/ensure_python_runtime.py` now stays in compatibility-guidance mode unless it is only rerunning a target script with an already-trusted interpreter

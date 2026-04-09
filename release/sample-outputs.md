@@ -20,6 +20,9 @@
   03-机会与成交管道.md
   04-产品与上线状态.md
   05-客户交付与回款.md
+  阅读版/
+    00-先看这里.html
+    00-经营总盘.html
   销售/
   产品/
   交付/
@@ -53,6 +56,9 @@ North Star Lab/
   03-opportunity-and-revenue-pipeline.md
   04-product-and-launch-status.md
   05-delivery-and-cash-collection.md
+  reading/
+    00-start-here.html
+    00-operating-dashboard.html
   sales/
   product/
   delivery/
@@ -65,3 +71,8 @@ North Star Lab/
   flows/
   .opcos/state/current-state.json
 ```
+
+## Reading Layer Entry
+
+- Chinese founders open `阅读版/00-先看这里.html` first after download
+- English founders open `reading/00-start-here.html` first after download

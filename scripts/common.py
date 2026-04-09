@@ -13,6 +13,7 @@ import zipfile
 from collections.abc import Iterable
 from copy import deepcopy
 from datetime import datetime
+from html import escape as html_escape
 from pathlib import Path
 from typing import Any, Optional, TextIO
 from xml.sax.saxutils import escape
@@ -53,6 +54,8 @@ from workspace_layout import (
     legacy_state_paths,
     record_dir_path,
     role_brief_path,
+    reading_root_path,
+    reading_start_path,
     state_path as layout_state_path,
     user_container_path,
     user_file_path,
@@ -90,6 +93,7 @@ REQUIRED_SCRIPT_NAMES = (
 )
 MIN_SUPPORTED_PYTHON = (3, 7)
 STATE_BASE_KEY = "__opcos_base_state"
+READING_EXTRA_FILE_KEYS = ("delivery_directory",)
 PYTHON_CANDIDATE_COMMANDS = (
     "python3.13",
     "python3.12",
@@ -614,6 +618,18 @@ def artifact_dir_path(company_dir: Path, category: str, language: str) -> Path:
     return artifact_category_path(company_dir, category, language)
 
 
+def reading_dir_path(company_dir: Path, language: str) -> Path:
+    return reading_root_path(company_dir, language)
+
+
+def reading_entry_path(company_dir: Path, language: str) -> Path:
+    return reading_start_path(company_dir, language)
+
+
+def reading_export_path(company_dir: Path, source_path: Path, language: str) -> Path:
+    return reading_dir_path(company_dir, language) / f"{source_path.stem}.html"
+
+
 def workspace_core_paths(company_dir: Path, language: str) -> list[Path]:
     paths = [root_doc_path(company_dir, key, language) for key in CORE_WORKSPACE_FILE_KEYS]
     paths.append(state_path(company_dir))
@@ -674,6 +690,7 @@ def harmonize_workspace_layout(company_dir: Path, language: str) -> None:
         "records_calibration",
         "records_checkpoint",
         "legacy_root",
+        "reading_root",
         "artifact_delivery",
         "artifact_software",
         "artifact_business",
@@ -756,6 +773,7 @@ def ensure_workspace_dirs(company_dir: Path, language: str) -> None:
         workspace_dir_path(company_dir, "roles", language),
         workspace_dir_path(company_dir, "flows", language),
         workspace_dir_path(company_dir, "automation", language),
+        workspace_dir_path(company_dir, "reading_root", language),
         workspace_dir_path(company_dir, "artifacts_root", language),
         artifact_dir_path(company_dir, "delivery", language),
         artifact_dir_path(company_dir, "software", language),
@@ -2463,6 +2481,536 @@ def build_session_handoff_doc(state: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def reading_source_paths(company_dir: Path, language: str) -> list[Path]:
+    return [root_doc_path(company_dir, key, language) for key in ROOT_DOC_KEYS] + [
+        workspace_file_path(company_dir, file_key, language) for file_key in READING_EXTRA_FILE_KEYS
+    ]
+
+
+def relative_href(target: Path, current_dir: Path) -> str:
+    return os.path.relpath(target, start=current_dir).replace(os.sep, "/")
+
+
+def reading_export_map(company_dir: Path, language: str) -> dict[Path, Path]:
+    mapping: dict[Path, Path] = {}
+    for source in reading_source_paths(company_dir, language):
+        mapping[source.resolve()] = reading_export_path(company_dir, source, language)
+    return mapping
+
+
+def resolve_reading_href(
+    href: str,
+    *,
+    source_path: Path,
+    output_path: Path,
+    company_dir: Path,
+    language: str,
+) -> str:
+    if href.startswith(("http://", "https://", "mailto:", "#")):
+        return href
+
+    target_path = (source_path.parent / href).resolve()
+    export_target = reading_export_map(company_dir, language).get(target_path)
+    if export_target is not None:
+        return relative_href(export_target, output_path.parent)
+    if target_path == company_dir or company_dir in target_path.parents:
+        return relative_href(target_path, output_path.parent)
+    return href
+
+
+def render_inline_markdown(
+    text: str,
+    *,
+    source_path: Path,
+    output_path: Path,
+    company_dir: Path,
+    language: str,
+) -> str:
+    pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`|\*\*([^*]+)\*\*")
+    parts: list[str] = []
+    cursor = 0
+    for match in pattern.finditer(text):
+        start, end = match.span()
+        if start > cursor:
+            parts.append(html_escape(text[cursor:start]))
+        link_label, link_href, code_text, bold_text = match.groups()
+        if link_label is not None:
+            resolved_href = resolve_reading_href(
+                link_href,
+                source_path=source_path,
+                output_path=output_path,
+                company_dir=company_dir,
+                language=language,
+            )
+            parts.append(
+                f'<a href="{html_escape(resolved_href, quote=True)}">{html_escape(link_label)}</a>'
+            )
+        elif code_text is not None:
+            parts.append(f"<code>{html_escape(code_text)}</code>")
+        elif bold_text is not None:
+            parts.append(f"<strong>{html_escape(bold_text)}</strong>")
+        cursor = end
+    if cursor < len(text):
+        parts.append(html_escape(text[cursor:]))
+    return "".join(parts)
+
+
+def markdown_to_html_fragment(
+    markdown_text: str,
+    *,
+    source_path: Path,
+    output_path: Path,
+    company_dir: Path,
+    language: str,
+) -> str:
+    lines = markdown_text.splitlines()
+    blocks: list[str] = []
+    index = 0
+
+    def render_inline(text: str) -> str:
+        return render_inline_markdown(
+            text,
+            source_path=source_path,
+            output_path=output_path,
+            company_dir=company_dir,
+            language=language,
+        )
+
+    while index < len(lines):
+        line = lines[index].rstrip()
+        stripped = line.strip()
+        if not stripped:
+            index += 1
+            continue
+
+        if stripped.startswith("```"):
+            index += 1
+            code_lines: list[str] = []
+            while index < len(lines) and not lines[index].strip().startswith("```"):
+                code_lines.append(lines[index])
+                index += 1
+            if index < len(lines):
+                index += 1
+            blocks.append(f"<pre><code>{html_escape(chr(10).join(code_lines))}</code></pre>")
+            continue
+
+        heading = re.match(r"^(#{1,6})\s+(.+)$", stripped)
+        if heading:
+            level = len(heading.group(1))
+            blocks.append(f"<h{level}>{render_inline(heading.group(2))}</h{level}>")
+            index += 1
+            continue
+
+        if stripped.startswith("- "):
+            items: list[str] = []
+            while index < len(lines) and lines[index].strip().startswith("- "):
+                items.append(lines[index].strip()[2:].strip())
+                index += 1
+            blocks.append(
+                "<ul>\n"
+                + "\n".join(f"  <li>{render_inline(item)}</li>" for item in items)
+                + "\n</ul>"
+            )
+            continue
+
+        numbered = re.match(r"^\d+\.\s+(.+)$", stripped)
+        if numbered:
+            items: list[str] = []
+            while index < len(lines):
+                current = lines[index].strip()
+                match = re.match(r"^\d+\.\s+(.+)$", current)
+                if not match:
+                    break
+                items.append(match.group(1))
+                index += 1
+            blocks.append(
+                "<ol>\n"
+                + "\n".join(f"  <li>{render_inline(item)}</li>" for item in items)
+                + "\n</ol>"
+            )
+            continue
+
+        paragraph_lines = [stripped]
+        index += 1
+        while index < len(lines):
+            current = lines[index].strip()
+            if not current or current.startswith("- ") or current.startswith("```") or re.match(r"^(#{1,6})\s+", current) or re.match(r"^\d+\.\s+", current):
+                break
+            paragraph_lines.append(current)
+            index += 1
+        blocks.append(f"<p>{render_inline(' '.join(paragraph_lines))}</p>")
+
+    return "\n".join(blocks)
+
+
+def reading_navigation_items(company_dir: Path, language: str) -> list[tuple[str, Path]]:
+    items = [
+        (pick_text(language, "先看这里", "Start Here"), reading_entry_path(company_dir, language)),
+    ]
+    for key in ROOT_DOC_KEYS:
+        source = root_doc_path(company_dir, key, language)
+        items.append((source.stem, reading_export_path(company_dir, source, language)))
+    extra_source = workspace_file_path(company_dir, "delivery_directory", language)
+    items.append((extra_source.stem, reading_export_path(company_dir, extra_source, language)))
+    return items
+
+
+def render_reading_shell(
+    *,
+    title: str,
+    subtitle: str,
+    body_html: str,
+    language: str,
+    company_name: str,
+    current_path: Path,
+    navigation_items: list[tuple[str, Path]],
+) -> str:
+    nav_links = []
+    for label, path in navigation_items:
+        href = relative_href(path, current_path.parent)
+        is_current = path == current_path
+        class_name = "nav-link is-current" if is_current else "nav-link"
+        nav_links.append(
+            f'<a class="{class_name}" href="{html_escape(href, quote=True)}">{html_escape(label)}</a>'
+        )
+    language_tag = "zh-CN" if language == "zh-CN" else "en"
+    footer_text = pick_text(
+        language,
+        "阅读版适合下载直接查看；原始 Markdown 继续保留为工作底稿；正式对外交付仍以 DOCX 为准。",
+        "The reading layer is for direct viewing after download; the original markdown remains the working source; formal external deliverables still live in DOCX files.",
+    )
+    return f"""<!doctype html>
+<html lang="{html_escape(language_tag, quote=True)}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{html_escape(title)} - {html_escape(company_name)}</title>
+  <style>
+    :root {{
+      --bg: #f6f3ec;
+      --surface: rgba(255, 252, 247, 0.94);
+      --surface-strong: #fffdf8;
+      --line: #ded5c6;
+      --ink: #1f1a14;
+      --ink-soft: #5f5448;
+      --accent: #b85c38;
+      --accent-deep: #8d4024;
+      --success: #2f7d5b;
+      --shadow: 0 18px 44px rgba(57, 39, 22, 0.12);
+      --radius: 20px;
+      --radius-pill: 999px;
+      --max: 1120px;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(184, 92, 56, 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgba(47, 125, 91, 0.11), transparent 26%),
+        linear-gradient(180deg, #faf7f1 0%, var(--bg) 100%);
+    }}
+    a {{ color: var(--accent-deep); text-decoration: none; }}
+    a:hover {{ text-decoration: underline; }}
+    code {{
+      border-radius: 8px;
+      padding: 0.12rem 0.38rem;
+      background: rgba(31, 26, 20, 0.07);
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 0.92em;
+    }}
+    pre {{
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1rem 1.1rem;
+      background: #f4efe5;
+    }}
+    .page {{
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }}
+    .hero {{
+      padding: 28px 30px;
+      border: 1px solid rgba(184, 92, 56, 0.18);
+      border-radius: 28px;
+      background:
+        linear-gradient(145deg, rgba(255, 251, 244, 0.96), rgba(250, 243, 233, 0.92)),
+        linear-gradient(120deg, rgba(184, 92, 56, 0.10), transparent 55%);
+      box-shadow: var(--shadow);
+    }}
+    .eyebrow {{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.9rem;
+      border-radius: var(--radius-pill);
+      padding: 0.42rem 0.82rem;
+      background: rgba(184, 92, 56, 0.12);
+      color: var(--accent-deep);
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }}
+    h1 {{
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.03;
+      font-family: "Alegreya", Georgia, serif;
+      letter-spacing: -0.02em;
+    }}
+    .subtitle {{
+      margin: 0.9rem 0 0;
+      max-width: 760px;
+      color: var(--ink-soft);
+      font-size: 1rem;
+      line-height: 1.65;
+    }}
+    .nav {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin: 1rem 0 0;
+    }}
+    .nav-link {{
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0.55rem 0.88rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-pill);
+      background: rgba(255, 253, 248, 0.88);
+      color: var(--ink-soft);
+      font-weight: 600;
+      text-decoration: none;
+    }}
+    .nav-link:hover {{
+      color: var(--ink);
+      text-decoration: none;
+    }}
+    .nav-link.is-current {{
+      border-color: rgba(184, 92, 56, 0.26);
+      background: rgba(184, 92, 56, 0.14);
+      color: var(--accent-deep);
+    }}
+    .content {{
+      margin-top: 22px;
+      padding: 28px 30px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 10px 28px rgba(57, 39, 22, 0.08);
+    }}
+    .content h2, .content h3, .content h4 {{
+      margin: 1.4rem 0 0.7rem;
+      font-family: "Alegreya", Georgia, serif;
+      line-height: 1.16;
+    }}
+    .content h2:first-child,
+    .content h3:first-child,
+    .content h4:first-child {{
+      margin-top: 0;
+    }}
+    .content p, .content li {{
+      color: var(--ink);
+      line-height: 1.72;
+      font-size: 1rem;
+    }}
+    .content ul, .content ol {{
+      padding-left: 1.2rem;
+    }}
+    .footer {{
+      margin-top: 18px;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }}
+    .card-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 1.2rem 0 0;
+    }}
+    .card {{
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface-strong);
+    }}
+    .card-label {{
+      display: block;
+      color: var(--ink-soft);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }}
+    .card strong {{
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      line-height: 1.5;
+    }}
+    @media (max-width: 720px) {{
+      .page {{ width: min(calc(100% - 20px), var(--max)); padding-top: 14px; }}
+      .hero, .content {{ padding: 20px 18px; border-radius: 22px; }}
+    }}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">{html_escape(pick_text(language, "下载阅读版", "Download Reading Layer"))}</div>
+      <h1>{html_escape(title)}</h1>
+      <p class="subtitle">{html_escape(subtitle)}</p>
+      <nav class="nav">
+        {"".join(nav_links)}
+      </nav>
+    </section>
+    <section class="content">
+      {body_html}
+    </section>
+    <p class="footer">{html_escape(footer_text)}</p>
+  </main>
+</body>
+</html>
+"""
+
+
+def render_markdown_reading_page(
+    markdown_text: str,
+    *,
+    source_path: Path,
+    output_path: Path,
+    company_dir: Path,
+    language: str,
+    state: dict[str, Any],
+) -> str:
+    title = source_path.stem
+    subtitle = pick_text(
+        language,
+        "这是面向下载查看的阅读版页面，对应的 Markdown 工作文件仍保留在原工作区中。",
+        "This is the download-friendly reading page. The original markdown working file remains in the workspace.",
+    )
+    body_html = markdown_to_html_fragment(
+        markdown_text,
+        source_path=source_path,
+        output_path=output_path,
+        company_dir=company_dir,
+        language=language,
+    )
+    return render_reading_shell(
+        title=title,
+        subtitle=subtitle,
+        body_html=body_html,
+        language=language,
+        company_name=state["company_name"],
+        current_path=output_path,
+        navigation_items=reading_navigation_items(company_dir, language),
+    )
+
+
+def build_reading_start_page(state: dict[str, Any], company_dir: Path) -> str:
+    language = state["language"]
+    focus = state["focus"]
+    offer = state["offer"]
+    product = state["product"]
+    delivery = state["delivery"]
+    cash = state["cash"]
+    body_parts = [
+        "<div class=\"card-grid\">",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '当前主目标', 'Primary Goal'))}</span><strong>{html_escape(focus['primary_goal'])}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '当前主瓶颈', 'Primary Bottleneck'))}</span><strong>{html_escape(focus['primary_bottleneck'])}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '当前主战场', 'Primary Arena'))}</span><strong>{html_escape(primary_arena_label(focus['primary_arena'], language))}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '今天最短动作', 'Shortest Action Today'))}</span><strong>{html_escape(focus['today_action'])}</strong></article>",
+        "</div>",
+        f"<h2>{html_escape(pick_text(language, '下载后先怎么用', 'How To Use This Download'))}</h2>",
+        "<ul>",
+        f"<li>{html_escape(pick_text(language, '先从本页进入阅读版主工作面，快速理解当前经营状态。', 'Start from this page to open the reading layer and understand the current business state quickly.'))}</li>",
+        f"<li>{html_escape(pick_text(language, '如果只是查看，优先打开 HTML；如果要继续协作和更新，再回到原始 Markdown。', 'If you only want to review the workspace, open the HTML pages first. Return to the original markdown files when you need to keep editing or collaborating.'))}</li>",
+        f"<li>{html_escape(pick_text(language, '正式对外交付请看产物目录里的 DOCX 文件。', 'For formal external deliverables, use the DOCX files under the artifacts directory.'))}</li>",
+        "</ul>",
+        f"<h2>{html_escape(pick_text(language, '当前经营闭环', 'Current Business Loop'))}</h2>",
+        "<div class=\"card-grid\">",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '价值承诺', 'Promise'))}</span><strong>{html_escape(offer['promise'])}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '买家', 'Buyer'))}</span><strong>{html_escape(offer['target_customer'])}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '产品能力', 'Product Capability'))}</span><strong>{html_escape(', '.join(product.get('core_capability', [])[:2]) or pick_text(language, '待补充', 'Add the core capability'))}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '交付', 'Delivery'))}</span><strong>{html_escape(delivery['delivery_status'])}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '回款', 'Cash Collection'))}</span><strong>{html_escape(str(cash['receivable']))}</strong></article>",
+        f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '学习与资产', 'Learning And Assets'))}</span><strong>{html_escape(state['focus']['week_outcome'])}</strong></article>",
+        "</div>",
+        f"<h2>{html_escape(pick_text(language, '推荐先看的页面', 'Open These Pages First'))}</h2>",
+        "<ul>",
+    ]
+    preferred_keys = (
+        "dashboard",
+        "offer",
+        "pipeline",
+        "product_status",
+        "delivery_cash",
+        "cash_health",
+        "assets_automation",
+    )
+    for key in preferred_keys:
+        source = root_doc_path(company_dir, key, language)
+        target = reading_export_path(company_dir, source, language)
+        href = relative_href(target, reading_entry_path(company_dir, language).parent)
+        body_parts.append(
+            f"<li><a href=\"{html_escape(href, quote=True)}\">{html_escape(source.stem)}</a></li>"
+        )
+    deliverables_source = workspace_file_path(company_dir, "delivery_directory", language)
+    deliverables_target = reading_export_path(company_dir, deliverables_source, language)
+    deliverables_href = relative_href(deliverables_target, reading_entry_path(company_dir, language).parent)
+    body_parts.extend(
+        [
+            f"<li><a href=\"{html_escape(deliverables_href, quote=True)}\">{html_escape(deliverables_source.stem)}</a></li>",
+            "</ul>",
+            f"<h2>{html_escape(pick_text(language, '文件分层说明', 'Output Layer Guide'))}</h2>",
+            "<ul>",
+            f"<li>{html_escape(pick_text(language, '阅读版 HTML：适合下载后直接双击查看。', 'Reading HTML: open these first after download.'))}</li>",
+            f"<li>{html_escape(pick_text(language, '工作层 Markdown：适合继续修改、追踪和协作。', 'Working markdown: keep using these for editing, tracking, and collaboration.'))}</li>",
+            f"<li>{html_escape(pick_text(language, '正式交付 DOCX：适合发给客户、合作方或归档。', 'Formal DOCX deliverables: use these for customers, collaborators, or archival handoff.'))}</li>",
+            "</ul>",
+        ]
+    )
+    return render_reading_shell(
+        title=pick_text(language, "先看这里", "Start Here"),
+        subtitle=pick_text(
+            language,
+            "这是下载后的阅读入口页。它把工作区分成阅读层、工作层和正式交付层，帮助创始人先看懂，再继续推进。",
+            "This is the reading entry point after download. It separates the workspace into reading, working, and formal-deliverable layers so the founder can understand the current state before editing anything.",
+        ),
+        body_html="\n".join(body_parts),
+        language=language,
+        company_name=state["company_name"],
+        current_path=reading_entry_path(company_dir, language),
+        navigation_items=reading_navigation_items(company_dir, language),
+    )
+
+
+def render_reading_exports(company_dir: Path, state: dict[str, Any]) -> None:
+    language = state["language"]
+    reading_dir_path(company_dir, language).mkdir(parents=True, exist_ok=True)
+    for source_path in reading_source_paths(company_dir, language):
+        if not source_path.is_file() or source_path.suffix.lower() != ".md":
+            continue
+        output_path = reading_export_path(company_dir, source_path, language)
+        html_text = render_markdown_reading_page(
+            source_path.read_text(encoding="utf-8"),
+            source_path=source_path,
+            output_path=output_path,
+            company_dir=company_dir,
+            language=language,
+            state=state,
+        )
+        write_text(output_path, html_text)
+    write_text(reading_entry_path(company_dir, language), build_reading_start_page(state, company_dir))
+
+
 def artifact_status_summary_markdown(company_dir: Path, language: str) -> str:
     category_names = {
         "delivery": pick_text(language, "实际交付", "Actual Deliverables"),
@@ -2628,7 +3176,6 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
     write_text(workspace_file_path(company_dir, "product_checklist", language), build_mvp_checklist_doc(state))
     write_text(workspace_file_path(company_dir, "product_demo_index", language), build_demo_html(state))
     write_text(workspace_file_path(company_dir, "delivery_tracker", language), build_delivery_doc(state))
-    write_text(workspace_file_path(company_dir, "delivery_directory", language), artifact_status_summary_markdown(company_dir, language))
     write_text(workspace_file_path(company_dir, "delivery_feedback", language), build_trial_feedback_doc(state))
     write_text(workspace_file_path(company_dir, "ops_launch_checklist", language), build_launch_checklist_doc(state))
     write_text(workspace_file_path(company_dir, "assets_inventory", language), build_asset_doc(state))
@@ -2690,3 +3237,6 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         }
         rendered = render_template(spec["template"], docx_values)
         write_docx(output_path, rendered, title=spec["title"])
+
+    write_text(workspace_file_path(company_dir, "delivery_directory", language), artifact_status_summary_markdown(company_dir, language))
+    render_reading_exports(company_dir, state)

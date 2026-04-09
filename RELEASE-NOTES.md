@@ -1,5 +1,21 @@
 # Release Notes
 
+## v0.6.7 - Download-Friendly Reading Layer
+
+`v0.6.7` upgrades the generated workspace from a markdown-heavy working folder into a better download artifact.
+
+The new output model is:
+
+- markdown for continued editing and agent updates
+- localized HTML for direct reading after download
+- DOCX for formal external deliverables
+
+What changed:
+
+- every generated workspace now includes `阅读版/00-先看这里.html` or `reading/00-start-here.html`
+- the core dashboard, offer, pipeline, product, delivery, cash, asset, and deliverable-overview pages now export as localized HTML reading files
+- release validation and public docs now describe the reading layer explicitly instead of presenting the package as markdown-only
+
 ## v0.6.6 - Marketplace Safety Boundary Hardening
 
 `v0.6.5` fixed the founder-visible workspace surface.

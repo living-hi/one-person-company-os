@@ -27,7 +27,7 @@ clawhub install one-person-company-os
 - 所有落盘文件都留在确认过的工作区内
 - 正常使用不需要 API key
 
-工作区现在会生成和语言一致的第一层主文件。
+工作区现在会生成和语言一致的主文件与下载即看的阅读层。
 
 中文创始人会看到：
 
@@ -36,6 +36,7 @@ clawhub install one-person-company-os
 - `03-机会与成交管道.md`
 - `04-产品与上线状态.md`
 - `05-客户交付与回款.md`
+- `阅读版/00-先看这里.html`
 
 英文创始人会看到对应的英文文件名：
 
@@ -44,6 +45,7 @@ clawhub install one-person-company-os
 - `03-opportunity-and-revenue-pipeline.md`
 - `04-product-and-launch-status.md`
 - `05-delivery-and-cash-collection.md`
+- `reading/00-start-here.html`
 
 这一版已经支持：
 
@@ -51,5 +53,6 @@ clawhub install one-person-company-os
 - 产品开发与上线推进
 - 成交、交付、回款、资产沉淀入口
 - 对创始人可见的中英文工作区完全分离，内部机器状态隐藏在 `.opcos/state/current-state.json`
+- 适合下载直接查看的本地化 HTML 阅读层
 - 旧阶段/回合脚本兼容
 - 最终命名的编号化 DOCX 正式交付

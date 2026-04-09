@@ -18,6 +18,7 @@ On a serious run, the system helps a solo founder:
 - push an MVP toward something demoable, testable, launchable, and sellable
 - track opportunities, delivery, receivables, and cash
 - persist the operating state into a founder-approved local workspace
+- generate a download-friendly HTML reading layer on top of the markdown workspace
 - keep shipping real deliverables, including numbered DOCX artifacts where formal delivery is needed
 
 ## Runtime Requirements And Safety Boundary
@@ -31,6 +32,11 @@ On a serious run, the system helps a solo founder:
 ## The Real Workspace Model
 
 The generated workspace now centers on operating surfaces instead of stage-first guidance.
+It also separates the output into three layers so the downloaded workspace is easier to inspect:
+
+- markdown work surfaces for continued editing and agent updates
+- localized HTML reading exports for direct viewing after download
+- numbered DOCX files under `artifacts/` or `产物/` for formal deliverables
 
 English workspaces use an English-visible surface:
 
@@ -71,6 +77,29 @@ Chinese workspaces use the Chinese-visible equivalents:
 - `流程/`
 
 Legacy stage and round materials are still supported for compatibility, but they are no longer the primary product surface.
+
+## Download-Friendly Reading Layer
+
+Every generated workspace now includes a localized reading directory:
+
+- Chinese founders get `阅读版/00-先看这里.html`
+- English founders get `reading/00-start-here.html`
+
+The reading layer mirrors the core operating pages as HTML so a founder can download the workspace and review it without opening raw markdown first.
+
+The primary HTML exports cover:
+
+- the operating dashboard
+- founder constraints
+- value promise and pricing
+- opportunity and revenue pipeline
+- product and launch status
+- delivery and cash collection
+- cashflow and business health
+- assets and automation
+- the deliverable directory overview
+
+The markdown originals still remain in place as the working source of truth.
 
 ## State Model
 
@@ -130,6 +159,7 @@ I am building a one-person company around an AI product. Use one-person-company-
 - Chinese prompt in -> Chinese runtime and materials out by default
 - English prompt in -> English runtime and materials out by default
 - user-visible workspace files and directories localize to the founder language
+- the HTML reading layer localizes too: `阅读版/` for Chinese and `reading/` for English
 - hidden machine-state storage stays stable at `.opcos/state/current-state.json`
 - the skill does not auto-install Python or other system packages
 
@@ -147,6 +177,7 @@ It validates:
 - business-loop workspace generation
 - Chinese-visible workspace generation
 - English-visible workspace generation
+- localized HTML reading exports and entry pages
 - new business scripts
 - legacy compatibility path
 - DOCX artifact generation

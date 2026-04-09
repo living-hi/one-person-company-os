@@ -53,6 +53,7 @@ The first serious run should produce:
 - the primary arena to push next
 - the operating workspace
 - a workspace surface that matches the founder language instead of mixing Chinese and English paths
+- a localized HTML reading layer that opens with a start page after download
 - the shortest action for today
 - the single result for this week
 - a local hidden machine-state file under the same workspace
@@ -75,6 +76,7 @@ The first serious run should produce:
 
 - business-loop state v3
 - operating dashboard plus direct work surfaces
+- localized HTML reading exports for direct viewing after download
 - product, sales, delivery, cash, and asset update scripts
 - final-named DOCX deliverables
 - runtime transparency and Python compatibility guidance

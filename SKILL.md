@@ -66,6 +66,29 @@ Every serious run should clarify:
 - the shortest action today
 - what changed inside the approved workspace
 
+## Download-Friendly Reading Layer
+
+The workspace is not markdown-only anymore.
+After each real persistence run, also maintain a localized reading layer for direct download viewing:
+
+- Chinese founders: `阅读版/00-先看这里.html`
+- English founders: `reading/00-start-here.html`
+
+The reading layer should mirror the core workspace documents as HTML:
+
+- operating dashboard
+- founder constraints
+- value promise and pricing
+- opportunity and revenue pipeline
+- product and launch status
+- delivery and cash collection
+- cashflow and business health
+- assets and automation
+- deliverable directory overview
+
+Keep markdown as the editable working source.
+Keep numbered DOCX files under `产物/` or `artifacts/` for formal deliverables.
+
 ## Main Workspace Files
 
 The primary generated workspace should center on language-matched files:
