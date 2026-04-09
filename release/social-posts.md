@@ -2,34 +2,36 @@
 
 ## X / Short Post
 
-I upgraded `one-person-company-os` to `v0.6.5`.
+I upgraded `one-person-company-os` to `v0.6.6`.
 
-It now asks for founder direction first, then creates a real operating workspace that matches the founder language all the way down to visible file and directory names.
+This patch hardens the marketplace safety boundary:
 
-Not a prompt bundle. Not a mixed-language workspace with translated text on top.
+- no automatic system-package installation
+- persisted writes stay inside the approved workspace
+- public docs now match the real runtime contract
 
 ## X / 中文短帖
 
-我把 `one-person-company-os` 升级到 `v0.6.5`。
+我把 `one-person-company-os` 升级到 `v0.6.6`。
 
-这一版补上了一个很关键的产品缺口：
+这一版补的是公开发布面的安全边界：
 
-- 中文用户拿到纯中文可见工作区
-- 英文用户拿到纯英文可见工作区
-- 机器状态隐藏到 `.opcos/state/current-state.json`
+- marketplace 版不再自动安装系统级依赖
+- 持久化写入只留在确认过的工作区里
+- README、SKILL、ClawHub listing 和真实运行契约终于对齐
 
-不再是“内容翻译了，但路径还是中英混合”。
+不是只改文案，也不是只改代码，而是把公开面和真实行为一起收紧。
 
 ## LinkedIn / Longer Post
 
-`one-person-company-os` now closes a subtle but important trust gap.
+`one-person-company-os` now closes an important marketplace trust gap.
 
-The runtime had already become direction-first and bilingual, but the generated workspace still mixed Chinese and English visible paths and exposed internal state in the founder surface.
+The package was already direction-first and language-localized, but the public surface still left too much ambiguity around host changes and write scope.
 
-`v0.6.5` fixes that:
+`v0.6.6` fixes that:
 
-- founder-visible workspaces localize fully by language
-- internal machine state moves to `.opcos/state/current-state.json`
-- release validation now checks Chinese and English workspace separation directly
+- `scripts/ensure_python_runtime.py` now stays in compatibility-guidance mode and does not auto-install system packages
+- persisted write paths are tightened to the approved company workspace
+- public docs, prompts, metadata, and release material now describe the same safety boundary the runtime actually follows
 
-The result is a product that behaves more like a serious founder operating system and less like a translated wrapper around one filesystem layout.
+The result is a package that is easier to audit, easier to trust, and more likely to clear platform security review without diluting the core founder workflow.

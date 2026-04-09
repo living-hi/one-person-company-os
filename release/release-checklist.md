@@ -14,8 +14,10 @@
 - run `python3 scripts/preflight_check.py --mode 创建公司`
 - run `python3 scripts/ensure_python_runtime.py`
 - run `python3 scripts/validate_release.py`
+- confirm `scripts/ensure_python_runtime.py` only prints compatibility and manual install guidance, and does not auto-install packages
 - confirm Chinese-visible and English-visible workspace generation both pass
 - confirm runtime output reports `installed`, `runnable`, `python_supported`, `workspace_created`, and `persisted`
+- confirm persisted write examples stay inside the target company workspace
 - confirm `产物/` only contains numbered `.docx` files in generated workspaces
 - confirm `.opcos/state/current-state.json` exists and visible `自动化/当前状态.json` does not
 - confirm English workspaces do not expose Chinese root files or directories

@@ -1,5 +1,20 @@
 # Release Notes
 
+## v0.6.6 - Marketplace Safety Boundary Hardening
+
+`v0.6.5` fixed the founder-visible workspace surface.
+
+`v0.6.6` fixes the next marketplace trust mismatch: the package behavior was coherent, but the public runtime contract still left too much ambiguity around host-environment changes and write scope.
+
+This release adds and updates:
+
+- a marketplace-safe `scripts/ensure_python_runtime.py` path that stays in compatibility-guidance mode instead of auto-installing system packages
+- tighter write-boundary checks so persisted artifact output and saved role briefs stay inside the approved company workspace
+- an explicit no-implicit-invocation policy in `agents/openai.yaml`
+- synchronized README, SKILL, security docs, listing copy, publishing notes, and release material so the public package surface matches the runtime safety boundary
+
+The result is a package that is easier to audit, easier to trust, and less likely to trigger marketplace review concerns while keeping the founder workflow intact.
+
 ## v0.6.5 - Fully Localized Workspace Surface
 
 `v0.6.4` fixed the direction-first contract and neutralized leaked default cases.

@@ -16,8 +16,16 @@ clawhub install one-person-company-os
 Best start prompt:
 
 ```text
-I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace, tell me the current bottleneck, and update the real files directly.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace inside an approved local folder, tell me the current bottleneck, and save only the approved files inside that workspace.
 ```
+
+Safety boundary:
+
+- script mode expects an existing local `Python 3.7+`
+- `scripts/ensure_python_runtime.py` prints compatibility and manual install guidance only
+- the marketplace build does not auto-install system packages
+- persisted files stay inside the approved workspace
+- normal use does not require API keys
 
 The generated workspace now opens with a language-matched surface.
 

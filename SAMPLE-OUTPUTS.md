@@ -9,7 +9,7 @@ Every major operation includes:
 
 - `User Navigation View` or `用户导航版`
 - `Audit View` or `审计版`
-- explicit persistence details
+- explicit workspace-boundary and persistence details
 - explicit runtime status
 
 ## Chinese Dashboard

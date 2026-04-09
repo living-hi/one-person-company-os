@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.6 - 2026-04-09
+
+- disabled automatic host-package installation in the marketplace-facing Python compatibility helper so `scripts/ensure_python_runtime.py` now stays in compatibility-guidance mode unless it is only rerunning a target script with an already-trusted interpreter
+- tightened persisted output boundaries by constraining generated artifact output and persisted role briefs to stay inside the approved company workspace
+- disabled implicit invocation in `agents/openai.yaml` and rewrote README, SKILL, security docs, listing copy, publishing notes, and release collateral so the public safety boundary matches the real runtime behavior
+
 ## v0.6.5 - 2026-04-07
 
 - localized the entire founder-visible workspace surface so Chinese founders now get Chinese file and directory names while English founders get English-visible equivalents

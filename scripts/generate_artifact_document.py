@@ -10,6 +10,7 @@ from common import (
     artifact_dir_path,
     artifact_status_summary_markdown,
     display_path,
+    ensure_within_directory,
     emit_runtime_report,
     load_state,
     now_string,
@@ -55,7 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--decision", action="append", default=[], help="关键决策，可重复")
     parser.add_argument("--risk", action="append", default=[], help="风险与待确认事项，可重复")
     parser.add_argument("--next-action", default="", help="下一步动作，默认读取当前回合")
-    parser.add_argument("--output-dir", help="可选，自定义输出目录")
+    parser.add_argument("--output-dir", help="可选，自定义输出目录，但必须位于当前公司工作区内")
     return parser
 
 
@@ -155,7 +156,16 @@ def main() -> int:
     }
 
     print_step(4, 5, "执行与落盘", language=language)
-    base_dir = Path(args.output_dir).expanduser().resolve() if args.output_dir else company_dir
+    try:
+        if args.output_dir:
+            candidate_output_dir = Path(args.output_dir)
+            if not candidate_output_dir.is_absolute():
+                candidate_output_dir = company_dir / candidate_output_dir
+            base_dir = ensure_within_directory(candidate_output_dir, company_dir, label="output-dir")
+        else:
+            base_dir = company_dir
+    except ValueError as exc:
+        parser.error(str(exc))
     output_dir = artifact_dir_path(base_dir, category, language)
     output_path = planned_docx_path(output_dir, args.title, completed=True)
     output_path_display = display_path(output_path, company_dir)

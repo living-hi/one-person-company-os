@@ -17,8 +17,16 @@ On a serious run, the system helps a solo founder:
 - narrow the first paying customer
 - push an MVP toward something demoable, testable, launchable, and sellable
 - track opportunities, delivery, receivables, and cash
-- persist the operating state into a real workspace
+- persist the operating state into a founder-approved local workspace
 - keep shipping real deliverables, including numbered DOCX artifacts where formal delivery is needed
+
+## Runtime Requirements And Safety Boundary
+
+- script mode expects an existing local `Python 3.7+`
+- `python3 scripts/ensure_python_runtime.py` inspects compatibility and prints manual install guidance only
+- the marketplace build does not auto-install system packages
+- generated files stay inside the founder-approved workspace directory
+- normal use does not require API keys or unrelated credentials
 
 ## The Real Workspace Model
 
@@ -89,10 +97,10 @@ Every serious run should answer:
 - what the primary bottleneck is
 - which arena is primary right now: `sales / product / delivery / cash / asset`
 - what the shortest action today is
-- what changed on disk
+- what changed inside the approved workspace
 - what to open next
 
-The fixed `Step 1/5 -> Step 5/5` execution flow, persistence reporting, and runtime recovery are still part of the contract.
+The fixed `Step 1/5 -> Step 5/5` execution flow, persistence reporting, and runtime compatibility guidance are still part of the contract.
 
 ## Local Commands
 
@@ -100,16 +108,10 @@ The fixed `Step 1/5 -> Step 5/5` execution flow, persistence reporting, and runt
 python3 scripts/preflight_check.py --mode create-company
 python3 scripts/ensure_python_runtime.py
 python3 scripts/init_business.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期 --target-user "independent developers" --core-problem "still lacks a real one-person-company system that keeps product and revenue moving" --product-pitch "a one-person-company control system that helps independent developers build and sell their product" --confirmed
-python3 scripts/update_focus.py ./workspace/北辰实验室 --primary-goal "把 MVP 推到可演示并拿到第一批对话" --primary-arena product --today-action "先补 homepage hero 的价值表达和 CTA 路径"
-python3 scripts/advance_product.py ./workspace/北辰实验室 --state prototype --current-version "v0.1 hero"
-python3 scripts/advance_pipeline.py ./workspace/北辰实验室 --talking 3 --proposal 1 --next-revenue-action "把首版 demo 发给 3 位独立开发者并约反馈"
-python3 scripts/advance_delivery.py ./workspace/北辰实验室 --active-customers 1 --delivery-status "首位试用客户已进入 onboarding" --receivable 2999
-python3 scripts/update_cash.py ./workspace/北辰实验室 --cash-in 2999 --cash-out 500 --monthly-target 10000
-python3 scripts/record_asset.py ./workspace/北辰实验室 --kind templates --item "首位试用客户 onboarding 话术"
-python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "Homepage Hero Spec" --category software
-python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "end of current session"
 python3 scripts/validate_release.py
 ```
+
+Advanced update flows still live under `scripts/`, but all persisted writes are expected to stay inside the selected company workspace.
 
 ## One-Line Install
 
@@ -120,7 +122,7 @@ clawhub install one-person-company-os
 ## One-Line Start
 
 ```text
-I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace, tell me the current bottleneck, and update the real files directly.
+I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace inside an approved local folder, tell me the current bottleneck, and save only the approved files inside that workspace.
 ```
 
 ## Language Behavior
@@ -129,6 +131,7 @@ I am building a one-person company around an AI product. Use one-person-company-
 - English prompt in -> English runtime and materials out by default
 - user-visible workspace files and directories localize to the founder language
 - hidden machine-state storage stays stable at `.opcos/state/current-state.json`
+- the skill does not auto-install Python or other system packages
 
 ## Validation
 
@@ -140,7 +143,7 @@ python3 scripts/validate_release.py
 
 It validates:
 
-- runtime recovery logic
+- runtime compatibility guidance
 - business-loop workspace generation
 - Chinese-visible workspace generation
 - English-visible workspace generation

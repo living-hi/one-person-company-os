@@ -17,8 +17,16 @@
 - 收窄第一批愿意付费的人
 - 把 MVP 推到可演示、可测试、可上线、可售卖
 - 维护线索、成交、交付、回款和现金状态
-- 把经营状态真实落盘到工作区
+- 把经营状态真实落盘到创始人确认过的本地工作区
 - 在需要正式交付时，留下编号化 DOCX 与可审计证据
+
+## 运行要求与安全边界
+
+- 脚本模式要求本机已经有 `Python 3.7+`
+- `python3 scripts/ensure_python_runtime.py` 只负责检查兼容性并输出手动安装建议
+- marketplace 版不会自动安装系统级依赖
+- 所有生成文件都应留在创始人确认过的工作区目录内
+- 正常使用不需要 API key 或无关凭证
 
 ## 新的工作区模型
 
@@ -83,10 +91,10 @@
 - 当前主瓶颈是什么
 - 当前主战场是哪一类：`sales / product / delivery / cash / asset`
 - 今天最短动作是什么
-- 这次真实改了哪些文件
+- 这次在已确认工作区里真实改了哪些文件
 - 接下来该打开哪里继续
 
-固定的 `Step 1/5 -> Step 5/5`、保存透明、运行透明、Python 恢复机制仍然保留。
+固定的 `Step 1/5 -> Step 5/5`、保存透明、运行透明、Python 兼容指引仍然保留。
 
 ## 本地命令
 
@@ -94,16 +102,10 @@
 python3 scripts/preflight_check.py --mode 创建公司
 python3 scripts/ensure_python_runtime.py
 python3 scripts/init_business.py "北辰实验室" --path ./workspace --product-name "北辰助手" --stage 构建期 --target-user "独立开发者" --core-problem "还没有一个真正能持续推进产品和成交的一人公司系统" --product-pitch "一个帮助独立开发者把产品做出来并卖出去的一人公司控制系统" --confirmed
-python3 scripts/update_focus.py ./workspace/北辰实验室 --primary-goal "把 MVP 推到可演示并拿到第一批对话" --primary-arena product --today-action "先补 homepage hero 的价值表达和 CTA 路径"
-python3 scripts/advance_product.py ./workspace/北辰实验室 --state prototype --current-version "v0.1 hero"
-python3 scripts/advance_pipeline.py ./workspace/北辰实验室 --talking 3 --proposal 1 --next-revenue-action "把首版 demo 发给 3 位独立开发者并约反馈"
-python3 scripts/advance_delivery.py ./workspace/北辰实验室 --active-customers 1 --delivery-status "首位试用客户已进入 onboarding" --receivable 2999
-python3 scripts/update_cash.py ./workspace/北辰实验室 --cash-in 2999 --cash-out 500 --monthly-target 10000
-python3 scripts/record_asset.py ./workspace/北辰实验室 --kind templates --item "首位试用客户 onboarding 话术"
-python3 scripts/generate_artifact_document.py ./workspace/北辰实验室 --title "首页首屏规范" --category software
-python3 scripts/checkpoint_save.py ./workspace/北辰实验室 --reason "准备结束当前会话"
 python3 scripts/validate_release.py
 ```
+
+更细的推进脚本仍然在 `scripts/` 目录里，但所有落盘都应保持在当前公司工作区内部。
 
 ## 一句话安装
 
@@ -114,7 +116,7 @@ clawhub install one-person-company-os
 ## 一句话启动
 
 ```text
-我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先主动问我一句创业想法；如果我还没想好，就给我 3 到 4 个方向让我选。等我们确认可卖承诺、第一批买家和核心问题后，再创建工作区、告诉我当前主瓶颈，并把真实文件改出来。
+我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先主动问我一句创业想法；如果我还没想好，就给我 3 到 4 个方向让我选。等我们确认可卖承诺、第一批买家和核心问题后，再在我确认的本地目录里创建经营工作区、告诉我当前主瓶颈，并且只把批准后的文件保存到这个工作区内。
 ```
 
 ## 语言行为
@@ -123,6 +125,7 @@ clawhub install one-person-company-os
 - 英文输入 -> 默认输出英文运行过程与英文资料
 - 用户可见工作区文件与目录会跟随创始人语言完全本地化
 - 隐藏机器状态路径固定为 `.opcos/state/current-state.json`
+- skill 不会自动安装 Python 或其他系统级依赖
 
 ## 校验
 
@@ -134,7 +137,7 @@ python3 scripts/validate_release.py
 
 它会校验：
 
-- 运行时恢复逻辑
+- 运行时兼容指引
 - 经营闭环工作区生成
 - 中文工作区纯中文表面
 - 英文工作区纯英文表面

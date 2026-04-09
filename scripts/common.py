@@ -233,6 +233,16 @@ def display_path(path: Path, root: Optional[Path] = None) -> str:
     return str(path)
 
 
+def ensure_within_directory(path: Path, directory: Path, *, label: str = "path") -> Path:
+    resolved_directory = directory.expanduser().resolve()
+    resolved_path = path.expanduser().resolve()
+    try:
+        resolved_path.relative_to(resolved_directory)
+    except ValueError as exc:
+        raise ValueError(f"{label} must stay inside {resolved_directory}: {resolved_path}") from exc
+    return resolved_path
+
+
 def version_text(version: tuple[int, ...]) -> str:
     return ".".join(str(part) for part in version)
 
@@ -327,27 +337,27 @@ def build_agent_action(
             language,
             "优先让 OpenClaw 智能体运行 `scripts/ensure_python_runtime.py --run-script <目标脚本>`，改用兼容解释器 "
             f"{compatible_runtime['executable']} ({python_compatibility_label(compatible_runtime['version'])}) 重跑脚本；"
-            "若切换失败，再由智能体手动完成脚本任务。",
+            "若切换失败，再由智能体在已确认工作区里手动完成脚本任务。",
             "Prefer asking the OpenClaw agent to run `scripts/ensure_python_runtime.py --run-script <target-script>` "
             f"and retry with the compatible interpreter {compatible_runtime['executable']} "
-            f"({python_compatibility_label(compatible_runtime['version'])}); if switching fails, let the agent finish the task manually.",
+            f"({python_compatibility_label(compatible_runtime['version'])}); if switching fails, let the agent finish the task manually inside the approved workspace.",
         )
 
     if writable:
         return pick_text(
             language,
-            f"优先让 OpenClaw 智能体运行 `scripts/ensure_python_runtime.py --apply` 安装兼容解释器（目标 {minimum}+）；"
-            "若当前环境不便安装，则由智能体直接完成脚本任务并手动落盘。",
-            f"Prefer asking the OpenClaw agent to run `scripts/ensure_python_runtime.py --apply` to install a compatible interpreter (target {minimum}+); "
-            "if installing is not practical in this environment, let the agent finish the task and persist files manually.",
+            f"先查看 `scripts/ensure_python_runtime.py` 给出的兼容解释器与手动安装方案（目标 {minimum}+）；"
+            "marketplace 版不会自动安装系统依赖。若当前环境不便手动安装，则由智能体只在已确认工作区里手动落盘。",
+            f"Inspect the compatible-runtime and manual install guidance from `scripts/ensure_python_runtime.py` first (target {minimum}+); "
+            "the marketplace build will not auto-install system packages. If manual installation is not practical, let the agent persist files manually inside the approved workspace.",
         )
 
     return pick_text(
         language,
-        f"优先让 OpenClaw 智能体在宿主环境运行 `scripts/ensure_python_runtime.py --apply` 安装兼容解释器（目标 {minimum}+）；"
-        "若仍无法写文件，只能由智能体继续纯对话推进并明确未保存。",
-        f"Prefer asking the OpenClaw agent to run `scripts/ensure_python_runtime.py --apply` in the host environment to install a compatible interpreter (target {minimum}+); "
-        "if files still cannot be written, the agent can only continue in chat and must state clearly that nothing was persisted.",
+        f"先查看 `scripts/ensure_python_runtime.py` 的兼容解释器与手动安装方案（目标 {minimum}+）；"
+        "如果仍无法写文件，只能继续纯对话推进，并明确当前没有任何内容被保存。",
+        f"Review the compatible-runtime and manual install guidance from `scripts/ensure_python_runtime.py` first (target {minimum}+); "
+        "if files still cannot be written, continue in chat only and state clearly that nothing was persisted.",
     )
 
 

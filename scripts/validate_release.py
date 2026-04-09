@@ -72,7 +72,7 @@ def validate_python_compatibility_logic() -> None:
         compatible_runtime=None,
         writable=True,
     )
-    assert_contains(install_action, "OpenClaw", "安装兼容解释器", "手动落盘")
+    assert_contains(install_action, "scripts/ensure_python_runtime.py", "手动安装方案", "手动落盘")
 
     mac_plan = build_install_plan(
         target_version="3.11",
@@ -452,6 +452,8 @@ def validate_workspace_scripts() -> None:
             "--stage",
             "上线期",
             "--all-default-roles",
+            "--company-dir",
+            str(company_dir),
             "--company-name",
             "北辰实验室",
             "--objective",
