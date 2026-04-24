@@ -1,5 +1,23 @@
 # Release Notes
 
+## v1.0.0 - Visual Operating Cockpit
+
+`v1.0.0` is a breaking architecture release.
+
+One Person Company OS is now a visual operating cockpit instead of a stage/round operating shell. The visible loop stays:
+
+`promise -> buyer -> product capability -> delivery -> cash -> learning -> asset`
+
+What changed:
+
+- v1.0 state no longer writes legacy `stage_id` or `current_round`
+- the first HTML page after download is `阅读版/00-经营驾驶舱.html` or `reading/00-operating-cockpit.html`
+- workspaces include deterministic SVGs for the business loop and revenue pipeline
+- workspaces include optional AI image prompts for launch and promotional visuals
+- old round/stage scripts now return deprecation guidance
+
+Normal use still does not require API keys, system package installation, or writes outside the approved workspace.
+
 ## v0.6.7 - Download-Friendly Reading Layer
 
 `v0.6.7` upgrades the generated workspace from a markdown-heavy working folder into a better download artifact.

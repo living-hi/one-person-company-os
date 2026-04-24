@@ -10,20 +10,20 @@
 ## Suggested Use
 
 - use `repo-social-card.svg` as the repository social preview
-- use `workspace-preview.svg` to show the workspace layout and round-driven operating model
-- use `company-overview-preview.svg` to show the company setup layer
-- use `round-preview.svg` to show the current-round control layer
+- use `workspace-preview.svg` to show the v1.0 operating cockpit workspace
+- use `company-overview-preview.svg` to show the business-loop state model
+- use `round-preview.svg` as the visual-loop preview for legacy asset slots
 
 ## Copy Pairing
 
 Recommended headline, Chinese:
 
-`按回合推进的一人公司总控台，服务中文和英文创始人。`
+`AI 一人公司的可视化经营驾驶舱。`
 
 Recommended headline, English:
 
-`A round-driven solo company control tower for both Chinese and English founders.`
+`A visual operating cockpit for AI-native solo founders.`
 
 Recommended support line:
 
-`Create the company, run one round at a time, calibrate only when needed.`
+`Promise, buyer, product, delivery, cash, learning, and assets in one visible loop.`

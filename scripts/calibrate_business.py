@@ -36,12 +36,11 @@ def main() -> int:
 
     state["focus"]["primary_bottleneck"] = args.reason
     state["focus"]["today_action"] = args.next_action
-    state["current_round"]["blocker"] = args.reason
-    state["current_round"]["next_action"] = args.next_action
     if args.primary_arena:
         state["focus"]["primary_arena"] = args.primary_arena
     if args.decision not in state["risk"]["pending_decisions"]:
         state["risk"]["pending_decisions"].append(args.decision)
+    state.setdefault("decision", {}).setdefault("recent_decisions", []).append(args.decision)
     if args.reason not in state["risk"]["top_risks"]:
         state["risk"]["top_risks"].append(args.reason)
 
@@ -63,9 +62,9 @@ def main() -> int:
     emit_runtime_report(
         mode=pick_text(language, "校准经营决策", "Calibrate Business"),
         phase="验证与回报",
-        stage=state["stage_label"],
-        round_name=state["current_round"]["name"],
-        role=state["current_round"]["owner_role_name"],
+        stage=pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop"),
+        round_name=pick_text(language, "经营推进", "Operating Push"),
+        role=pick_text(language, "经营总控", "Operating Lead"),
         artifact=pick_text(language, "风险与关键决策", "Risks and key decisions"),
         next_action=args.next_action,
         needs_confirmation=pick_text(language, "否", "No"),

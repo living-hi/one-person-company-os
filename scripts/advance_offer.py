@@ -40,8 +40,10 @@ def main() -> int:
         offer["promise"] = args.promise
     if args.target_customer:
         offer["target_customer"] = args.target_customer
+        state.setdefault("buyer", {})["segment"] = args.target_customer
     if args.scenario:
         offer["scenario"] = args.scenario
+        state.setdefault("buyer", {})["urgent_problem"] = args.scenario
     if args.pricing:
         offer["pricing"] = args.pricing
     for proof in args.proof:
@@ -68,9 +70,9 @@ def main() -> int:
     emit_runtime_report(
         mode=pick_text(language, "推进价值承诺", "Advance Offer"),
         phase="验证与回报",
-        stage=state["stage_label"],
-        round_name=state["current_round"]["name"],
-        role=state["current_round"]["owner_role_name"],
+        stage=pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop"),
+        round_name=pick_text(language, "经营推进", "Operating Push"),
+        role=pick_text(language, "经营总控", "Operating Lead"),
         artifact=pick_text(language, "价值承诺与报价", "Value promise and pricing"),
         next_action=state["focus"]["today_action"],
         needs_confirmation=pick_text(language, "否", "No"),

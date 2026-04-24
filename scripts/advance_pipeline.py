@@ -77,9 +77,9 @@ def main() -> int:
     emit_runtime_report(
         mode=pick_text(language, "推进成交管道", "Advance Pipeline"),
         phase="验证与回报",
-        stage=state["stage_label"],
-        round_name=state["current_round"]["name"],
-        role=state["current_round"]["owner_role_name"],
+        stage=pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop"),
+        round_name=pick_text(language, "经营推进", "Operating Push"),
+        role=pick_text(language, "经营总控", "Operating Lead"),
         artifact=pick_text(language, "机会与成交管道", "Opportunity and revenue pipeline"),
         next_action=pipeline["next_revenue_action"],
         needs_confirmation=pick_text(language, "否", "No"),

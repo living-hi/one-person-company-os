@@ -1,17 +1,19 @@
 # GitHub Announcement
 
-I upgraded `one-person-company-os` to `v0.6.7`.
+One Person Company OS v1.0 is a breaking architecture release.
 
-The previous release fixed marketplace trust and safety boundaries.
-This release fixes the next usability gap: a downloaded workspace still looked too much like a pile of markdown source files.
+The project is now a visual operating cockpit for AI-native one-person companies.
 
-What changed:
+The core loop stays simple:
 
-- every generated workspace now includes a localized HTML reading layer
-- Chinese founders now get `阅读版/00-先看这里.html`
-- English founders now get `reading/00-start-here.html`
-- the core dashboard, offer, pipeline, product, delivery, cash, asset, and deliverable-overview pages now export as reading-friendly HTML files
-- markdown remains the editable working source, while numbered DOCX files still carry the formal deliverables
+`promise -> buyer -> product -> delivery -> cash -> learning -> asset`
 
-This matters because a one-person-company operating system should not only be runnable.
-It should also be easy to download, open, and understand immediately.
+What is new:
+
+- v1.0 business-loop state with no legacy `stage_id` or `current_round`
+- localized operating cockpit HTML after download
+- deterministic SVG visuals for the business loop and revenue pipeline
+- optional AI image prompts for launch and promotional assets
+- old stage/round scripts now return deprecation guidance
+
+Normal use still does not require API keys, system package installation, or writes outside the founder-approved workspace.

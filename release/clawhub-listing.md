@@ -6,21 +6,11 @@ One Person Company OS
 
 ## Short Description
 
-Turn an AI product idea into a real one-person company loop across product, sales, delivery, cash, and assets
-
-## Tagline Options
-
-- From vague AI idea to sellable MVP, delivery loop, and cash recovery.
-- Build the product, move the pipeline, collect the cash, and keep the loop aligned inside one local workspace.
-- 不只是聊创业，而是把一人公司的经营闭环真正跑起来。
-- 帮你把产品做出来、卖出去、交付掉、收回款，并持续沉淀资产。
+Build a visual operating cockpit for an AI-native one-person company
 
 ## Primary Pitch
 
-One Person Company OS is a business-loop operating system for AI-native solo founders.
-
-It does not treat the company as a pile of templates.
-It treats the company as a loop:
+One Person Company OS v1.0 turns an AI product idea into a visible business loop:
 
 - promise
 - buyer
@@ -30,18 +20,18 @@ It treats the company as a loop:
 - learning
 - asset
 
-The system now generates and maintains a local operating workspace centered on:
+The first downloaded page is now an **Operating Cockpit**, not a folder of raw markdown.
+It shows the current bottleneck, revenue pipeline, business-loop map, shortest action, and links into the editable workspace.
 
-- operating dashboard
-- offer and pricing
-- pipeline
-- product and launch state
-- delivery and receivables
-- cash health
-- assets and automation
-- risks and decisions
+## What Users Get
 
-It also keeps runtime transparency, workspace-bound persistence, Python compatibility guidance, language-matched founder workspaces, and final-named DOCX deliverables when formal delivery evidence is needed.
+- v1.0 business-loop state without old stage/round fields
+- localized operating cockpit HTML
+- editable markdown work surfaces
+- numbered DOCX formal deliverables
+- deterministic SVG visuals for the business loop and revenue pipeline
+- optional AI image prompts for covers, launch posts, and promotional visuals
+- runtime transparency and Python compatibility guidance
 
 ## First-Run Promise
 
@@ -51,36 +41,18 @@ The first serious run should produce:
 - the first buyer definition
 - the primary bottleneck
 - the primary arena to push next
-- the operating workspace
-- a workspace surface that matches the founder language instead of mixing Chinese and English paths
-- a localized HTML reading layer that opens with a start page after download
+- the operating cockpit
+- a workspace surface that matches the founder language
+- deterministic visual assets
+- optional AI image prompts for promotion
 - the shortest action for today
-- the single result for this week
-- a local hidden machine-state file under the same workspace
+- a local hidden machine-state file under the approved workspace
 
 ## Quick Start Prompts
 
 - `clawhub install one-person-company-os`
-- `I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace inside an approved local folder, tell me the current bottleneck, and save only the approved files inside that workspace.`
-- `Update the focus, then push the product to a demoable MVP.`
-- `Advance the revenue pipeline and tell me the next real revenue action.`
-- `Advance delivery, receivables, and cash health.`
-- `Record this SOP as a reusable asset.`
-- `我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先主动问我一句创业想法；如果我还没想好，就给我 3 到 4 个方向让我选。等我们确认可卖承诺、第一批买家和核心问题后，再在我确认的本地目录里创建经营工作区、告诉我当前主瓶颈，并且只把批准后的文件保存到这个工作区内。`
-- `先更新主焦点，再继续推进产品与上线。`
-- `继续推进成交管道，并告诉我下一条真实成交动作。`
-- `继续推进交付、回款和现金状态。`
-- `把这次流程沉淀成资产。`
-
-## What Users Get
-
-- business-loop state v3
-- operating dashboard plus direct work surfaces
-- localized HTML reading exports for direct viewing after download
-- product, sales, delivery, cash, and asset update scripts
-- final-named DOCX deliverables
-- runtime transparency and Python compatibility guidance
-- compatibility with the older stage and round path when needed
+- `I am building a one-person AI company. Use one-person-company-os v1.0. Do not give me a business-plan template. First help me confirm the sellable promise, first buyer, and core problem. Then create the approved local workspace, open with the operating cockpit, show the current bottleneck visually, and save only approved files inside that workspace.`
+- `我正在创建一个 AI 一人公司，请调用 one-person-company-os v1.0。不要先给我商业计划书模板。先帮我确认可卖承诺、第一批买家和核心问题；确认后在我批准的本地目录创建工作区，用经营驾驶舱作为入口，直观展示当前瓶颈，并且只把批准后的文件保存到这个工作区内。`
 
 ## Safety Boundary
 
@@ -89,14 +61,9 @@ The first serious run should produce:
 - the marketplace build does not auto-install system packages
 - persisted files stay inside the approved workspace
 - normal use does not require API keys or unrelated credentials
+- AI image generation is optional and not part of the required runtime path
 
 ## Trust Boundary
 
 The founder is still the decision-maker.
-The system can draft, update, persist, and tighten the loop, but pricing changes, budget spend, launch claims, legal statements, high-risk customer actions, and writes outside the approved workspace still require explicit founder approval.
-
-## Default Prompt
-
-I am building a one-person company around an AI product. Use one-person-company-os. Do not give me a business-plan template. First ask me for the founder direction in one sentence; if I am not ready, give me 3 to 4 directions to choose from. After we confirm the sellable promise, first buyer, and core problem, create the operating workspace inside an approved local folder, tell me the current bottleneck, and save only the approved files inside that workspace.
-
-我正在围绕一个 AI 产品创建一人公司，请调用 one-person-company-os。不要先给我商业计划书模板。先主动问我一句创业想法；如果我还没想好，就给我 3 到 4 个方向让我选。等我们确认可卖承诺、第一批买家和核心问题后，再在我确认的本地目录里创建经营工作区、告诉我当前主瓶颈，并且只把批准后的文件保存到这个工作区内。
+The system can draft, update, persist, visualize, and tighten the loop, but pricing changes, budget spend, launch claims, legal statements, high-risk customer actions, and writes outside the approved workspace still require explicit founder approval.

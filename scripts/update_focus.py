@@ -41,15 +41,12 @@ def main() -> int:
         focus["primary_goal"] = args.primary_goal
     if args.primary_bottleneck:
         focus["primary_bottleneck"] = args.primary_bottleneck
-        state["current_round"]["blocker"] = args.primary_bottleneck
     if args.primary_arena:
         focus["primary_arena"] = args.primary_arena
     if args.today_action:
         focus["today_action"] = args.today_action
-        state["current_round"]["next_action"] = args.today_action
     if args.week_outcome:
         focus["week_outcome"] = args.week_outcome
-        state["current_round"]["goal"] = args.week_outcome
 
     print_step(4, 5, "执行与落盘", language=language)
     save_state(company_dir, state)
@@ -73,10 +70,10 @@ def main() -> int:
     emit_runtime_report(
         mode=pick_text(language, "更新主焦点", "Update Focus"),
         phase="验证与回报",
-        stage=state["stage_label"],
-        round_name=state["current_round"]["name"],
-        role=state["current_round"]["owner_role_name"],
-        artifact=pick_text(language, "经营总盘", "Operating dashboard"),
+        stage=pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop"),
+        round_name=pick_text(language, "经营推进", "Operating Push"),
+        role=pick_text(language, "经营总控", "Operating Lead"),
+        artifact=pick_text(language, "经营驾驶舱", "Operating cockpit"),
         next_action=focus["today_action"],
         needs_confirmation=pick_text(language, "否", "No"),
         persistence_mode="script-execution",

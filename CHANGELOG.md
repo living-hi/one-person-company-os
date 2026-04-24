@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.0 - 2026-04-24
+
+- rebuilt the product as a visual operating cockpit for AI-native one-person companies
+- changed the state contract to `version: 1.0` and removed legacy `stage_id` / `current_round` state fields
+- upgraded the reading layer entry to `阅读版/00-经营驾驶舱.html` or `reading/00-operating-cockpit.html`
+- added deterministic SVG visual assets under `视觉素材/` or `visual-kit/`
+- added optional AI-image prompt assets for promotion while keeping image generation out of the required runtime path
+- changed old stage/round commands into explicit v1.0 deprecation guidance
+
 ## v0.6.7 - 2026-04-09
 
 - added a localized HTML reading layer so every generated workspace now includes `阅读版/00-先看这里.html` or `reading/00-start-here.html` for direct viewing after download

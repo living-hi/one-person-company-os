@@ -691,6 +691,7 @@ def harmonize_workspace_layout(company_dir: Path, language: str) -> None:
         "records_checkpoint",
         "legacy_root",
         "reading_root",
+        "visual_kit",
         "artifact_delivery",
         "artifact_software",
         "artifact_business",
@@ -774,6 +775,7 @@ def ensure_workspace_dirs(company_dir: Path, language: str) -> None:
         workspace_dir_path(company_dir, "flows", language),
         workspace_dir_path(company_dir, "automation", language),
         workspace_dir_path(company_dir, "reading_root", language),
+        workspace_dir_path(company_dir, "visual_kit", language),
         workspace_dir_path(company_dir, "artifacts_root", language),
         artifact_dir_path(company_dir, "delivery", language),
         artifact_dir_path(company_dir, "software", language),
@@ -1132,7 +1134,7 @@ def explain_runtime_status(runtime: dict[str, Any], language: str) -> list[tuple
     ]
 
 
-def build_round_dashboard(
+def build_operating_snapshot(
     *,
     company_dir: Optional[Path],
     stage: str,
@@ -1151,7 +1153,7 @@ def build_round_dashboard(
             pipeline = state.get("pipeline", {}).get("stage_summary", {})
             delivery_state = state.get("delivery", {})
             return [
-                (pick_text(language, "当前阶段标签", "Current Stage Label"), state.get("stage_label", stage)),
+                (pick_text(language, "当前经营模型", "Current Operating Model"), stage),
                 (pick_text(language, "当前主目标", "Current Goal"), focus.get("primary_goal", stage)),
                 (pick_text(language, "当前主战场", "Primary Arena"), primary_arena_label(focus.get("primary_arena", "sales"), language)),
                 (pick_text(language, "产品状态", "Product State"), product_state_label(product.get("state", "idea"), language)),
@@ -1162,7 +1164,7 @@ def build_round_dashboard(
             ]
 
     return [
-        (pick_text(language, "当前阶段标签", "Current Stage Label"), stage),
+        (pick_text(language, "当前经营模型", "Current Operating Model"), stage),
         (pick_text(language, "当前主目标", "Current Goal"), round_name),
         (pick_text(language, "当前主战场", "Primary Arena"), primary_arena_label("sales", language)),
         (pick_text(language, "产品状态", "Product State"), product_state_label("idea", language)),
@@ -1228,7 +1230,7 @@ def emit_runtime_report(
     step_label = step_display(step_number, phase, language)
     localized_mode = mode_label(mode, language)
     localized_persistence_mode = persistence_mode_label(persistence_mode, language)
-    round_dashboard = build_round_dashboard(
+    operating_snapshot = build_operating_snapshot(
         company_dir=company_dir,
         stage=stage,
         round_name=round_name,
@@ -1259,10 +1261,10 @@ def emit_runtime_report(
     if output_view in ("both", "navigation"):
         print(pick_text(language, "用户导航版:", "User Navigation View:"), file=stream)
         print_block(
-            pick_text(language, "三层导航条", "Three-Layer Navigation"),
+            pick_text(language, "经营导航条", "Operating Navigation"),
             [
-                (pick_text(language, "阶段", "Stage"), stage),
-                (pick_text(language, "回合", "Round"), round_name),
+                (pick_text(language, "经营模型", "Operating Model"), stage),
+                (pick_text(language, "推进面", "Operating Surface"), round_name),
                 (pick_text(language, "本次 Step", "Current Step"), step_label),
             ],
             stream=stream,
@@ -1283,7 +1285,7 @@ def emit_runtime_report(
             ],
             stream=stream,
         )
-        print_block(pick_text(language, "回合仪表盘", "Round Dashboard"), round_dashboard, stream=stream)
+        print_block(pick_text(language, "经营快照", "Operating Snapshot"), operating_snapshot, stream=stream)
         print_block(pick_text(language, "查看与改进", "Review And Improve"), review_guidance, stream=stream)
         print_block(pick_text(language, "保存解释", "Persistence Explanation"), save_explanation, stream=stream)
         print_block(pick_text(language, "运行解释", "Runtime Explanation"), runtime_explanation, stream=stream)
@@ -1297,8 +1299,8 @@ def emit_runtime_report(
             [
                 (pick_text(language, "当前模式", "Current Mode"), localized_mode),
                 (pick_text(language, "当前步骤", "Current Step"), step_label),
-                (pick_text(language, "当前阶段", "Current Stage"), stage),
-                (pick_text(language, "当前回合", "Current Round"), round_name),
+                (pick_text(language, "当前经营模型", "Current Operating Model"), stage),
+                (pick_text(language, "当前推进面", "Current Operating Surface"), round_name),
                 (pick_text(language, "当前角色", "Current Role"), role),
                 (pick_text(language, "当前产物", "Current Artifact"), artifact),
                 (pick_text(language, "当前保存模式", "Current Persistence Mode"), localized_persistence_mode),
@@ -1396,21 +1398,20 @@ def stage_artifact_specs(stage_id: str, language: str = "zh-CN") -> list[dict[st
 
 
 def artifact_template_values(common_values: dict[str, str], state: dict[str, Any]) -> dict[str, str]:
-    current_round = state.get("current_round", {})
-    current_stage = state["stage_id"]
     language = state.get("language", "zh-CN")
+    focus = state.get("focus", {})
     return {
         **common_values,
         "ARTIFACT_TITLE": pick_text(language, "正式交付文件", "Formal Deliverable"),
         "ARTIFACT_TYPE": pick_text(language, "正式交付文档", "Formal Deliverable Document"),
-        "ARTIFACT_OWNER": current_round.get("owner_role_name", pick_text(language, "总控台", "Control Tower")),
-        "ARTIFACT_OBJECTIVE": current_round.get("goal", pick_text(language, "沉淀一个可直接继续补齐的正式交付文档", "Create a formal deliverable that can be completed directly in place")),
+        "ARTIFACT_OWNER": pick_text(language, "经营总控", "Operating Lead"),
+        "ARTIFACT_OBJECTIVE": focus.get("week_outcome", pick_text(language, "沉淀一个可直接继续补齐的正式交付文档", "Create a formal deliverable that can be completed directly in place")),
         "ARTIFACT_SUMMARY": pick_text(language, "这份文档已经按最终交付文件命名落盘，接下来直接在原文件里补齐真实产出、证据、责任人和下一步动作。", "This document already uses its final deliverable name. Continue refining the real outputs, evidence, owner, and next action in place."),
         "ARTIFACT_SCOPE_IN": format_list(
             [
                 pick_text(language, "实际软件产出或实际非软件产出", "Real software outputs or real non-software outputs"),
                 pick_text(language, "验收证据与责任人", "Acceptance evidence and accountable owners"),
-                pick_text(language, "与当前阶段匹配的部署/生产资料", "Deployment or production materials that match the current stage"),
+                pick_text(language, "与当前经营闭环匹配的部署/生产资料", "Deployment or production materials that match the current business loop"),
             ],
             language,
         ),
@@ -1421,13 +1422,20 @@ def artifact_template_values(common_values: dict[str, str], state: dict[str, Any
             ],
             language,
         ),
-        "ARTIFACT_DELIVERABLES": format_list(stage_required_outputs(current_stage, language), language),
+        "ARTIFACT_DELIVERABLES": format_list(
+            [
+                pick_text(language, "真实产品、服务或业务交付证据", "Real product, service, or business delivery evidence"),
+                pick_text(language, "客户、收入、交付或资产闭环的当前事实", "Current facts from the customer, revenue, delivery, or asset loop"),
+                pick_text(language, "下一步经营动作与负责人", "The next operating action and owner"),
+            ],
+            language,
+        ),
         "ARTIFACT_CHANGES": format_list(
             [
                 pick_text(language, "文件名使用两位序号开头。", "File names should start with a two-digit index."),
                 pick_text(language, "文件名直接使用最终交付名，不再把状态写进文件名。", "Use the final deliverable name directly instead of encoding document status in the file name."),
                 pick_text(language, "产物目录默认只落 DOCX。", "Artifact directories default to DOCX-only formal outputs."),
-                pick_text(language, "上线后自动要求部署与生产资料。", "Deployment and production materials become mandatory after launch."),
+                pick_text(language, "v1.0 不再把阶段/回合写进状态文件。", "v1.0 no longer writes stage or round fields into the state file."),
             ],
             language,
         ),
@@ -1442,14 +1450,14 @@ def artifact_template_values(common_values: dict[str, str], state: dict[str, Any
             [pick_text(language, "没有真实文件、代码、配置、材料或证据时，不应视为完成交付。", "If there are no real files, code, configuration, materials, or evidence, the work should not be treated as a completed delivery.")],
             language,
         ),
-        "ARTIFACT_NEXT_ACTION": current_round.get("next_action", pick_text(language, "补齐本轮真实交付与证据。", "Fill in the real deliverables and evidence for this round.")),
+        "ARTIFACT_NEXT_ACTION": focus.get("today_action", pick_text(language, "补齐真实交付与证据。", "Fill in the real deliverables and evidence.")),
         "ARTIFACT_STATUS": pick_text(language, "起始版", "Starter Formal Doc"),
         "ARTIFACT_PROGRESS_SUMMARY": pick_text(language, "当前已经生成正式文档起始版，文件名和目录均按最终交付结构落盘，后续直接在原文件内补齐实际内容。", "A starter formal document has been created in the final folder and with the final file name. Continue completing the real content in place."),
         "ARTIFACT_MISSING_ITEMS": format_list(
             [
                 pick_text(language, "真实文件、代码、材料或业务证据", "Real files, code, materials, or business evidence"),
                 pick_text(language, "责任人与验收结论", "Owner and acceptance conclusion"),
-                pick_text(language, "与当前阶段匹配的下一步动作", "A next action that matches the current stage"),
+                pick_text(language, "与当前主瓶颈匹配的下一步动作", "A next action that matches the current bottleneck"),
             ],
             language,
         ),
@@ -2645,7 +2653,7 @@ def markdown_to_html_fragment(
 
 def reading_navigation_items(company_dir: Path, language: str) -> list[tuple[str, Path]]:
     items = [
-        (pick_text(language, "先看这里", "Start Here"), reading_entry_path(company_dir, language)),
+        (pick_text(language, "经营驾驶舱", "Operating Cockpit"), reading_entry_path(company_dir, language)),
     ]
     for key in ROOT_DOC_KEYS:
         source = root_doc_path(company_dir, key, language)
@@ -2855,6 +2863,16 @@ def render_reading_shell(
       font-size: 1rem;
       line-height: 1.5;
     }}
+    .visual-block {{
+      overflow-x: auto;
+      margin: 1.1rem 0;
+      border-radius: 18px;
+    }}
+    .visual-block svg {{
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }}
     @media (max-width: 720px) {{
       .page {{ width: min(calc(100% - 20px), var(--max)); padding-top: 14px; }}
       .hero, .content {{ padding: 20px 18px; border-radius: 22px; }}
@@ -2914,6 +2932,118 @@ def render_markdown_reading_page(
     )
 
 
+def _svg_text(value: Any) -> str:
+    return html_escape(str(value), quote=True)
+
+
+def build_business_loop_svg(state: dict[str, Any], language: str) -> str:
+    offer = state.get("offer", {})
+    product = state.get("product", {})
+    delivery = state.get("delivery", {})
+    cash = state.get("cash", {})
+    learning = state.get("learning", {})
+    assets = state.get("assets", {})
+    labels = [
+        (pick_text(language, "价值承诺", "Promise"), offer.get("promise", pick_text(language, "待补充", "To be added"))),
+        (pick_text(language, "买家", "Buyer"), offer.get("target_customer", pick_text(language, "待确认", "To be confirmed"))),
+        (pick_text(language, "产品能力", "Product"), ", ".join(product.get("core_capability", [])[:1]) or product.get("state", "idea")),
+        (pick_text(language, "交付", "Delivery"), delivery.get("delivery_status", pick_text(language, "待启动", "Not started"))),
+        (pick_text(language, "回款", "Cash"), cash.get("receivable", 0)),
+        (pick_text(language, "学习", "Learning"), learning.get("latest_signal", pick_text(language, "待记录", "To be recorded"))),
+        (pick_text(language, "资产", "Asset"), sum(len(assets.get(key, [])) for key in ("sops", "templates", "cases", "automations", "reusable_code"))),
+    ]
+    xs = [92, 250, 408, 566, 724, 882, 1040]
+    cards = []
+    arrows = []
+    for index, ((title, body), x) in enumerate(zip(labels, xs)):
+        cards.append(
+            f'<g><rect x="{x}" y="92" width="126" height="92" rx="14" fill="#fffdf8" stroke="#d8c9b8"/>'
+            f'<text x="{x + 14}" y="124" font-size="16" font-weight="700" fill="#1f1a14">{_svg_text(title)}</text>'
+            f'<text x="{x + 14}" y="154" font-size="12" fill="#5f5448">{_svg_text(str(body)[:16])}</text></g>'
+        )
+        if index < len(xs) - 1:
+            arrows.append(
+                f'<path d="M{x + 132} 138 L{xs[index + 1] - 12} 138" stroke="#b85c38" stroke-width="3" marker-end="url(#arrow)"/>'
+            )
+    title = pick_text(language, "一人公司经营闭环", "One-Person Company Loop")
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img">'
+        '<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">'
+        '<path d="M0,0 L0,6 L9,3 z" fill="#b85c38"/></marker></defs>'
+        '<rect width="1200" height="320" rx="28" fill="#f6f3ec"/>'
+        f'<text x="64" y="58" font-size="28" font-weight="800" fill="#1f1a14">{_svg_text(title)}</text>'
+        f'{"".join(arrows)}{"".join(cards)}'
+        '</svg>'
+    )
+
+
+def build_pipeline_svg(state: dict[str, Any], language: str) -> str:
+    summary = state.get("pipeline", {}).get("stage_summary", {})
+    stages = [
+        ("discovering", pick_text(language, "发现", "Discovering")),
+        ("talking", pick_text(language, "对话", "Talking")),
+        ("trial", pick_text(language, "试用", "Trial")),
+        ("proposal", pick_text(language, "报价", "Proposal")),
+        ("won", pick_text(language, "成交", "Won")),
+    ]
+    max_value = max([int(summary.get(key, 0) or 0) for key, _ in stages] + [1])
+    rows = []
+    for index, (key, label) in enumerate(stages):
+        value = int(summary.get(key, 0) or 0)
+        width = 50 + int((value / max_value) * 620)
+        y = 78 + index * 48
+        rows.append(
+            f'<text x="56" y="{y + 18}" font-size="16" fill="#1f1a14">{_svg_text(label)}</text>'
+            f'<rect x="190" y="{y}" width="{width}" height="24" rx="12" fill="#2f7d5b"/>'
+            f'<text x="{205 + width}" y="{y + 18}" font-size="15" fill="#5f5448">{value}</text>'
+        )
+    title = pick_text(language, "成交管道", "Revenue Pipeline")
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img">'
+        '<rect width="900" height="360" rx="28" fill="#fffdf8" stroke="#d8c9b8"/>'
+        f'<text x="56" y="44" font-size="26" font-weight="800" fill="#1f1a14">{_svg_text(title)}</text>'
+        f'{"".join(rows)}</svg>'
+    )
+
+
+def render_visual_kit(company_dir: Path, state: dict[str, Any]) -> None:
+    language = state["language"]
+    visual_dir = workspace_dir_path(company_dir, "visual_kit", language)
+    visual_dir.mkdir(parents=True, exist_ok=True)
+    write_text(visual_dir / "business-loop.svg", build_business_loop_svg(state, language))
+    write_text(visual_dir / "revenue-pipeline.svg", build_pipeline_svg(state, language))
+    prompt_title = pick_text(language, "# AI 图片创作提示词", "# AI Image Creative Prompts")
+    hero_prompt = pick_text(
+        language,
+        "为 One Person Company OS 生成一张宣发封面：一个单人创始人在安静的工作台前，通过可视化经营驾驶舱同时看到价值承诺、买家、产品、交付、回款和资产。风格专业、清晰、有现代软件产品感，不包含虚构品牌标志，不承载具体经营数字。",
+        "Create a promotional cover for One Person Company OS: a solo founder at a focused workstation, looking at a visual operating cockpit that connects promise, buyer, product, delivery, cash, and assets. Professional modern software-product style, no fake brand logos, no precise operating numbers.",
+    )
+    social_prompt = pick_text(
+        language,
+        "生成一张社媒配图：中心是一条清晰的经营闭环路径，周围是产品、成交、交付、回款和资产的抽象界面片段。画面直观、有趣但不花哨，适合 GitHub/ClawHub 发布。",
+        "Create a social image: a clear operating loop in the center, surrounded by abstract product, sales, delivery, cash, and asset interface fragments. Direct, interesting, restrained, suitable for GitHub and ClawHub launch posts.",
+    )
+    write_text(
+        visual_dir / "ai-image-prompts.md",
+        "\n".join(
+            [
+                prompt_title,
+                "",
+                pick_text(language, "## 宣发封面", "## Promotional Cover"),
+                "",
+                hero_prompt,
+                "",
+                pick_text(language, "## 社媒配图", "## Social Image"),
+                "",
+                social_prompt,
+                "",
+                pick_text(language, "说明：AI 图片只用于可选创作层，不承载精确经营数据；精确数据图使用本目录 SVG。", "Note: AI images are optional creative assets and should not carry precise operating data; use the SVG files in this directory for exact visuals."),
+                "",
+            ]
+        ),
+    )
+
+
 def build_reading_start_page(state: dict[str, Any], company_dir: Path) -> str:
     language = state["language"]
     focus = state["focus"]
@@ -2921,12 +3051,21 @@ def build_reading_start_page(state: dict[str, Any], company_dir: Path) -> str:
     product = state["product"]
     delivery = state["delivery"]
     cash = state["cash"]
+    pipeline_svg = build_pipeline_svg(state, language)
+    loop_svg = build_business_loop_svg(state, language)
     body_parts = [
+        '<div class="visual-block">',
+        loop_svg,
+        "</div>",
         "<div class=\"card-grid\">",
         f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '当前主目标', 'Primary Goal'))}</span><strong>{html_escape(focus['primary_goal'])}</strong></article>",
         f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '当前主瓶颈', 'Primary Bottleneck'))}</span><strong>{html_escape(focus['primary_bottleneck'])}</strong></article>",
         f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '当前主战场', 'Primary Arena'))}</span><strong>{html_escape(primary_arena_label(focus['primary_arena'], language))}</strong></article>",
         f"<article class=\"card\"><span class=\"card-label\">{html_escape(pick_text(language, '今天最短动作', 'Shortest Action Today'))}</span><strong>{html_escape(focus['today_action'])}</strong></article>",
+        "</div>",
+        f"<h2>{html_escape(pick_text(language, '当前成交图', 'Current Revenue Picture'))}</h2>",
+        '<div class="visual-block">',
+        pipeline_svg,
         "</div>",
         f"<h2>{html_escape(pick_text(language, '下载后先怎么用', 'How To Use This Download'))}</h2>",
         "<ul>",
@@ -2978,11 +3117,11 @@ def build_reading_start_page(state: dict[str, Any], company_dir: Path) -> str:
         ]
     )
     return render_reading_shell(
-        title=pick_text(language, "先看这里", "Start Here"),
+        title=pick_text(language, "经营驾驶舱", "Operating Cockpit"),
         subtitle=pick_text(
             language,
-            "这是下载后的阅读入口页。它把工作区分成阅读层、工作层和正式交付层，帮助创始人先看懂，再继续推进。",
-            "This is the reading entry point after download. It separates the workspace into reading, working, and formal-deliverable layers so the founder can understand the current state before editing anything.",
+            "这是下载后的经营驾驶舱。先看懂当前闭环、主瓶颈和下一步动作，再继续推进。",
+            "This is the operating cockpit after download. Understand the loop, bottleneck, and next action before editing anything.",
         ),
         body_html="\n".join(body_parts),
         language=language,
@@ -3115,40 +3254,45 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
             else:
                 path.rename(desired)
 
-    stage_id = state["stage_id"]
-    stage = stage_meta(stage_id, language)
-    state["stage_label"] = stage["label"]
-    active_roles = state.get("active_roles") or default_role_ids_for_stage(stage_id)
+    focus = state.get("focus", {})
+    offer = state.get("offer", {})
+    stage_label_text = pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop")
+    stage_goal = focus.get("primary_goal", pick_text(language, "先跑通最小价值闭环", "Run the smallest value loop first"))
+    active_roles = state.get("active_roles") or ["founder-ceo", "control-tower", "product-strategist"]
     active_display = role_display_names(active_roles, role_specs, language)
     available_display = [
         localized_role_spec(spec, language)["display_name"]
         for role_id, spec in sorted(role_specs.items())
         if role_id not in active_roles
     ]
-    current_round = state.get("current_round", {})
-    current_round["status_id"] = normalize_round_status(current_round.get("status_id") or current_round.get("status", "undefined"))
-    current_round["status"] = round_status_label(current_round["status_id"], language)
-    round_name = current_round.get("name", pick_text(language, "未启动", "Not Started"))
-    round_next_action = current_round.get("next_action", pick_text(language, "待定义", "Undefined"))
+    round_name = pick_text(language, "经营推进", "Operating Push")
+    round_next_action = focus.get("today_action", pick_text(language, "待定义", "Undefined"))
 
     common_values = {
         "LANGUAGE": language,
         "COMPANY_NAME": state["company_name"],
         "PRODUCT_NAME": state["product_name"],
-        "STAGE_LABEL": stage["label"],
+        "STAGE_LABEL": stage_label_text,
         "UPDATED_AT": now_string(),
-        "COMPANY_GOAL": state["company_goal"],
-        "CURRENT_BOTTLENECK": state["current_bottleneck"],
+        "COMPANY_GOAL": stage_goal,
+        "CURRENT_BOTTLENECK": focus.get("primary_bottleneck", pick_text(language, "待识别", "To be identified")),
         "CURRENT_ROUND_NAME": round_name,
         "CURRENT_NEXT_ACTION": round_next_action,
-        "TARGET_USER": state["target_user"],
-        "CORE_PROBLEM": state["core_problem"],
-        "PRODUCT_PITCH": state["product_pitch"],
-        "STAGE_GOAL": stage["goal"],
-        "STAGE_EXIT_CRITERIA": stage["exit_criteria"],
-        "NEXT_STAGE_REQUIREMENTS": stage["next_requirements"],
-        "STAGE_RISKS": format_list(stage["risks"], language),
-        "CURRENT_STAGE_REQUIRED_OUTPUTS": format_list(stage_required_outputs(stage_id, language), language),
+        "TARGET_USER": offer.get("target_customer", pick_text(language, "待确认", "To be confirmed")),
+        "CORE_PROBLEM": offer.get("scenario", pick_text(language, "待确认", "To be confirmed")),
+        "PRODUCT_PITCH": offer.get("promise", pick_text(language, "待补充", "To be added")),
+        "STAGE_GOAL": stage_goal,
+        "STAGE_EXIT_CRITERIA": pick_text(language, "价值、买家、产品、交付、回款和资产至少向前推进一格。", "Move promise, buyer, product, delivery, cash, and assets forward by at least one step."),
+        "NEXT_STAGE_REQUIREMENTS": pick_text(language, "v1.0 不再使用阶段切换；只看当前主瓶颈和下一步经营动作。", "v1.0 no longer uses stage transitions; use the current bottleneck and next operating action."),
+        "STAGE_RISKS": format_list(state.get("risk", {}).get("top_risks", []), language),
+        "CURRENT_STAGE_REQUIRED_OUTPUTS": format_list(
+            [
+                pick_text(language, "经营驾驶舱", "Operating cockpit"),
+                pick_text(language, "可编辑工作底稿", "Editable working surfaces"),
+                pick_text(language, "正式交付 DOCX", "Formal DOCX deliverables"),
+            ],
+            language,
+        ),
         "ACTIVE_ROLE_LIST": format_list(active_display, language),
         "AVAILABLE_ROLE_LIST": format_list(available_display, language),
         "ACTIVE_ROLE_INLINE": ("、".join(active_display) if language == "zh-CN" else ", ".join(active_display)) or pick_text(language, "无", "None"),
@@ -3219,13 +3363,14 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
                 other_path.unlink()
 
     write_text(workspace_file_path(company_dir, "flow_bootstrap", language), render_template("bootstrap-flow-template.md", common_values))
-    write_text(workspace_file_path(company_dir, "flow_round", language), render_template("round-flow-template.md", common_values))
-    write_text(workspace_file_path(company_dir, "flow_calibration", language), render_template("calibration-flow-template.md", common_values))
-    write_text(workspace_file_path(company_dir, "flow_stage", language), render_template("stage-flow-template.md", common_values))
+    for old_flow_key in ("flow_round", "flow_calibration", "flow_stage"):
+        old_flow_path = workspace_file_path(company_dir, old_flow_key, language)
+        if old_flow_path.exists():
+            old_flow_path.unlink()
     write_text(workspace_file_path(company_dir, "automation_reminders", language), render_template("reminder-rules-template.md", common_values))
     write_text(workspace_file_path(company_dir, "automation_scheduler", language), render_template("scheduler-spec-template.md", common_values))
 
-    for spec in stage_artifact_specs(stage_id, language):
+    for spec in stage_artifact_specs("build", language):
         output_dir = artifact_dir_path(company_dir, spec["category"], language)
         output_path = ensure_planned_docx_path(output_dir, int(spec["index"]), spec["title"], completed=False)
         docx_values = {
@@ -3239,4 +3384,5 @@ def render_workspace(company_dir: Path, state: dict[str, Any]) -> None:
         write_docx(output_path, rendered, title=spec["title"])
 
     write_text(workspace_file_path(company_dir, "delivery_directory", language), artifact_status_summary_markdown(company_dir, language))
+    render_visual_kit(company_dir, state)
     render_reading_exports(company_dir, state)

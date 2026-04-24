@@ -284,6 +284,11 @@ CONTAINER_PATHS = {
         "en-US": ("reading",),
         "legacy": ("阅读版",),
     },
+    "visual_kit": {
+        "zh-CN": ("视觉素材",),
+        "en-US": ("visual-kit",),
+        "legacy": ("视觉素材",),
+    },
     "artifacts_root": {
         "zh-CN": ("产物",),
         "en-US": ("artifacts",),
@@ -317,9 +322,9 @@ CONTAINER_PATHS = {
 }
 
 READING_START_FILENAMES = {
-    "zh-CN": "00-先看这里.html",
-    "en-US": "00-start-here.html",
-    "legacy": "00-先看这里.html",
+    "zh-CN": "00-经营驾驶舱.html",
+    "en-US": "00-operating-cockpit.html",
+    "legacy": "00-经营驾驶舱.html",
 }
 
 

@@ -36,9 +36,9 @@ def main() -> int:
     emit_runtime_report(
         mode=pick_text(language, "迁移工作区", "Migrate Workspace"),
         phase="验证与回报",
-        stage=state["stage_label"],
-        round_name=state["current_round"]["name"],
-        role=state["current_round"]["owner_role_name"],
+        stage=pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop"),
+        round_name=pick_text(language, "经营推进", "Operating Push"),
+        role=pick_text(language, "经营总控", "Operating Lead"),
         artifact=pick_text(language, "经营闭环工作区", "Business-loop workspace"),
         next_action=state["focus"]["today_action"],
         needs_confirmation=pick_text(language, "否", "No"),
@@ -51,7 +51,7 @@ def main() -> int:
             root_doc_path(company_dir, "delivery_cash", language),
             state_path(company_dir),
         ],
-        changes=[pick_text(language, "已把旧工作区迁移到经营闭环骨架，并保留兼容资料到 records/legacy-root。", "Migrated the legacy workspace to the business-loop layout and preserved compatibility material under records/legacy-root.")],
+        changes=[pick_text(language, "已把旧工作区迁移到 v1.0 经营闭环骨架；旧阶段/回合资料只作为历史材料保留。", "Migrated the legacy workspace to the v1.0 business-loop layout; old stage/round material is kept only as history.")],
         language=language,
     )
     return 0

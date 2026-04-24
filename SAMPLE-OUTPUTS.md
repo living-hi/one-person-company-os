@@ -1,38 +1,16 @@
 # Sample Outputs
 
-These excerpts show the current behavior: direction-first setup, business-loop execution, a fully localized founder-visible workspace surface, and a download-friendly HTML reading layer.
+These excerpts show the v1.0 behavior: direction-first setup, a v1.0 business-loop state file, a visual operating cockpit, localized workspace surfaces, and optional AI-image creative prompts.
 
 ## Interaction Output Structure
 
-Chinese users see Chinese runtime output. English users see English runtime output.
 Every major operation includes:
 
 - `User Navigation View` or `用户导航版`
-- `Audit View` or `审计版`
+- `Operating Navigation` or `经营导航条`
+- `Operating Snapshot` or `经营快照`
 - explicit workspace-boundary and persistence details
 - explicit runtime status
-
-## Chinese Dashboard
-
-```md
-# 经营总盘
-
-- 当前头号目标: 把 MVP 推到可演示并拿到第一批对话
-- 当前主瓶颈: 价值表达和产品演示都还不够可卖
-- 当前主战场: 产品
-- 今天最短动作: 先补 homepage hero 的价值表达和 CTA 路径
-```
-
-## English Dashboard
-
-```md
-# Operating Dashboard
-
-- Primary goal: push the MVP to a demoable state and get the first real conversations
-- Main bottleneck: the value expression and demo are not sellable enough yet
-- Primary arena: product
-- Shortest action today: tighten the homepage hero and CTA path
-```
 
 ## Chinese Workspace Surface
 
@@ -44,20 +22,14 @@ Every major operation includes:
   03-机会与成交管道.md
   04-产品与上线状态.md
   05-客户交付与回款.md
-  销售/
-  产品/
-  交付/
-  运营/
-  资产/
-  记录/
-  自动化/
   阅读版/
-    00-先看这里.html
+    00-经营驾驶舱.html
     00-经营总盘.html
-    02-价值承诺与报价.html
+  视觉素材/
+    business-loop.svg
+    revenue-pipeline.svg
+    ai-image-prompts.md
   产物/
-  角色智能体/
-  流程/
   .opcos/state/current-state.json
 ```
 
@@ -71,29 +43,43 @@ North Star Lab/
   03-opportunity-and-revenue-pipeline.md
   04-product-and-launch-status.md
   05-delivery-and-cash-collection.md
-  sales/
-  product/
-  delivery/
-  operations/
-  assets/
-  records/
-  automation/
   reading/
-    00-start-here.html
+    00-operating-cockpit.html
     00-operating-dashboard.html
-    02-value-promise-and-pricing.html
+  visual-kit/
+    business-loop.svg
+    revenue-pipeline.svg
+    ai-image-prompts.md
   artifacts/
-  roles/
-  flows/
   .opcos/state/current-state.json
 ```
 
-## Reading Layer Entry
+## v1.0 State Contract
+
+The state file uses `version: 1.0` and does not write old `stage_id` or `current_round` fields.
+
+Core sections:
+
+- `founder`
+- `offer`
+- `buyer`
+- `pipeline`
+- `product`
+- `delivery`
+- `cash`
+- `learning`
+- `assets`
+- `risk`
+- `decision`
+- `visuals`
+
+## Visual Reading Layer
+
+The reading layer starts at:
 
 ```text
-阅读版/00-先看这里.html
-reading/00-start-here.html
+阅读版/00-经营驾驶舱.html
+reading/00-operating-cockpit.html
 ```
 
-The reading layer is the first stop after download.
-It points founders to the core HTML views, explains how the workspace is split between HTML, markdown, and DOCX, and keeps the language-matched surface intact.
+The cockpit includes the business-loop SVG, revenue-pipeline SVG, current bottleneck, primary arena, shortest action, and links into the editable work surfaces.
