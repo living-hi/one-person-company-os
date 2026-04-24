@@ -4,8 +4,8 @@
 
 - 公司名称: {{COMPANY_NAME}}
 - 产品名称: {{PRODUCT_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前回合: {{CURRENT_ROUND_NAME}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进面: {{CURRENT_ROUND_NAME}}
 
 ## 2. 部署前必须明确
 

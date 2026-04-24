@@ -31,6 +31,7 @@ It shows the current bottleneck, revenue pipeline, business-loop map, shortest a
 - numbered DOCX formal deliverables
 - deterministic SVG visuals for the business loop and revenue pipeline
 - optional AI image prompts for covers, launch posts, and promotional visuals
+- role briefs, reminders, flow notes, and DOCX starter templates aligned to the v1.0 operating loop
 - runtime transparency and Python compatibility guidance
 
 ## First-Run Promise

@@ -439,11 +439,11 @@ ROLE_LOCALIZATION = {
         "control-tower": {
             "display_name": "Control Tower",
             "workspace_filename": "control-tower",
-            "mission": "Maintain the current stage, current round, role switching, and shortest next move so the company keeps advancing around the real bottleneck.",
-            "owns": ["Current-round definition", "Round-state maintenance", "Role activation and switching", "Trigger evaluation", "Stage-transition recommendation"],
-            "inputs_required": ["Founder objective", "Current stage status", "Previous round context", "Critical feedback or artifact"],
-            "outputs_required": ["Current-round updates", "Role-assignment recommendations", "Calibration recommendations", "Stage-transition recommendations", "Shortest next move"],
-            "do_not_do": ["Do not make strategic calls for the founder", "Do not advance multiple primary rounds at once", "Do not make the next action too big or too vague"],
+            "mission": "Maintain the current primary goal, bottleneck, operating arena, role switching, and shortest next move so the company keeps advancing through the business loop.",
+            "owns": ["Primary-goal definition", "Operating-state maintenance", "Role activation and switching", "Trigger evaluation", "Primary-arena adjustment recommendations"],
+            "inputs_required": ["Founder objective", "Current operating state", "Previous operating-push context", "Critical feedback or artifact"],
+            "outputs_required": ["Operating-focus updates", "Role-assignment recommendations", "Calibration recommendations", "Primary-arena adjustment recommendations", "Shortest next move"],
+            "do_not_do": ["Do not make strategic calls for the founder", "Do not advance multiple primary arenas at once", "Do not make the next action too big or too vague"],
             "approval_required_for": ["Company-direction changes", "New budget commitments", "High-risk external actions"],
         },
         "customer-success": {
@@ -471,9 +471,9 @@ ROLE_LOCALIZATION = {
             "workspace_filename": "design-lead",
             "mission": "Turn product goals into clear information architecture, interaction design, and visual expression.",
             "owns": ["Information architecture", "Interaction design", "Interface expression", "Brand consistency"],
-            "inputs_required": ["Product goals", "Current-round artifact", "Target-user context", "Brand constraints"],
+            "inputs_required": ["Product goals", "Current critical artifact", "Target-user context", "Brand constraints"],
             "outputs_required": ["Page structure", "Key-interface notes", "Copy and visual recommendations"],
-            "do_not_do": ["Do not optimize for looks while ignoring conversion", "Do not make large changes detached from the current-round goal"],
+            "do_not_do": ["Do not optimize for looks while ignoring conversion", "Do not make large changes detached from the current primary goal"],
             "approval_required_for": ["Brand-direction resets", "Core user-path changes"],
         },
         "devops-sre": {
@@ -491,7 +491,7 @@ ROLE_LOCALIZATION = {
             "workspace_filename": "engineering-lead",
             "mission": "Turn product judgment into a deliverable implementation path, technical plan, and execution cadence.",
             "owns": ["Technical solution", "Implementation order", "Delivery feasibility", "Technical risk"],
-            "inputs_required": ["Current-round goal", "Requirement scope", "Existing code context", "Launch constraints"],
+            "inputs_required": ["Current primary goal", "Requirement scope", "Existing code context", "Launch constraints"],
             "outputs_required": ["Code-change checklist", "Runnable implementation or scripts", "Implementation plan", "Technical breakdown", "Risk notes", "Critical delivery path"],
             "do_not_do": ["Do not promise unrealistic delivery dates", "Do not hide technical risk", "Do not skip minimum acceptance criteria"],
             "approval_required_for": ["Major stack changes", "New infrastructure cost", "Shortcuts that may impact production stability"],
@@ -511,8 +511,8 @@ ROLE_LOCALIZATION = {
             "workspace_filename": "founder",
             "mission": "Set direction, priorities, budget, and risk boundaries, and give final approval on high-impact actions.",
             "owns": ["Direction setting", "Priority decisions", "Budget boundaries", "Risk boundaries", "Final approval"],
-            "inputs_required": ["Current-round status", "Calibration findings", "Critical risks", "Critical artifact summary"],
-            "outputs_required": ["Decision outcome", "Priority changes", "Stage approval", "Budget and risk authorization"],
+            "inputs_required": ["Current operating state", "Calibration findings", "Critical risks", "Critical artifact summary"],
+            "outputs_required": ["Decision outcome", "Priority changes", "Primary-arena approval", "Budget and risk authorization"],
             "do_not_do": ["Do not mistake vague preference for strategy", "Do not force a decision without key facts"],
             "approval_required_for": ["Launches", "Pricing changes", "Spending money", "Large customer-facing actions", "Compliance and legal claims"],
         },
@@ -521,7 +521,7 @@ ROLE_LOCALIZATION = {
             "workspace_filename": "growth-lead",
             "mission": "Bring the product to target users and build loops across traffic, conversion, and feedback.",
             "owns": ["Distribution paths", "Acquisition actions", "Conversion copy", "Feedback collection"],
-            "inputs_required": ["Product positioning", "Target user", "Current-stage goal", "Available channels"],
+            "inputs_required": ["Product positioning", "Target user", "Current primary goal", "Available channels"],
             "outputs_required": ["Channel-action checklist", "Launch announcement or sales collateral", "Conversion copy", "Feedback logs", "Growth-experiment recommendations"],
             "do_not_do": ["Do not spread across too many channels at once", "Do not trade away target-user accuracy for traffic"],
             "approval_required_for": ["Advertising budget", "Public-facing campaigns", "Core pricing-message changes"],
@@ -542,16 +542,16 @@ ROLE_LOCALIZATION = {
             "mission": "Turn user problems and business goals into clear product judgment, scope, and artifacts.",
             "owns": ["Problem definition", "Target-user clarification", "Scope narrowing", "Product tradeoffs", "Critical artifact definition"],
             "inputs_required": ["Founder objective", "User feedback", "Market signals", "Engineering constraints"],
-            "outputs_required": ["Product positioning", "Round-goal definition", "Requirement scope", "Critical artifact notes"],
+            "outputs_required": ["Product positioning", "Product-push goal definition", "Requirement scope", "Critical artifact notes"],
             "do_not_do": ["Do not turn every idea into scope", "Do not fabricate user evidence", "Do not hide product tradeoffs"],
             "approval_required_for": ["Large-scope changes", "Core target-user changes", "Core value-proposition changes"],
         },
         "qa-reliability": {
             "display_name": "QA / Reliability",
             "workspace_filename": "qa-reliability",
-            "mission": "Ensure the current-round artifact reaches a minimum verifiable quality bar and has clear risk boundaries.",
+            "mission": "Ensure the current critical artifact reaches a minimum verifiable quality bar and has clear risk boundaries.",
             "owns": ["Acceptance criteria", "Testing focus", "Regression risk", "Pre-launch quality judgment"],
-            "inputs_required": ["Current-round goal", "Implementation notes", "Critical path", "Existing issue log"],
+            "inputs_required": ["Current primary goal", "Implementation notes", "Critical path", "Existing issue log"],
             "outputs_required": ["Acceptance checklist", "Test record", "Testing recommendations", "Quality-risk notes"],
             "do_not_do": ["Do not bury quality issues in footnotes", "Do not skip critical-path testing"],
             "approval_required_for": ["Launching with known high-risk conditions"],
@@ -566,8 +566,8 @@ Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
 - Product: {{PRODUCT_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Status: {{ARTIFACT_STATUS}}
 - File Path: {{ARTIFACT_FILE_PATH}}
 
@@ -575,7 +575,7 @@ Updated At: {{UPDATED_AT}}
 
 - {{ARTIFACT_PROGRESS_SUMMARY}}
 
-## Required Outputs For This Stage
+## Required Outputs For This Business Loop
 
 {{CURRENT_STAGE_REQUIRED_OUTPUTS}}
 
@@ -608,8 +608,8 @@ Updated At: {{UPDATED_AT}}
 Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 
 ## Deployment Objective
@@ -641,10 +641,10 @@ Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
 - Product: {{PRODUCT_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
-- Round Goal: {{ROUND_GOAL}}
-- Round Status: {{ROUND_STATUS}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
+- Operating Goal: {{ROUND_GOAL}}
+- Operating Status: {{ROUND_STATUS}}
 - Artifact Type: {{ARTIFACT_TYPE}}
 - Owner: {{ARTIFACT_OWNER}}
 - Document Maturity: {{ARTIFACT_STATUS}}
@@ -698,7 +698,7 @@ Updated At: {{UPDATED_AT}}
 
 {{ARTIFACT_PRODUCTION_ITEMS}}
 
-## Changes This Round
+## Changes This Run
 
 {{ARTIFACT_CHANGES}}
 
@@ -719,8 +719,8 @@ Updated At: {{UPDATED_AT}}
 Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 
 ## Growth Objective
@@ -752,8 +752,8 @@ Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
 - Product: {{PRODUCT_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 
 ## Draft Objective
@@ -789,8 +789,8 @@ Updated At: {{UPDATED_AT}}
 Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 
 ## Launch And Feedback Objective
@@ -822,8 +822,8 @@ Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
 - Product: {{PRODUCT_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 - Status: {{ARTIFACT_STATUS}}
 - File Path: {{ARTIFACT_FILE_PATH}}
@@ -873,16 +873,16 @@ Updated At: {{UPDATED_AT}}
 - Non-software work must leave real deliverables instead of chat-only summaries.
 - Launch and post-launch work must include deployment and production materials.
 
-## Stage Requirement
+## Business-Loop Requirement
 
-- Current Stage: {{STAGE_LABEL}}
-- Required Outputs For This Stage:
+- Operating Model: {{STAGE_LABEL}}
+- Required Outputs For This Business Loop:
 
 {{CURRENT_STAGE_REQUIRED_OUTPUTS}}
 
 ## Directory Intent
 
-- `01-实际交付`: current-round delivery indexes and primary deliverables
+- `01-实际交付`: delivery indexes and primary deliverables for the current operating action
 - `02-软件与代码`: code, functionality, quality, and test deliverables
 - `03-非软件与业务`: research, services, sales, training, and other non-software outputs
 - `04-部署与生产`: deployment, rollback, production, and incident materials
@@ -892,15 +892,15 @@ Updated At: {{UPDATED_AT}}
 
 - Each artifact must include owner, objective, real outputs, evidence, risks, and the next action.
 - Do not count chat-only output as a completed deliverable.
-- When stage requirements change, refresh the default artifact pack before continuing the next round.
+- When the operating focus changes, refresh the default artifact pack before continuing the next action.
 """,
     "artifact-production-template.md": """# {{ARTIFACT_TITLE}}
 
 Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 - Status: {{ARTIFACT_STATUS}}
 - File Path: {{ARTIFACT_FILE_PATH}}
@@ -939,8 +939,8 @@ Updated At: {{UPDATED_AT}}
 Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 - Status: {{ARTIFACT_STATUS}}
 - File Path: {{ARTIFACT_FILE_PATH}}
@@ -980,8 +980,8 @@ Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
 - Product: {{PRODUCT_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 - Status: {{ARTIFACT_STATUS}}
 - File Path: {{ARTIFACT_FILE_PATH}}
@@ -1020,8 +1020,8 @@ Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
 - Product: {{PRODUCT_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 
 ## Objective
@@ -1053,8 +1053,8 @@ Updated At: {{UPDATED_AT}}
 Updated At: {{UPDATED_AT}}
 
 - Company: {{COMPANY_NAME}}
-- Stage: {{STAGE_LABEL}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Owner: {{ARTIFACT_OWNER}}
 
 ## Validation Objective
@@ -1077,11 +1077,11 @@ Updated At: {{UPDATED_AT}}
     "bootstrap-flow-template.md": """# Company Creation Flow
 
 1. Ask for the founder idea in one sentence, or let the founder pick a direction
-2. Turn that lightweight input into a proposed company direction, stage, and first round
+2. Turn that lightweight input into a proposed company direction, current bottleneck, and shortest action today
 3. Keep the reply burden low and the output easy to scan
 4. Wait for founder approval
 5. Create the standardized workspace and the first set of final-named deliverable documents
-6. Generate the starter role set and launch the first round
+6. Generate the starter role set and enter the operating cockpit
 """,
     "calibration-flow-template.md": """# Calibration Flow
 
@@ -1097,8 +1097,8 @@ Updated At: {{UPDATED_AT}}
 
 ## When To Calibrate
 
-- When the current round stalls around the same blocker for too long
-- When the current owner no longer fits the round
+- When the current operating action stalls around the same blocker for too long
+- When the current owner no longer fits the operating action
 - When new evidence invalidates the previous assumption
 - When a key artifact is completed and the next move should be re-scoped
 - Before launch, pricing, customer-facing, or other high-risk actions
@@ -1116,10 +1116,10 @@ Updated At: {{UPDATED_AT}}
 Updated At: {{UPDATED_AT}}
 
 - Product Name: {{PRODUCT_NAME}}
-- Current Stage: {{STAGE_LABEL}}
+- Operating Model: {{STAGE_LABEL}}
 - Current Company Goal: {{COMPANY_GOAL}}
 - Current Bottleneck: {{CURRENT_BOTTLENECK}}
-- Current Round: {{CURRENT_ROUND_NAME}}
+- Operating Surface: {{CURRENT_ROUND_NAME}}
 - Shortest Next Action: {{CURRENT_NEXT_ACTION}}
 
 ## Active Roles
@@ -1128,27 +1128,27 @@ Updated At: {{UPDATED_AT}}
 
 ## Current Focus
 
-- Keep the visible workflow on the AI fast loop: validate, ship the smallest useful MVP, launch narrowly, then improve from feedback
-- Use the current stage only as a label for the dominant bottleneck
+- Keep the visible workflow on promise -> buyer -> product -> delivery -> cash -> learning -> asset
+- Use the operating model only to explain the current bottleneck and next action
 - Ask the founder for approval on budget, launch, customer-facing, or compliance-sensitive actions
 
 ## Quick Paths
 
-- Founder Start Card: `10-创始人启动卡.md`
-- Deliverable Directory Overview: `11-交付目录总览.md`
-- AI Fast Loop Guide: `12-AI时代快循环.md`
+- Operating Cockpit: `reading/00-operating-cockpit.html`
+- Deliverable Directory Overview: `artifacts/01-delivery/01-actual-deliverables-index.docx`
+- Visual Kit: `visual-kit/business-loop.svg`
 - Formal Deliverables: `产物/`
 """,
-    "current-round-template.md": """# Current Round
+    "current-round-template.md": """# Current Operating Push
 
 Updated At: {{UPDATED_AT}}
 
-- Round ID: {{ROUND_ID}}
-- Round Name: {{ROUND_NAME}}
-- Current Stage: {{STAGE_LABEL}}
-- Current Status: {{ROUND_STATUS}}
+- Push ID: {{ROUND_ID}}
+- Push Name: {{ROUND_NAME}}
+- Operating Model: {{STAGE_LABEL}}
+- Operating Status: {{ROUND_STATUS}}
 - Owner: {{ROUND_OWNER}}
-- Round Goal: {{ROUND_GOAL}}
+- Push Goal: {{ROUND_GOAL}}
 - Key Artifact: {{ROUND_ARTIFACT}}
 - Current Blocker: {{ROUND_BLOCKER}}
 - Shortest Next Action: {{ROUND_NEXT_ACTION}}
@@ -1156,30 +1156,30 @@ Updated At: {{UPDATED_AT}}
 - Started At: {{ROUND_STARTED_AT}}
 - Last Updated At: {{ROUND_UPDATED_AT}}
 """,
-    "current-stage-deliverable-template.md": """# Current Stage Deliverable Requirements
+    "current-stage-deliverable-template.md": """# Current Operating Deliverable Requirements
 
 Updated At: {{UPDATED_AT}}
 
-- Current Stage: {{STAGE_LABEL}}
-- Stage Goal: {{STAGE_GOAL}}
+- Operating Model: {{STAGE_LABEL}}
+- Primary Goal: {{STAGE_GOAL}}
 - Exit Criteria: {{STAGE_EXIT_CRITERIA}}
 
-## Required Outputs
+## Required Outputs For This Business Loop
 
 {{CURRENT_STAGE_REQUIRED_OUTPUTS}}
 
 ## Review Order
 
-- Read `10-创始人启动卡.md` first for direction and minimum input.
-- Read `11-交付目录总览.md` next to see which formal DOCX files already exist and which one to improve next.
-- Read `12-AI时代快循环.md` when you need the high-level operating loop and stage meaning.
-- Then complete the matching files under `产物/`.
+- Start from the operating cockpit to confirm the primary goal, bottleneck, and shortest action.
+- Read the deliverable directory overview to see which formal DOCX files already exist and which one to improve next.
+- Read the current revenue pipeline to confirm product, delivery, and cash are connected in one loop.
+- Then complete the matching files under `artifacts/`.
 
 ## Risks
 
 {{STAGE_RISKS}}
 
-## Next-Stage Readiness
+## Next-Action Readiness
 
 - {{NEXT_STAGE_REQUIREMENTS}}
 
@@ -1190,20 +1190,20 @@ Updated At: {{UPDATED_AT}}
 - Software work must leave real code, scripts, interfaces, config, or automation outputs.
 - Non-software work must leave formal business deliverables instead of chat-only summaries.
 """,
-    "current-stage-template.md": """# Current Stage
+    "current-stage-template.md": """# Current Operating State
 
 Updated At: {{UPDATED_AT}}
 
-- Stage: {{STAGE_LABEL}}
-- Goal: {{STAGE_GOAL}}
+- Operating Model: {{STAGE_LABEL}}
+- Primary Goal: {{STAGE_GOAL}}
 - Exit Criteria: {{STAGE_EXIT_CRITERIA}}
-- Next-Stage Requirements: {{NEXT_STAGE_REQUIREMENTS}}
+- Next-Action Requirements: {{NEXT_STAGE_REQUIREMENTS}}
 
-## How To Read This Stage
+## How To Read This Operating State
 
-- This stage marks the current dominant bottleneck, not a heavy bureaucracy phase.
-- Keep each round small enough to move the company through the AI fast loop quickly.
-- Transition when the bottleneck changes, not because a ceremony says so.
+- This state marks the current dominant bottleneck, not a heavy bureaucracy phase.
+- Keep each key action small enough to move the business loop forward quickly.
+- Adjust the primary arena when the bottleneck changes, not because a ceremony says so.
 """,
     "execution-rules-template.md": """# Execution Rules
 
@@ -1219,16 +1219,16 @@ Updated At: {{UPDATED_AT}}
 
 ## Core Rules
 
-- Advance only one primary current round at a time
+- Advance only one primary operating arena at a time
 - Keep the shortest next action practical and small
 - Do not skip founder approval on high-risk actions
 - Prefer script execution, then manual persistence, then chat-only progression
-- Treat the current stage as a bottleneck label, not as a reason to slow down
+- Treat the operating model as a bottleneck label, not as a reason to slow down
 
 ## Current Focus
 
-- Current stage: {{STAGE_LABEL}}
-- Current round: {{CURRENT_ROUND_NAME}}
+- Operating model: {{STAGE_LABEL}}
+- Operating surface: {{CURRENT_ROUND_NAME}}
 - Active roles: {{ACTIVE_ROLE_INLINE}}
 """,
     "organization-template.md": """# Organization Structure
@@ -1246,8 +1246,8 @@ Updated At: {{UPDATED_AT}}
 ## Design Notes
 
 - Start with a minimum role set
-- Keep one clear primary owner for the current round
-- Activate launch, support, and production roles when the company reaches launch or later stages
+- Keep one clear primary owner for the current operating arena
+- Activate launch, support, and production roles when the company needs launch, delivery, or customer feedback work
 """,
     "product-positioning-template.md": """# Product Positioning
 
@@ -1257,17 +1257,17 @@ Updated At: {{UPDATED_AT}}
 - Product Pitch: {{PRODUCT_PITCH}}
 - Target User: {{TARGET_USER}}
 - Core Problem: {{CORE_PROBLEM}}
-- Current Stage: {{STAGE_LABEL}}
+- Operating Model: {{STAGE_LABEL}}
 - Company Goal: {{COMPANY_GOAL}}
 
 ## Current Product Focus
 
 - Solve the sharpest pain first instead of designing the full company at once.
-- Use this stage to narrow the MVP and the next proof point.
+- Use the current bottleneck to narrow the MVP and the next proof point.
 """,
     "reminder-rules-template.md": """# Reminder Rules
 
-- Remind the team to update the current round before context is lost
+- Remind the team to update the current operating focus before context is lost
 - Trigger calibration when the blocker persists for too long
 - Ask for founder approval before risky external actions
 """,
@@ -1312,35 +1312,35 @@ Updated At: {{UPDATED_AT}}
 ## Notes
 
 - Activate the minimum role set first
-- Keep only one primary owner for the current round
-- Activate ops and customer roles by default in launch-stage work to avoid missing deployment, production, and feedback materials
-- Add other roles when stage needs or triggers require them
+- Keep only one primary owner for the current operating arena
+- Activate ops and customer roles when launch, delivery, or customer feedback work needs them
+- Add other roles when the current bottleneck or trigger signals require them
 """,
-    "round-flow-template.md": """# Round Flow
+    "round-flow-template.md": """# Operating Push Flow
 
-1. Define the current-round goal and owner
+1. Define the current primary goal, bottleneck, and owner
 2. Clarify the artifact and shortest next action
 3. Execute one practical step
-4. Update the round state and blocker
+4. Update the operating state and blocker
 5. Decide whether to finish, calibrate, or continue
 """,
     "scheduler-spec-template.md": """# Scheduler Specification
 
-- Current stage: {{STAGE_LABEL}}
-- Current round: {{CURRENT_ROUND_NAME}}
+- Operating model: {{STAGE_LABEL}}
+- Operating surface: {{CURRENT_ROUND_NAME}}
 - Current owner: {{ACTIVE_ROLE_INLINE}}
 
 ## Scheduler Intent
 
-- Use reminders to keep the current round moving
+- Use reminders to keep the current operating action moving
 - Use triggers to enter calibration only when needed
 """,
-    "stage-flow-template.md": """# Stage Transition Flow
+    "stage-flow-template.md": """# Primary Arena Adjustment Flow
 
-1. Confirm why the current bottleneck no longer fits this stage
-2. Decide the next stage
+1. Confirm whether the current bottleneck has changed
+2. Decide whether the next operating action belongs to sales, product, delivery, cash, or assets
 3. Refresh the default active roles
-4. Define the first round of the new stage
+4. Define the shortest action for the adjusted arena
 5. Update deliverable requirements and artifact packs
 """,
     "stage-role-deliverable-matrix-template.md": """# Stage Role And Deliverable Matrix

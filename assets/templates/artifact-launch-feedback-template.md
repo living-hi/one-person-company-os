@@ -4,8 +4,8 @@
 
 - 公司名称: {{COMPANY_NAME}}
 - 产品名称: {{PRODUCT_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前回合: {{CURRENT_ROUND_NAME}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进面: {{CURRENT_ROUND_NAME}}
 
 ## 2. 必备上线材料
 
@@ -25,4 +25,4 @@
 
 ## 4. 下一步
 
-- 把反馈结果同步回当前回合和正式交付文档
+- 把反馈结果同步回经营驾驶舱和正式交付文档

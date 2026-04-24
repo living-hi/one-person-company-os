@@ -4,8 +4,8 @@
 
 - 公司名称: {{COMPANY_NAME}}
 - 产品名称: {{PRODUCT_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前回合: {{CURRENT_ROUND_NAME}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进面: {{CURRENT_ROUND_NAME}}
 - 文档状态: {{ARTIFACT_STATUS}}
 - 文件路径: {{ARTIFACT_FILE_PATH}}
 
@@ -41,6 +41,6 @@
 
 {{ARTIFACT_MISSING_ITEMS}}
 
-## 7. 本轮最短动作
+## 7. 当前最短动作
 
-- 把本轮非软件交付补齐到正式交付文档并登记证据
+- 把当前非软件交付补齐到正式交付文档并登记证据

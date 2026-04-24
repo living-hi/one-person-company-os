@@ -15,6 +15,7 @@ from common import (
     artifact_dir_path,
     reading_entry_path,
     reading_export_path,
+    role_brief_path,
     root_doc_path,
     state_path,
     workspace_dir_path,
@@ -51,6 +52,12 @@ def assert_contains(text: str, *snippets: str) -> None:
     for snippet in snippets:
         if snippet not in text:
             raise AssertionError(f"expected snippet not found: {snippet}")
+
+
+def assert_not_contains(text: str, *snippets: str) -> None:
+    for snippet in snippets:
+        if snippet in text:
+            raise AssertionError(f"unexpected legacy snippet found: {snippet}")
 
 
 def read_docx_text(path: Path) -> str:
@@ -159,6 +166,17 @@ def validate_workspace_scripts() -> None:
         assert_contains((workspace_dir_path(company_dir, "visual_kit", "zh-CN") / "ai-image-prompts.md").read_text(encoding="utf-8"), "AI 图片", "可选创作层")
         assert_exists(artifact_dir_path(company_dir, "delivery", "zh-CN") / "01-实际产出总表.docx")
         assert_contains(read_docx_text(artifact_dir_path(company_dir, "delivery", "zh-CN") / "01-实际产出总表.docx"), "实际产出总表")
+        for generated_path in (
+            workspace_file_path(company_dir, "role_index", "zh-CN"),
+            role_brief_path(company_dir, "总控台", "zh-CN"),
+            role_brief_path(company_dir, "创始人", "zh-CN"),
+            role_brief_path(company_dir, "产品负责人", "zh-CN"),
+            workspace_file_path(company_dir, "flow_bootstrap", "zh-CN"),
+            workspace_file_path(company_dir, "automation_reminders", "zh-CN"),
+            workspace_file_path(company_dir, "automation_scheduler", "zh-CN"),
+        ):
+            assert_not_contains(generated_path.read_text(encoding="utf-8"), "当前回合", "阶段切换", "当前阶段")
+        assert_not_contains(read_docx_text(artifact_dir_path(company_dir, "delivery", "zh-CN") / "01-实际产出总表.docx"), "当前阶段", "当前回合", "本轮")
         if list(workspace_dir_path(company_dir, "artifacts_root", "zh-CN").rglob("*.md")):
             raise AssertionError("artifact directories should remain DOCX-only")
         for old_flow in ("推进回合流程.md", "校准回合流程.md", "阶段切换流程.md"):
@@ -225,6 +243,17 @@ def validate_workspace_scripts() -> None:
         assert_exists(workspace_dir_path(english_workspace, "visual_kit", "en-US") / "business-loop.svg")
         assert_not_exists(english_workspace / "阅读版")
         assert_not_exists(english_workspace / "视觉素材")
+        for generated_path in (
+            workspace_file_path(english_workspace, "role_index", "en-US"),
+            role_brief_path(english_workspace, "control-tower", "en-US"),
+            role_brief_path(english_workspace, "founder", "en-US"),
+            role_brief_path(english_workspace, "product-strategist", "en-US"),
+            workspace_file_path(english_workspace, "flow_bootstrap", "en-US"),
+            workspace_file_path(english_workspace, "automation_reminders", "en-US"),
+            workspace_file_path(english_workspace, "automation_scheduler", "en-US"),
+        ):
+            lower_text = generated_path.read_text(encoding="utf-8").lower()
+            assert_not_contains(lower_text, "current round", "current stage", "stage-transition", "round-state")
 
 
 def validate_release_assets() -> None:

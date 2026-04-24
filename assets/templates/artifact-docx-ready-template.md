@@ -4,8 +4,8 @@
 
 - 公司名称: {{COMPANY_NAME}}
 - 产品名称: {{PRODUCT_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前回合: {{CURRENT_ROUND_NAME}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进面: {{CURRENT_ROUND_NAME}}
 - 文档类型: {{ARTIFACT_TYPE}}
 - 负责人: {{ARTIFACT_OWNER}}
 - 文档成熟度: {{ARTIFACT_STATUS}}
@@ -26,7 +26,7 @@
 ## 2. 背景与目标
 
 - 本次目标: {{ARTIFACT_OBJECTIVE}}
-- 当前回合状态: {{ROUND_STATUS}}
+- 当前推进状态: {{ROUND_STATUS}}
 
 ## 3. 工作范围
 

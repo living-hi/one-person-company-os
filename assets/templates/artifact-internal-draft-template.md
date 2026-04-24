@@ -2,9 +2,9 @@
 
 - 公司: {{COMPANY_NAME}}
 - 产品: {{PRODUCT_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前回合: {{CURRENT_ROUND_NAME}}
-- 回合状态: {{ROUND_STATUS}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进面: {{CURRENT_ROUND_NAME}}
+- 推进状态: {{ROUND_STATUS}}
 - 产物类型: {{ARTIFACT_TYPE}}
 - 负责人: {{ARTIFACT_OWNER}}
 - 本次目标: {{ARTIFACT_OBJECTIVE}}

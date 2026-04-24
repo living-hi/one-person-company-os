@@ -3,8 +3,8 @@
 ## 1. 文档信息
 
 - 公司名称: {{COMPANY_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前回合: {{CURRENT_ROUND_NAME}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进面: {{CURRENT_ROUND_NAME}}
 - 文档状态: {{ARTIFACT_STATUS}}
 - 文件路径: {{ARTIFACT_FILE_PATH}}
 

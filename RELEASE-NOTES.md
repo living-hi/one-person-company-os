@@ -15,6 +15,7 @@ What changed:
 - workspaces include deterministic SVGs for the business loop and revenue pipeline
 - workspaces include optional AI image prompts for launch and promotional visuals
 - old round/stage scripts now return deprecation guidance
+- generated role briefs, flow notes, reminders, and DOCX starter templates now use v1.0 operating-loop language rather than the old stage/round surface
 
 Normal use still does not require API keys, system package installation, or writes outside the approved workspace.
 

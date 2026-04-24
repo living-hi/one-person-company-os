@@ -4,8 +4,8 @@
 
 - 公司名称: {{COMPANY_NAME}}
 - 产品名称: {{PRODUCT_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前回合: {{CURRENT_ROUND_NAME}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进面: {{CURRENT_ROUND_NAME}}
 - 文档状态: {{ARTIFACT_STATUS}}
 - 文件路径: {{ARTIFACT_FILE_PATH}}
 
@@ -33,6 +33,6 @@
 
 {{ARTIFACT_MISSING_ITEMS}}
 
-## 6. 本轮最短动作
+## 6. 当前最短动作
 
 - 把实际代码、脚本或配置路径登记到正式交付文档

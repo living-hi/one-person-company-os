@@ -8,6 +8,7 @@
 - added deterministic SVG visual assets under `视觉素材/` or `visual-kit/`
 - added optional AI-image prompt assets for promotion while keeping image generation out of the required runtime path
 - changed old stage/round commands into explicit v1.0 deprecation guidance
+- aligned generated role briefs, flow notes, reminders, and DOCX starter templates with the v1.0 operating-loop language
 
 ## v0.6.7 - 2026-04-09
 

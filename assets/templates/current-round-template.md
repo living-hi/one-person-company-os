@@ -1,13 +1,13 @@
-# 当前回合
+# 当前经营推进
 
 更新于: {{UPDATED_AT}}
 
-- 回合编号: {{ROUND_ID}}
-- 回合名称: {{ROUND_NAME}}
-- 当前阶段: {{STAGE_LABEL}}
-- 当前状态: {{ROUND_STATUS}}
+- 推进编号: {{ROUND_ID}}
+- 推进名称: {{ROUND_NAME}}
+- 当前经营模型: {{STAGE_LABEL}}
+- 当前推进状态: {{ROUND_STATUS}}
 - 负责角色: {{ROUND_OWNER}}
-- 回合目标: {{ROUND_GOAL}}
+- 推进目标: {{ROUND_GOAL}}
 - 关键产物: {{ROUND_ARTIFACT}}
 - 当前阻塞: {{ROUND_BLOCKER}}
 - 下一步最短动作: {{ROUND_NEXT_ACTION}}
