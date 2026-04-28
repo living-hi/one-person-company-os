@@ -10,7 +10,7 @@ Build a visual operating cockpit for an AI-native one-person company
 
 ## Primary Pitch
 
-One Person Company OS v1.0 turns an AI product idea into a visible business loop:
+One Person Company OS turns an AI product idea into a visible business loop:
 
 - promise
 - buyer
@@ -20,18 +20,16 @@ One Person Company OS v1.0 turns an AI product idea into a visible business loop
 - learning
 - asset
 
-The first downloaded page is now an **Operating Cockpit**, not a folder of raw markdown.
-It shows the current bottleneck, revenue pipeline, business-loop map, shortest action, and links into the editable workspace.
+The founder gets an **Operating Cockpit** as the first reading surface. It shows the current bottleneck, revenue pipeline, business-loop map, shortest action, and links into the editable workspace.
 
 ## What Users Get
 
-- v1.0 business-loop state without old stage/round fields
 - localized operating cockpit HTML
 - editable markdown work surfaces
 - numbered DOCX formal deliverables
 - deterministic SVG visuals for the business loop and revenue pipeline
 - optional AI image prompts for covers, launch posts, and promotional visuals
-- role briefs, reminders, flow notes, and DOCX starter templates aligned to the v1.0 operating loop
+- role briefs, reminders, flow notes, and starter deliverables aligned to the same operating loop
 - runtime transparency and Python compatibility guidance
 
 ## First-Run Promise
@@ -52,8 +50,8 @@ The first serious run should produce:
 ## Quick Start Prompts
 
 - `clawhub install one-person-company-os`
-- `I am building a one-person AI company. Use one-person-company-os v1.0. Do not give me a business-plan template. First help me confirm the sellable promise, first buyer, and core problem. Then create the approved local workspace, open with the operating cockpit, show the current bottleneck visually, and save only approved files inside that workspace.`
-- `我正在创建一个 AI 一人公司，请调用 one-person-company-os v1.0。不要先给我商业计划书模板。先帮我确认可卖承诺、第一批买家和核心问题；确认后在我批准的本地目录创建工作区，用经营驾驶舱作为入口，直观展示当前瓶颈，并且只把批准后的文件保存到这个工作区内。`
+- `I am building a one-person AI company. Use one-person-company-os v1.0. First help me confirm the sellable promise, first buyer, and core problem. Then create the approved local workspace, open with the operating cockpit, show the current bottleneck visually, and save only approved files inside that workspace.`
+- `我正在创建一个 AI 一人公司，请调用 one-person-company-os v1.0。先帮我确认可卖承诺、第一批买家和核心问题；确认后在我批准的本地目录创建工作区，用经营驾驶舱作为入口，直观展示当前瓶颈，并且只把批准后的文件保存到这个工作区内。`
 
 ## Safety Boundary
 

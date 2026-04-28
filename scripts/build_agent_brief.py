@@ -20,24 +20,24 @@ from common import (
     print_step,
     role_display_names,
     role_spec,
-    stage_label,
     write_text,
 )
 from localization import normalize_language, pick_text
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Build one or more role-agent briefs.")
-    parser.add_argument("--stage", required=True, help="阶段，如 构建期 或 build")
+    parser = argparse.ArgumentParser(description="Build one or more v1 operating role-agent briefs.")
+    parser.add_argument("--primary-arena", default="", choices=["", "sales", "product", "delivery", "cash", "asset"], help="当前主战场")
+    parser.add_argument("--stage", default="", help=argparse.SUPPRESS)
     parser.add_argument("--role", help="单个角色 id")
-    parser.add_argument("--all-default-roles", action="store_true", help="输出该阶段的默认角色集")
-    parser.add_argument("--include-optional", action="store_true", help="同时包含阶段可选角色")
+    parser.add_argument("--all-default-roles", action="store_true", help="输出当前主战场的默认角色集")
+    parser.add_argument("--include-optional", action="store_true", help="同时包含可选角色")
     parser.add_argument("--language", default="zh-CN", help="工作语言")
     parser.add_argument("--company-name", default="未命名公司", help="公司名称")
     parser.add_argument("--company-dir", help="可选，公司工作区目录；如果需要落盘 brief，则 output-dir 必须位于该目录内")
-    parser.add_argument("--objective", default="推进当前阶段的关键回合", help="当前目标")
-    parser.add_argument("--current-round", default="当前回合待定义", help="当前回合名称")
-    parser.add_argument("--round-goal", default="待定义", help="当前回合目标")
+    parser.add_argument("--objective", default="推进当前主瓶颈", help="当前目标")
+    parser.add_argument("--current-round", default="", help=argparse.SUPPRESS)
+    parser.add_argument("--round-goal", default="", help=argparse.SUPPRESS)
     parser.add_argument("--current-bottleneck", default="待确认", help="当前瓶颈")
     parser.add_argument("--trigger-reason", default="无", help="触发原因")
     parser.add_argument("--next-shortest-action", default="待确认", help="下一步最短动作")
@@ -69,16 +69,28 @@ def role_ids_for_stage(stage_id: str, include_optional: bool) -> list[str]:
     return unique(role_ids)
 
 
+def stage_id_for_primary_arena(primary_arena: str, stage_value: str) -> str:
+    """Map the v1 visible arena to the existing internal role-default groups."""
+    if stage_value:
+        return normalize_stage(stage_value)
+    return {
+        "sales": "validate",
+        "product": "build",
+        "delivery": "launch",
+        "cash": "operate",
+        "asset": "grow",
+    }.get(primary_arena or "product", "build")
+
+
 def build_packet(
     spec: dict[str, Any],
     *,
     stage_id: str,
+    primary_arena: str,
     role_specs: dict[str, dict[str, Any]],
     company_name: str,
     language: str,
     objective: str,
-    current_round: str,
-    round_goal: str,
     current_bottleneck: str,
     trigger_reason: str,
     next_shortest_action: str,
@@ -89,15 +101,16 @@ def build_packet(
     pending_approvals: list[str],
 ) -> dict[str, Any]:
     return {
-        "stage_id": stage_id,
-        "stage_label": stage_label(stage_id, language),
+        "operating_model": pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop"),
+        "primary_arena": primary_arena or "product",
+        "internal_role_group": stage_id,
         "working_language": language,
         "company_name": company_name,
         "role_id": spec["role_id"],
         "role_display_name": spec["display_name"],
         "objective": objective,
-        "current_round": current_round,
-        "round_goal": round_goal,
+        "current_bottleneck": current_bottleneck,
+        "next_shortest_action": next_shortest_action,
         "mission": spec["mission"],
         "owns": spec["owns"],
         "inputs": unique(spec["inputs_required"] + extra_inputs),
@@ -107,8 +120,8 @@ def build_packet(
         "handoff_targets": role_display_names(spec["handoff_to"], role_specs, language),
         "guardrails": spec["do_not_do"],
         "continuation_context": {
-            "round_id": current_round,
-            "round_status": pick_text(language, "待确认", "Pending"),
+            "primary_goal": objective,
+            "primary_arena": primary_arena or "product",
             "current_bottleneck": current_bottleneck,
             "trigger_reason": trigger_reason,
             "next_shortest_action": next_shortest_action,
@@ -126,12 +139,13 @@ def format_markdown(packet: dict[str, Any], schema: dict[str, Any]) -> str:
         f"# {pick_text(language, '角色 Brief', 'Role Brief')}: {packet['role_display_name']}",
         "",
         f"## {pick_text(language, '会话框架', 'Session Frame')}",
-        f"- {pick_text(language, '阶段', 'Stage')}: {packet['stage_label']}",
+        f"- {pick_text(language, '经营模型', 'Operating Model')}: {packet['operating_model']}",
         f"- {pick_text(language, '工作语言', 'Working Language')}: {packet['working_language']}",
         f"- {pick_text(language, '公司', 'Company')}: {packet['company_name']}",
-        f"- {pick_text(language, '当前回合', 'Current Round')}: {packet['current_round']}",
-        f"- {pick_text(language, '回合目标', 'Round Goal')}: {packet['round_goal']}",
         f"- {pick_text(language, '当前目标', 'Current Objective')}: {packet['objective']}",
+        f"- {pick_text(language, '当前主战场', 'Primary Arena')}: {packet['primary_arena']}",
+        f"- {pick_text(language, '当前瓶颈', 'Current Bottleneck')}: {packet['current_bottleneck']}",
+        f"- {pick_text(language, '下一步最短动作', 'Shortest Next Action')}: {packet['next_shortest_action']}",
         "",
         f"## {pick_text(language, '角色使命', 'Role Mission')}",
         f"- {pick_text(language, '角色 ID', 'Role ID')}: {packet['role_id']}",
@@ -195,19 +209,16 @@ def main() -> int:
     language = normalize_language(
         args.language,
         args.stage,
+        args.primary_arena,
         args.company_name,
         args.objective,
-        args.current_round,
-        args.round_goal,
+        args.current_bottleneck,
+        args.next_shortest_action,
     )
     if args.company_name == "未命名公司" and language == "en-US":
         args.company_name = "Untitled Company"
-    if args.objective == "推进当前阶段的关键回合" and language == "en-US":
-        args.objective = "Advance the key round in the current stage"
-    if args.current_round == "当前回合待定义" and language == "en-US":
-        args.current_round = "Current round not defined yet"
-    if args.round_goal == "待定义" and language == "en-US":
-        args.round_goal = "Undefined"
+    if args.objective == "推进当前主瓶颈" and language == "en-US":
+        args.objective = "Advance the current primary bottleneck"
     if args.current_bottleneck == "待确认" and language == "en-US":
         args.current_bottleneck = "Pending confirmation"
     if args.trigger_reason == "无" and language == "en-US":
@@ -219,7 +230,9 @@ def main() -> int:
     if not args.role and not args.all_default_roles:
         parser.error("use --role or --all-default-roles")
 
-    stage_id = normalize_stage(args.stage)
+    if not args.primary_arena:
+        args.primary_arena = "product"
+    stage_id = stage_id_for_primary_arena(args.primary_arena, args.stage)
     company_dir = Path(args.company_dir).expanduser().resolve() if args.company_dir else None
     output_dir = Path(args.output_dir).expanduser() if args.output_dir else None
     if output_dir is not None and company_dir is not None and not output_dir.is_absolute():
@@ -261,12 +274,11 @@ def main() -> int:
         packet = build_packet(
             role_spec(role_id, role_specs, language),
             stage_id=stage_id,
+            primary_arena=args.primary_arena,
             role_specs=role_specs,
             company_name=args.company_name,
             language=language,
             objective=args.objective,
-            current_round=args.current_round,
-            round_goal=args.round_goal,
             current_bottleneck=args.current_bottleneck,
             trigger_reason=args.trigger_reason,
             next_shortest_action=args.next_shortest_action,
@@ -284,23 +296,23 @@ def main() -> int:
     emit_runtime_report(
         mode=pick_text(language, "生成角色 Brief", "Build Agent Brief"),
         phase="验证与回报",
-        stage=stage_label(stage_id, language),
-        round_name=args.current_round,
+        stage=pick_text(language, "v1.0 经营闭环", "v1.0 Business Loop"),
+        round_name=args.objective,
         role=("、".join(role_spec(role_id, role_specs, language)["display_name"] for role_id in role_ids) if language == "zh-CN" else ", ".join(role_spec(role_id, role_specs, language)["display_name"] for role_id in role_ids)),
         artifact=pick_text(language, "角色智能体 brief", "role-agent brief"),
-        next_action=pick_text(language, "把 brief 交给对应角色或继续启动回合", "Hand the brief to the target role or continue by starting the next round"),
+        next_action=pick_text(language, "把 brief 交给对应角色或继续推进今日最短动作", "Hand the brief to the target role or continue the shortest action today"),
         needs_confirmation=pick_text(language, "否", "No"),
         persistence_mode="script-execution" if output_dir is not None else "chat-only",
         company_dir=output_dir,
         saved_paths=saved_paths,
         unsaved_reason=pick_text(language, "当前内容仅输出到标准输出，未指定 --output-dir", "The brief was only written to stdout because --output-dir was not provided") if output_dir is None else pick_text(language, "无", "None"),
         work_scope=[
-            pick_text(language, "基于当前阶段和回合生成角色执行 brief。", "Generate role-execution briefs based on the current stage and round."),
+            pick_text(language, "基于当前主目标、主瓶颈和主战场生成角色执行 brief。", "Generate role-execution briefs based on the current goal, bottleneck, and primary arena."),
             pick_text(language, "明确角色输入、输出、约束和交接对象。", "Clarify role inputs, outputs, constraints, and handoff targets."),
             pick_text(language, "说明这些 brief 是否已经落盘。", "Explain whether the briefs were actually persisted."),
         ],
         non_scope=[
-            pick_text(language, "不会跳过阶段上下文直接生成空白角色模板。", "Do not generate blank role templates without stage context."),
+            pick_text(language, "不会跳过经营上下文直接生成空白角色模板。", "Do not generate blank role templates without operating context."),
             pick_text(language, "不会把标准输出误说成已经写入工作区。", "Do not describe stdout-only output as already written into the workspace."),
         ],
         changes=[

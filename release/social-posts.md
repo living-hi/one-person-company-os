@@ -2,36 +2,33 @@
 
 ## X / Short Post
 
-I rebuilt `one-person-company-os` as v1.0.
+`one-person-company-os` v1.0 is a visual operating cockpit for one-person AI companies.
 
-It is now a visual operating cockpit for one-person AI companies:
+It gives solo founders:
 
-- v1.0 business-loop state
-- operating cockpit HTML after download
-- deterministic SVG visuals
+- an operating cockpit HTML page after download
+- business-loop and revenue-pipeline SVGs
+- editable markdown work surfaces
+- numbered DOCX deliverables
 - optional AI image prompts for launch assets
-- no legacy stage/round state
 
 ## X / 中文短帖
 
-我把 `one-person-company-os` 重构到了 v1.0。
+`one-person-company-os` v1.0 是 AI 一人公司的可视化经营驾驶舱。
 
-它现在是一套 AI 一人公司的可视化经营驾驶舱：
+它给一人创始人：
 
-- v1.0 经营闭环状态
-- 下载后优先打开经营驾驶舱 HTML
-- 自动生成经营闭环图和成交管道图
-- 可选 AI 图片提示词用于宣发素材
-- 不再写旧阶段/回合状态
+- 下载后可直接打开的经营驾驶舱 HTML
+- 经营闭环图和成交管道图
+- 可持续编辑的 Markdown 工作面
+- 编号 DOCX 正式交付件
+- 用于宣发素材的可选 AI 图片提示词
 
 ## LinkedIn / Longer Post
 
-`one-person-company-os` v1.0 is a breaking architecture release.
-
-The product is no longer centered on stage or round mechanics.
-It now opens with a visual operating cockpit that keeps the real solo-founder loop visible:
+`one-person-company-os` v1.0 helps solo founders turn an AI product idea into a visible operating loop:
 
 `promise -> buyer -> product -> delivery -> cash -> learning -> asset`
 
-The workspace still keeps markdown for editing and DOCX for formal deliverables, but the first reading experience is now HTML plus deterministic SVG visuals.
-AI image generation is optional and used for creative launch assets, not for exact operating data.
+The workspace keeps markdown for editing and DOCX for formal deliverables, while the first reading experience is an HTML operating cockpit with deterministic SVG visuals.
+AI image prompts are included as optional creative material for launch assets.

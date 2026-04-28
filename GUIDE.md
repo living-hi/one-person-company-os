@@ -1,102 +1,82 @@
 # One Person Company OS Plain-English Guide
 
-The most accurate way to think about this skill is as a control tower for a solo company.
+Think of this skill as the operating cockpit for a solo company.
 
-It is not a startup chat prompt. It is a system for actually running an AI-native solo company.
+It starts from one sellable promise, one first buyer, one current bottleneck, and one shortest action. The goal is to keep product, sales, delivery, cash, learning, and reusable assets connected instead of letting them become separate conversations.
 
 ## One-Line Mental Model
 
-The old pattern was:
+The operating loop is:
 
-- write a lot of documents
-- then do weekly reviews
+```text
+promise -> buyer -> product capability -> delivery -> cash -> learning -> asset
+```
 
-The better pattern is:
+Every serious run should make that loop easier to inspect:
 
-- narrow one pain and one user first
-- validate demand quickly
-- ship the smallest useful MVP
-- launch narrowly and collect feedback
-- improve before scaling growth
-
-The system still keeps internal structures like current round, stage, calibration, and stage transition, but the founder-facing experience should feel like the fast loop above.
+- the promise is clear enough to sell
+- the buyer is concrete enough to contact
+- the product capability is narrow enough to ship
+- delivery and cash are visible
+- feedback becomes learning
+- repeatable work becomes an asset
 
 ## How To Use It
 
 The simplest first prompt is:
 
 ```text
-I want to build a solo company. Use one-person-company-os.
-Do not make me fill a lot of fields first. Ask me for the idea in one sentence, or give me 3 to 4 directions to choose from.
+I am building a one-person AI company. Use one-person-company-os v1.0. First help me confirm the sellable promise, first buyer, and core problem. Then create the approved local workspace, open with the operating cockpit, show the current bottleneck visually, and save only approved files inside that workspace.
 ```
 
-The system first gives you a company setup draft that includes:
+The system should first clarify:
 
-- direction guidance from the one-line idea
-- a few startup directions if you are still undecided
-- a one-line product definition
-- company-name options
-- the suggested bottleneck stage
-- a minimal org structure
-- the first active roles
-- the workspace structure
-- the first executable round
+- company and product name
+- sellable promise
+- first buyer
+- core problem
+- current primary goal
+- current bottleneck
+- primary arena: sales, product, delivery, cash, or asset
+- shortest action today
+- approved workspace path
 
-Only after you confirm will it create the workspace, role briefs, and process files.
-After creation, start with `10-创始人启动卡.md`, `11-交付目录总览.md`, and `12-AI时代快循环.md`.
+Only after the founder confirms the workspace should it create files.
 
-## How It Differs From A Generic Startup Assistant
+## What To Open First
 
-A generic startup assistant usually works like "you ask one question, it answers one question."
+English workspaces start from:
 
-This skill behaves like an execution system. It keeps:
+```text
+reading/00-operating-cockpit.html
+```
 
-- one current round
-- one clear blocker
+The cockpit links to editable work surfaces and formal deliverables. Use it to decide what to open next instead of browsing the folder blindly.
+
+## Workspace Layers
+
+- HTML pages are for first-pass reading and navigation.
+- Markdown files are the editable working surface.
+- Numbered DOCX files under `artifacts/` are formal deliverables.
+- SVG files under `visual-kit/` carry exact business-loop and pipeline visuals.
+- AI-image prompts are optional creative material for covers and launch posts.
+
+## What Makes A Good Run
+
+A good run ends with:
+
+- a visible current bottleneck
+- one owner or role focus
 - one shortest next action
-- calibration only when necessary
-- a three-layer navigation bar on every important output
-- separate user-navigation and audit views
-- numbered DOCX deliverables with real evidence
-- a path reminder on every meaningful reply so you know what to open next
-
-## Why Weekly Reviews Are Not The Main Rhythm
-
-In the AI era, a week is often too slow.
-
-A more effective rhythm is:
-
-- fast-loop execution as the founder-facing model
-- rounds as 2-to-3-hour execution units
-- trigger-based calibration
-- stage transitions only when the bottleneck changes
-
-That means you stop asking "what should I write in this week's review?"
-and start asking:
-
-- what is the current round
-- what is still missing
-- why are we blocked
-- should we switch owner or stage
-
-## Internal Structure
-
-The system has five core layers:
-
-- `SKILL.md`
-- `references/`
-- `agents/roles/*.json`
-- `orchestration/*.json`
-- `scripts/*.py`
+- a clear saved path or an explicit unsaved reason
+- updated reading layer, markdown layer, and visual assets when state changes
+- founder approval requested before pricing, legal, budget, launch, or risky customer-facing actions
 
 ## Six Moves To Remember
 
-- name the pain
-- validate the demand
-- ship the smallest MVP
-- launch narrowly
-- improve from feedback
-- scale only after value is real
-
-If you only want occasional ideation, this skill may feel heavy.
-If you actually want a solo company to keep moving, it becomes useful very quickly.
+- define the pain
+- identify the first buyer
+- narrow the promise
+- ship the smallest useful capability
+- connect delivery to cash
+- turn repeated work into assets

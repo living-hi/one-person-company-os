@@ -1,15 +1,15 @@
-# One Person Company OS v1.0 发布物料
+# One Person Company OS 发布物料
 
-本目录描述 v1.0 可视化经营驾驶舱版本。
+本目录描述面向 AI 一人创始人的可视化经营驾驶舱。
 
 核心信息：
 
-- 面向 AI 一人创始人的可视化经营驾驶舱
-- v1.0 经营闭环状态
+- 从可卖承诺到可复用资产的可见经营闭环
 - 下载后优先打开本地 HTML 驾驶舱
+- 可持续编辑的 Markdown 工作面
+- 编号 DOCX 正式交付件
 - 自动生成确定性 SVG 图
 - 可选 AI 图片创作提示词
-- 不再写入旧阶段/回合状态字段
 
 主要物料：
 
@@ -17,5 +17,5 @@
 - `sample-outputs.md`
 - `media-kit.md`
 - `social-posts.md`
-- `v1.0.0-github-release.md`
+- `v1.0.1-github-release.md`
 - `assets/*.svg`

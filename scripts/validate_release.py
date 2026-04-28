@@ -255,6 +255,26 @@ def validate_workspace_scripts() -> None:
             lower_text = generated_path.read_text(encoding="utf-8").lower()
             assert_not_contains(lower_text, "current round", "current stage", "stage-transition", "round-state")
 
+        brief = run(
+            str(SCRIPTS_DIR / "build_agent_brief.py"),
+            "--role",
+            "control-tower",
+            "--primary-arena",
+            "product",
+            "--company-name",
+            "North Star Lab",
+            "--objective",
+            "Tighten the sellable promise",
+            "--current-bottleneck",
+            "The homepage promise is not concrete enough",
+            "--next-shortest-action",
+            "Rewrite the first-screen promise and CTA",
+            "--language",
+            "en-US",
+        )
+        assert_contains(brief.stdout, "Operating Model", "Primary Arena", "Shortest Next Action")
+        assert_not_contains(brief.stdout.lower(), "current round", "current stage", "stage transition", "round goal")
+
 
 def validate_release_assets() -> None:
     for path in sorted(RELEASE_ASSETS_DIR.glob("*.svg")):
@@ -265,11 +285,47 @@ def validate_release_assets() -> None:
 
 
 def validate_public_docs() -> None:
-    for relative in ("README.md", "README.zh-CN.md", "SKILL.md", "SAMPLE-OUTPUTS.md", "release/clawhub-listing.md"):
+    public_files = (
+        "README.md",
+        "README.zh-CN.md",
+        "GUIDE.md",
+        "GUIDE.zh-CN.md",
+        "SKILL.md",
+        "SAMPLE-OUTPUTS.md",
+        "release/README.md",
+        "release/README.zh-CN.md",
+        "release/clawhub-listing.md",
+        "release/sample-outputs.md",
+        "release/github-announcement.md",
+        "release/social-posts.md",
+        "release/v1.0.1-github-release.md",
+        "agents/openai.yaml",
+    )
+    forbidden_public = (
+        "What Changed",
+        "改了什么",
+        "breaking architecture",
+        "breaking product",
+        "old stage",
+        "old round",
+        "legacy stage",
+        "legacy round",
+        "stage/round",
+        "阶段/回合",
+        "当前回合",
+        "当前阶段",
+        "阶段切换",
+        "current round",
+        "current stage",
+        "stage transition",
+    )
+    for relative in public_files:
         text = (ROOT / relative).read_text(encoding="utf-8")
-        assert_contains(text, "v1.0")
+        if "v1.0" not in text:
+            raise AssertionError(f"expected v1.0 positioning in {relative}")
         if "visual" not in text.lower() and "可视化" not in text:
             raise AssertionError(f"expected visual positioning in {relative}")
+        assert_not_contains(text, *forbidden_public)
     listing = (ROOT / "release" / "clawhub-listing.md").read_text(encoding="utf-8")
     assert_contains(listing, "Operating Cockpit", "AI image")
 

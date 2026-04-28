@@ -1,15 +1,15 @@
-# One Person Company OS v1.0 Release Materials
+# One Person Company OS Release Materials
 
-This release package describes the v1.0 visual operating cockpit.
+This release package describes the visual operating cockpit for AI-native solo founders.
 
 Core message:
 
-- a visual operating cockpit for AI-native solo founders
-- v1.0 business-loop state
+- a visible business loop from promise to reusable asset
 - localized HTML cockpit after download
+- editable markdown work surfaces
+- numbered DOCX formal deliverables
 - deterministic SVG visuals
 - optional AI-image creative prompts
-- no legacy stage/round state fields
 
 Primary assets:
 
@@ -17,5 +17,5 @@ Primary assets:
 - `sample-outputs.md`
 - `media-kit.md`
 - `social-posts.md`
-- `v1.0.0-github-release.md`
+- `v1.0.1-github-release.md`
 - `assets/*.svg`

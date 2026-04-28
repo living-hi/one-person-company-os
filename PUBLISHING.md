@@ -51,16 +51,24 @@ python3 scripts/ensure_python_runtime.py
 python3 scripts/validate_release.py
 git status --short
 git add .
-git commit -m "release: document one-person-company-os v1.0.0"
+git commit -m "release: polish one-person-company-os public surface"
 git push origin main
 clawhub publish /home/living/.openclaw/workspace/skills/one-person-company-os \
   --slug one-person-company-os \
   --name "One Person Company OS" \
-  --version 1.0.0 \
-  --changelog "Rebuild One Person Company OS as a visual operating cockpit with v1.0 business-loop state, localized HTML cockpit pages, deterministic SVG visuals, and optional AI-image creative prompts."
+  --version 1.0.1 \
+  --changelog "Polish the public README, guides, release materials, and validation around the visual operating cockpit for first-time solo founders."
 ```
 
 Replace the staged files, commit message, version, and changelog as needed.
+
+When splitting the `clawhub publish` command across lines in bash, keep every continued line except the last ending with `\`. Without the backslashes, the shell runs `clawhub publish <path>` first and then treats `--slug`, `--version`, and `--changelog` as separate commands.
+
+Single-line equivalent:
+
+```bash
+clawhub publish /home/living/.openclaw/workspace/skills/one-person-company-os --slug one-person-company-os --name "One Person Company OS" --version 1.0.1 --changelog "Polish the public README, guides, release materials, and validation around the visual operating cockpit for first-time solo founders."
+```
 
 ## Suggested First Repository Settings
 
@@ -72,9 +80,9 @@ Replace the staged files, commit message, version, and changelog as needed.
 
 ## Suggested Current Release
 
-- tag: `v1.0.0`
-- title: `v1.0.0: visual operating cockpit`
-- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v1.0.0-github-release.md`
+- tag: `v1.0.1`
+- title: `v1.0.1: new-user release polish`
+- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v1.0.1-github-release.md`
 
 ## ClawHub Submission Prep
 
@@ -95,10 +103,10 @@ Use the materials in `release/`:
 - After any timeout, verify with the download endpoint before retrying:
 
 ```bash
-curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=1.0.0" -o /tmp/one-person-company-os-1.0.0.zip
-unzip -p /tmp/one-person-company-os-1.0.0.zip README.zh-CN.md | sed -n '1,80p'
-unzip -p /tmp/one-person-company-os-1.0.0.zip agents/openai.yaml
-unzip -p /tmp/one-person-company-os-1.0.0.zip scripts/init_company.py | sed -n '1,160p'
+curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=1.0.1" -o /tmp/one-person-company-os-1.0.1.zip
+unzip -p /tmp/one-person-company-os-1.0.1.zip README.zh-CN.md | sed -n '1,80p'
+unzip -p /tmp/one-person-company-os-1.0.1.zip agents/openai.yaml
+unzip -p /tmp/one-person-company-os-1.0.1.zip release/v1.0.1-github-release.md | sed -n '1,120p'
 ```
 
 - The public listing page may lag behind the downloadable package version. Trust the download endpoint first.

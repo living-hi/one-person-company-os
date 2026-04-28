@@ -1,6 +1,6 @@
 # Sample Outputs
 
-These excerpts show the v1.0 behavior: direction-first setup, a v1.0 business-loop state file, a visual operating cockpit, localized workspace surfaces, and optional AI-image creative prompts.
+These excerpts show the v1.0 expected behavior: direction-first setup, a business-loop state file, a visual operating cockpit, localized workspace surfaces, and optional AI-image creative prompts.
 
 ## Interaction Output Structure
 
@@ -54,9 +54,9 @@ North Star Lab/
   .opcos/state/current-state.json
 ```
 
-## v1.0 State Contract
+## State Contract
 
-The state file uses `version: 1.0` and does not write old `stage_id` or `current_round` fields.
+The hidden state file lives at `.opcos/state/current-state.json` and keeps the founder oriented around the operating loop.
 
 Core sections:
 

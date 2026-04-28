@@ -1,6 +1,6 @@
 # Sample Outputs
 
-v1.0 outputs center on the visual operating cockpit.
+v1.0 outputs center on the operating cockpit.
 
 ```text
 阅读版/00-经营驾驶舱.html
@@ -27,4 +27,4 @@ visual-kit/revenue-pipeline.svg
 visual-kit/ai-image-prompts.md
 ```
 
-The v1.0 state file uses `version: 1.0` and does not write legacy `stage_id` or `current_round` fields.
+The hidden state file lives under `.opcos/state/current-state.json` inside the approved workspace.

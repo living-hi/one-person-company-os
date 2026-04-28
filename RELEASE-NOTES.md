@@ -1,5 +1,18 @@
 # Release Notes
 
+## v1.0.1 - New-User Release Polish
+
+`v1.0.1` tightens the package for first-time founders and marketplace review.
+
+What improved:
+
+- README and README.zh-CN now lead with the founder's first-run questions, workspace outputs, and operating cockpit value
+- ClawHub listing and release materials now use the same business-loop story
+- GUIDE files and bundled playbooks now describe current goal, current bottleneck, primary arena, and shortest action
+- sample outputs point directly to the HTML cockpit and visual assets
+- publishing docs now include the exact bash line-continuation rule and a single-line ClawHub command
+- validation now checks public docs and standalone role brief output for stale visible workflow language
+
 ## v1.0.0 - Visual Operating Cockpit
 
 `v1.0.0` is a breaking architecture release.

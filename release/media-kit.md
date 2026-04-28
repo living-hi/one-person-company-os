@@ -12,7 +12,7 @@
 - use `repo-social-card.svg` as the repository social preview
 - use `workspace-preview.svg` to show the v1.0 operating cockpit workspace
 - use `company-overview-preview.svg` to show the business-loop state model
-- use `round-preview.svg` as the visual-loop preview for legacy asset slots
+- use `round-preview.svg` only where a fixed historical filename is required; prefer `workspace-preview.svg` for new listings
 
 ## Copy Pairing
 

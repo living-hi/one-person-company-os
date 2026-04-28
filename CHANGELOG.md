@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.1 - 2026-04-28
+
+- rewrote the English and Chinese README openings around first-time founder value instead of upgrade comparison
+- refreshed ClawHub listing, release README files, sample outputs, announcement copy, and social copy to match the operating cockpit positioning
+- replaced stale public guides and playbooks with current goal, bottleneck, primary arena, shortest-action language
+- added a v1.0.1 release note and publishing guidance with a safe one-line `clawhub publish` command
+- strengthened release validation for public docs and standalone role brief output
+
 ## v1.0.0 - 2026-04-24
 
 - rebuilt the product as a visual operating cockpit for AI-native one-person companies

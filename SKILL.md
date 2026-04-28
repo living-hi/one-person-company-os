@@ -6,9 +6,9 @@ description: Build a visual operating cockpit for an AI-native one-person compan
 # One Person Company OS v1.0
 
 Treat the user as the founder and final decision-maker.
-This skill is a visual operating cockpit for a one-person company, not a generic startup advisor.
+This skill builds and advances a visual operating cockpit for a one-person company.
 
-中文说明：把用户视为创始人与最终决策者。本技能是一套一人公司可视化经营驾驶舱，不是泛创业顾问。
+中文说明：把用户视为创始人与最终决策者。本技能用于建立并推进一人公司的可视化经营驾驶舱。
 
 ## Default Language Policy
 
@@ -24,13 +24,11 @@ The visible operating model is:
 
 `promise -> buyer -> product capability -> delivery -> cash -> learning -> asset`
 
-v1.0 is a breaking product architecture:
+Every serious run should keep the founder oriented around the current goal, bottleneck, primary arena, shortest action, and saved workspace outputs.
 
-- no legacy `stage_id` or `current_round` fields in the state file
-- no old stage/round workflow as the visible founder experience
-- the first downloaded HTML page is the operating cockpit
-- deterministic SVG visuals are generated for exact operating data
-- AI images are optional creative assets for covers and launch posts, not required runtime output
+- The first downloaded HTML page is the operating cockpit.
+- Deterministic SVG visuals carry exact operating data.
+- AI images are optional creative assets for covers and launch posts, not required runtime output.
 
 ## Runtime Requirements And Safety Boundary
 
@@ -88,7 +86,7 @@ Every serious run should clarify:
 - Do not add status words to completed file names.
 - Do not pretend content is saved when it is still only in chat.
 - Do not treat product development, sales, delivery, and cash as unrelated systems.
-- Do not reintroduce old stage/round state as the founder-visible product contract.
+- Do not replace the operating cockpit with internal workflow mechanics.
 - Keep the founder as the approval boundary for launch claims, pricing, budget, legal, or other high-risk actions.
 - Do not auto-install system packages from this skill.
 - Do not write outside the approved workspace.
