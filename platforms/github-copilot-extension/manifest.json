@@ -1,0 +1,21 @@
+{
+  "name": "one-person-company-os",
+  "display_name": "One Person Company OS",
+  "version": "1.0.2",
+  "description": "A Copilot Extension draft for building a visual operating cockpit for AI-native solo founders.",
+  "publisher": "living-hi",
+  "homepage_url": "https://github.com/living-hi/one-person-company-os",
+  "callback_url": "https://YOUR_HOST.example.com/github/copilot",
+  "capabilities": [
+    "chat",
+    "repository_context",
+    "workspace_guidance"
+  ],
+  "required_backend": true,
+  "tools": [
+    "init_business",
+    "update_focus",
+    "generate_artifact_document",
+    "validate_release"
+  ]
+}

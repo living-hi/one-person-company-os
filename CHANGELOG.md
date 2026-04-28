@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.2 - 2026-04-28
+
+- added multi-platform adapter packages under `platforms/` for Claude Skills, Hermes Agent, MCP, OpenAI GPT Store, Dify, Poe, Gemini Gems, GitHub Copilot Extensions, and Microsoft Copilot Studio
+- added a local stdio MCP server exposing `preflight_check`, `init_business`, `update_focus`, `generate_artifact_document`, and `validate_release`
+- added platform publishing status, requirements, experience log, and publish-all checklist
+- added `scripts/validate_platforms.py` and wired it into release validation
+
 ## v1.0.1 - 2026-04-28
 
 - rewrote the English and Chinese README openings around first-time founder value instead of upgrade comparison

@@ -56,8 +56,8 @@ git push origin main
 clawhub publish /home/living/.openclaw/workspace/skills/one-person-company-os \
   --slug one-person-company-os \
   --name "One Person Company OS" \
-  --version 1.0.1 \
-  --changelog "Polish the public README, guides, release materials, and validation around the visual operating cockpit for first-time solo founders."
+  --version 1.0.2 \
+  --changelog "Add multi-platform adapters for Claude Skills, Hermes Agent, MCP clients, OpenAI GPT Store, Dify, Poe, Gemini Gems, GitHub Copilot Extensions, and Microsoft Copilot Studio."
 ```
 
 Replace the staged files, commit message, version, and changelog as needed.
@@ -67,7 +67,7 @@ When splitting the `clawhub publish` command across lines in bash, keep every co
 Single-line equivalent:
 
 ```bash
-clawhub publish /home/living/.openclaw/workspace/skills/one-person-company-os --slug one-person-company-os --name "One Person Company OS" --version 1.0.1 --changelog "Polish the public README, guides, release materials, and validation around the visual operating cockpit for first-time solo founders."
+clawhub publish /home/living/.openclaw/workspace/skills/one-person-company-os --slug one-person-company-os --name "One Person Company OS" --version 1.0.2 --changelog "Add multi-platform adapters for Claude Skills, Hermes Agent, MCP clients, OpenAI GPT Store, Dify, Poe, Gemini Gems, GitHub Copilot Extensions, and Microsoft Copilot Studio."
 ```
 
 ## Suggested First Repository Settings
@@ -80,9 +80,9 @@ clawhub publish /home/living/.openclaw/workspace/skills/one-person-company-os --
 
 ## Suggested Current Release
 
-- tag: `v1.0.1`
-- title: `v1.0.1: new-user release polish`
-- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v1.0.1-github-release.md`
+- tag: `v1.0.2`
+- title: `v1.0.2: multi-platform adapter pack`
+- notes source: `CHANGELOG.md`, `RELEASE-NOTES.md`, and `release/v1.0.2-github-release.md`
 
 ## ClawHub Submission Prep
 
@@ -103,10 +103,10 @@ Use the materials in `release/`:
 - After any timeout, verify with the download endpoint before retrying:
 
 ```bash
-curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=1.0.1" -o /tmp/one-person-company-os-1.0.1.zip
-unzip -p /tmp/one-person-company-os-1.0.1.zip README.zh-CN.md | sed -n '1,80p'
-unzip -p /tmp/one-person-company-os-1.0.1.zip agents/openai.yaml
-unzip -p /tmp/one-person-company-os-1.0.1.zip release/v1.0.1-github-release.md | sed -n '1,120p'
+curl -L "https://clawhub.ai/api/v1/download?slug=one-person-company-os&version=1.0.2" -o /tmp/one-person-company-os-1.0.2.zip
+unzip -p /tmp/one-person-company-os-1.0.2.zip README.zh-CN.md | sed -n '1,80p'
+unzip -p /tmp/one-person-company-os-1.0.2.zip agents/openai.yaml
+unzip -p /tmp/one-person-company-os-1.0.2.zip release/v1.0.2-github-release.md | sed -n '1,120p'
 ```
 
 - The public listing page may lag behind the downloadable package version. Trust the download endpoint first.

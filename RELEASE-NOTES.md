@@ -1,5 +1,19 @@
 # Release Notes
 
+## v1.0.2 - Multi-Platform Adapter Pack
+
+`v1.0.2` adds a distribution layer for publishing One Person Company OS beyond OpenClaw.
+
+What changed:
+
+- added `platforms/` with ready-to-submit adapters for Claude Skills, Hermes Agent, OpenAI GPT Store, Dify, Poe, Gemini Gems, GitHub Copilot Extensions, and Microsoft Copilot Studio
+- added a stdio MCP server so MCP-compatible clients can call the canonical scripts directly
+- documented account, approval, and backend requirements for each market
+- recorded publishing status and experience notes so future releases do not confuse prepared packages with completed publication
+- added platform validation to the release validation pipeline
+
+The canonical package remains the repository root. Platform adapters are thin wrappers around the same operating cockpit contract.
+
 ## v1.0.1 - New-User Release Polish
 
 `v1.0.1` tightens the package for first-time founders and marketplace review.

@@ -298,7 +298,7 @@ def validate_public_docs() -> None:
         "release/sample-outputs.md",
         "release/github-announcement.md",
         "release/social-posts.md",
-        "release/v1.0.1-github-release.md",
+        "release/v1.0.2-github-release.md",
         "agents/openai.yaml",
     )
     forbidden_public = (
@@ -335,6 +335,7 @@ def main() -> int:
     validate_workspace_scripts()
     validate_release_assets()
     validate_public_docs()
+    run(str(SCRIPTS_DIR / "validate_platforms.py"))
     print("release validation passed")
     return 0
 

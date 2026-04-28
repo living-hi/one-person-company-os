@@ -17,5 +17,5 @@
 - `sample-outputs.md`
 - `media-kit.md`
 - `social-posts.md`
-- `v1.0.1-github-release.md`
+- `v1.0.2-github-release.md`
 - `assets/*.svg`
