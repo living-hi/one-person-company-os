@@ -1,6 +1,6 @@
 # Experience Log
 
-Updated: 2026-04-28
+Updated: 2026-04-29
 
 ## Lessons
 
@@ -10,12 +10,16 @@ Updated: 2026-04-28
 - Browser-only marketplaces cannot be published by automation without account sessions and approvals.
 - CLI timeouts are not proof of failure. Verify using version APIs and downloadable packages.
 - Capability labels on registry sites may be inferred from text and historical metadata; check scan verdicts separately from marketing tags.
+- The mainstream push list should be the primary planning surface, not a scattered inventory of directories.
+- `ready-to-submit`, `backend-needed`, and `tenant-needed` are useful statuses because they prevent local packaging from being mistaken for publication.
 
 ## Platform Mapping
 
 - Full local execution: OpenClaw, Claude Skills, Hermes Agent, MCP clients.
+- MCP registry distribution: MCP Registry, Smithery, Glama, PulseMCP.
 - Hosted/API execution: OpenAI GPT Actions, GitHub Copilot Extension, Microsoft Copilot Studio, Dify.
 - Prompt-only/guided execution: Poe, Gemini Gems, basic GPT/Gem without Actions.
+- Marketplace listing layer: ClawHub, agentskills.io, Dify Marketplace, GitHub Marketplace, Microsoft Commercial Marketplace, Poe, Gemini, GPT Store.
 
 ## Safety Pattern
 

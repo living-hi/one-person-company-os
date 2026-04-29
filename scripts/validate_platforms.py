@@ -25,9 +25,15 @@ REQUIRED_FILES = [
     "platforms/openai-gpt/actions-openapi.yaml",
     "platforms/mcp-server/server.py",
     "platforms/mcp-server/server.json",
+    "platforms/mcp-registries/submission-matrix.md",
+    "platforms/mcp-registries/mcp-registry.md",
+    "platforms/mcp-registries/smithery.md",
+    "platforms/mcp-registries/glama.md",
+    "platforms/mcp-registries/pulsemcp.md",
     "platforms/hermes-agent/SKILL.md",
     "platforms/hermes-agent/SOUL.md",
     "platforms/hermes-agent/mcp-config.json",
+    "platforms/agentskills-io/listing.md",
     "platforms/dify-plugin/manifest.yaml",
     "platforms/dify-plugin/provider/one-person-company-os.yaml",
     "platforms/dify-plugin/provider/one_person_company_os.py",
@@ -40,6 +46,7 @@ REQUIRED_FILES = [
     "platforms/github-copilot-extension/manifest.json",
     "platforms/microsoft-copilot-studio/agent-instructions.md",
     "platforms/microsoft-copilot-studio/teams-app-manifest.template.json",
+    "platforms/microsoft-copilot-studio/commercial-marketplace-notes.md",
 ]
 
 
@@ -123,15 +130,36 @@ def validate_public_language() -> None:
     for relative in (
         "platforms/PUBLISHING-STATUS.md",
         "platforms/REQUIREMENTS.md",
+        "platforms/agentskills-io/listing.md",
+        "platforms/mcp-registries/submission-matrix.md",
         "platforms/mcp-server/server.json",
         "platforms/openai-gpt/actions-openapi.yaml",
         "platforms/github-copilot-extension/manifest.json",
         "platforms/microsoft-copilot-studio/teams-app-manifest.template.json",
+        "platforms/microsoft-copilot-studio/commercial-marketplace-notes.md",
         "platforms/dify-plugin/manifest.yaml",
     ):
         text = (ROOT / relative).read_text(encoding="utf-8")
         if "1.0.2" not in text:
             raise AssertionError(f"{relative} should mention adapter version 1.0.2")
+    assert_contains(
+        ROOT / "platforms/PUBLISHING-STATUS.md",
+        [
+            "OpenClaw / ClawHub",
+            "Claude Skills",
+            "OpenAI GPT Store",
+            "MCP Registry",
+            "Smithery",
+            "Glama",
+            "PulseMCP",
+            "Hermes Agent / agentskills.io",
+            "Dify Marketplace",
+            "GitHub Copilot Extensions",
+            "Microsoft Copilot Studio / Commercial Marketplace",
+            "Poe Bots",
+            "Gemini Gems",
+        ],
+    )
     for relative in (
         "platforms/claude-skill/SKILL.md",
         "platforms/hermes-agent/SKILL.md",
