@@ -7,6 +7,8 @@ Common package:
 - `platforms/mcp-server/server.py`
 - `platforms/mcp-server/server.json`
 - `platforms/mcp-server/README.md`
+- `platforms/mcp-server/Dockerfile`
+- `ghcr.io/living-hi/one-person-company-os-mcp:1.0.3`
 
 Common description:
 
@@ -21,7 +23,7 @@ Common safety notes:
 
 | Registry | Status | Required submission material | Evidence before `published` |
 | --- | --- | --- | --- |
-| MCP Registry | ready-to-submit | publisher namespace, `server.json`, repository URL, package description | official registry listing or API record |
+| MCP Registry | ready-to-submit | GitHub Actions OIDC publisher, `server.json`, GHCR OCI package, repository URL, package description | official registry listing or API record |
 | Smithery | ready-to-submit | Smithery account/API key or hosted endpoint, MCP package metadata | Smithery listing URL |
 | Glama | ready-to-submit | public GitHub repository metadata or indexing submission | Glama listing URL |
 | PulseMCP | ready-to-submit | manual/API submission metadata, package URL, summary | PulseMCP listing URL |

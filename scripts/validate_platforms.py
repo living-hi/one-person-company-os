@@ -25,6 +25,7 @@ REQUIRED_FILES = [
     "platforms/openai-gpt/actions-openapi.yaml",
     "platforms/mcp-server/server.py",
     "platforms/mcp-server/server.json",
+    "platforms/mcp-server/Dockerfile",
     "platforms/mcp-registries/submission-matrix.md",
     "platforms/mcp-registries/mcp-registry.md",
     "platforms/mcp-registries/smithery.md",
@@ -126,6 +127,22 @@ def validate_json_files() -> None:
         json.loads((ROOT / relative).read_text(encoding="utf-8"))
 
 
+def validate_mcp_registry_metadata() -> None:
+    server_json = json.loads((ROOT / "platforms/mcp-server/server.json").read_text(encoding="utf-8"))
+    if server_json.get("$schema") != "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json":
+        raise AssertionError("MCP server.json must use the current official registry schema")
+    if server_json.get("name") != "io.github.living-hi/one-person-company-os":
+        raise AssertionError("MCP server.json has the wrong registry name")
+    packages = server_json.get("packages") or []
+    if not packages or packages[0].get("registryType") != "oci":
+        raise AssertionError("MCP server.json must publish the registry package as OCI")
+    if packages[0].get("identifier") != "ghcr.io/living-hi/one-person-company-os-mcp:1.0.3":
+        raise AssertionError("MCP server.json has the wrong OCI image identifier")
+    dockerfile = (ROOT / "platforms/mcp-server/Dockerfile").read_text(encoding="utf-8")
+    if 'io.modelcontextprotocol.server.name="io.github.living-hi/one-person-company-os"' not in dockerfile:
+        raise AssertionError("MCP Dockerfile is missing the official registry ownership label")
+
+
 def validate_public_language() -> None:
     for relative in (
         "platforms/PUBLISHING-STATUS.md",
@@ -174,6 +191,7 @@ def main() -> int:
     for relative in REQUIRED_FILES:
         assert_exists(relative)
     validate_json_files()
+    validate_mcp_registry_metadata()
     validate_mcp_server()
     validate_public_language()
     print("platform adapter validation passed")

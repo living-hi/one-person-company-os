@@ -10,6 +10,20 @@ From the repository root:
 python3 platforms/mcp-server/server.py
 ```
 
+## OCI Package
+
+The Official MCP Registry package is published as:
+
+```text
+ghcr.io/living-hi/one-person-company-os-mcp:1.0.3
+```
+
+The image carries the ownership label required by the registry:
+
+```text
+io.modelcontextprotocol.server.name=io.github.living-hi/one-person-company-os
+```
+
 ## Client Config Example
 
 ```json
