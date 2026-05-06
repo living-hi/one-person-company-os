@@ -7,8 +7,7 @@ Version: 1.0.3
 Server:
 
 - transport: stdio
-- command: `python3`
-- args: `platforms/mcp-server/server.py`
+- OCI package: `ghcr.io/living-hi/one-person-company-os-mcp:1.0.3`
 - metadata: `platforms/mcp-server/server.json`
 
 Description:
@@ -17,9 +16,14 @@ One Person Company OS gives MCP clients a local execution layer for a solo found
 
 Submission requirement:
 
-- publisher namespace/auth
+- GitHub Actions OIDC publisher
 - public repository URL
+- GHCR OCI package with `io.modelcontextprotocol.server.name` ownership label
 - package metadata from `server.json`
 - safety statement that all persistent writes stay inside the founder-approved workspace
 
-Do not mark as published until the official MCP Registry listing or version API record is visible.
+Published evidence:
+
+- Official MCP Registry API returns `io.github.living-hi/one-person-company-os`.
+- `publishedAt=2026-05-06T02:52:00Z`.
+- GitHub Actions run `25413862092` completed successfully.

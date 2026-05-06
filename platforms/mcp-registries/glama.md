@@ -20,7 +20,7 @@ The server should be described as local and workspace-scoped. It does not auto-i
 
 Submission blocker:
 
-Glama indexing or submission flow.
+Glama has not yet shown a visible `one-person-company-os` listing after the Official MCP Registry publish. Re-check automatic indexing after propagation or request indexing from a signed-in Glama flow.
 
 Published evidence:
 

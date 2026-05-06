@@ -12,6 +12,7 @@ Metadata:
 
 - transport: stdio
 - command: `python3 platforms/mcp-server/server.py`
+- OCI package: `ghcr.io/living-hi/one-person-company-os-mcp:1.0.3`
 - tools: `preflight_check`, `init_business`, `update_focus`, `generate_artifact_document`, `validate_release`
 - repository package version: `1.0.3`
 
@@ -21,7 +22,7 @@ Normal use does not require unrelated credentials. Persistent files stay inside 
 
 Submission blocker:
 
-PulseMCP manual/API submission access.
+PulseMCP manual/API submission access or downstream sync from the Official MCP Registry. The official registry entry is live, but PulseMCP listing evidence is not visible yet.
 
 Published evidence:
 

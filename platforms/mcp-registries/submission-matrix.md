@@ -23,9 +23,9 @@ Common safety notes:
 
 | Registry | Status | Required submission material | Evidence before `published` |
 | --- | --- | --- | --- |
-| MCP Registry | ready-to-submit | GitHub Actions OIDC publisher, `server.json`, GHCR OCI package, repository URL, package description | official registry listing or API record |
-| Smithery | ready-to-submit | Smithery account/API key or hosted endpoint, MCP package metadata | Smithery listing URL |
-| Glama | ready-to-submit | public GitHub repository metadata or indexing submission | Glama listing URL |
+| MCP Registry | published | GitHub Actions OIDC publisher, `server.json`, GHCR OCI package, repository URL, package description | Official Registry API returned `io.github.living-hi/one-person-company-os`, published at `2026-05-06T02:52:00Z` |
+| Smithery | ready-to-submit | Smithery account/API key plus URL or MCPB submission, MCP package metadata | Smithery listing URL |
+| Glama | ready-to-submit | official registry sync, public GitHub repository metadata, or indexing submission | Glama listing URL |
 | PulseMCP | ready-to-submit | manual/API submission metadata, package URL, summary | PulseMCP listing URL |
 
 Recommended tool list:

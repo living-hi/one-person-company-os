@@ -9,6 +9,7 @@ Use the MCP server package:
 - `platforms/mcp-server/server.py`
 - `platforms/mcp-server/server.json`
 - `platforms/mcp-server/README.md`
+- `ghcr.io/living-hi/one-person-company-os-mcp:1.0.3`
 
 Listing summary:
 
@@ -23,7 +24,7 @@ Operational boundary:
 
 Submission blocker:
 
-Smithery account/API key or compatible hosted endpoint.
+Smithery account/API key plus either an MCPB bundle or a public HTTPS MCP endpoint. The current package is stdio/OCI, so it is ready for a Smithery-authenticated MCPB/URL submission but not anonymously publishable from this machine.
 
 Published evidence:
 
