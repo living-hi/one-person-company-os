@@ -298,7 +298,7 @@ def validate_public_docs() -> None:
         "release/sample-outputs.md",
         "release/github-announcement.md",
         "release/social-posts.md",
-        "release/v1.0.2-github-release.md",
+        "release/v1.0.3-github-release.md",
         "agents/openai.yaml",
     )
     forbidden_public = (

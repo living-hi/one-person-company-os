@@ -140,8 +140,8 @@ def validate_public_language() -> None:
         "platforms/dify-plugin/manifest.yaml",
     ):
         text = (ROOT / relative).read_text(encoding="utf-8")
-        if "1.0.2" not in text:
-            raise AssertionError(f"{relative} should mention adapter version 1.0.2")
+        if "1.0.3" not in text:
+            raise AssertionError(f"{relative} should mention adapter version 1.0.3")
     assert_contains(
         ROOT / "platforms/PUBLISHING-STATUS.md",
         [

@@ -1,6 +1,6 @@
 # MCP Registry Submission Matrix
 
-Version: 1.0.2
+Version: 1.0.3
 
 Common package:
 

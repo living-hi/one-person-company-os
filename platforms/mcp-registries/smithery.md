@@ -2,7 +2,7 @@
 
 Package: One Person Company OS
 
-Version: 1.0.2
+Version: 1.0.3
 
 Use the MCP server package:
 
@@ -27,4 +27,4 @@ Smithery account/API key or compatible hosted endpoint.
 
 Published evidence:
 
-Smithery listing URL or API record for version `1.0.2`.
+Smithery listing URL or API record for version `1.0.3`.

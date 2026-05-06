@@ -1,5 +1,20 @@
 # Release Notes
 
+## v1.0.3 - Mainstream Platform Push List
+
+`v1.0.3` ships the completed mainstream marketplace push list as the canonical distribution package.
+
+What changed:
+
+- made `platforms/PUBLISHING-STATUS.md` the single operating table for OpenClaw / ClawHub, Claude Skills, OpenAI GPT Store, MCP registries, Hermes / agentskills.io, Dify, Copilot, Microsoft, Poe, and Gemini
+- added registry-specific submission material for MCP Registry, Smithery, Glama, and PulseMCP
+- added agentskills.io listing copy and Microsoft Commercial Marketplace notes
+- updated validation so missing mainstream-platform files fail release checks
+- corrected the GitHub Copilot route to avoid the retired GitHub App Copilot Extension path
+- recorded OpenAI GPT Actions privacy-policy and Microsoft Partner Center / Agents Toolkit requirements
+
+The release does not change the core operating cockpit runtime. It makes the published package match the platform push plan.
+
 ## v1.0.2 - Multi-Platform Adapter Pack
 
 `v1.0.2` adds a distribution layer for publishing One Person Company OS beyond OpenClaw.

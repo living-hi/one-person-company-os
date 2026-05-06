@@ -1,6 +1,6 @@
 # Platform Adapters
 
-This directory contains distribution adapters for One Person Company OS `1.0.2`.
+This directory contains distribution adapters for One Person Company OS `1.0.3`.
 
 The canonical package remains the repository root:
 

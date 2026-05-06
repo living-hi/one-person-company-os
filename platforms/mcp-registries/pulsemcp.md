@@ -2,7 +2,7 @@
 
 Package: One Person Company OS
 
-Version: 1.0.2
+Version: 1.0.3
 
 Submission summary:
 
@@ -13,7 +13,7 @@ Metadata:
 - transport: stdio
 - command: `python3 platforms/mcp-server/server.py`
 - tools: `preflight_check`, `init_business`, `update_focus`, `generate_artifact_document`, `validate_release`
-- repository package version: `1.0.2`
+- repository package version: `1.0.3`
 
 Safety note:
 

@@ -18,7 +18,7 @@ plugins:
   tools:
     - provider/one-person-company-os.yaml
 meta:
-  version: 1.0.2
+  version: 1.0.3
   arch:
     - amd64
     - arm64

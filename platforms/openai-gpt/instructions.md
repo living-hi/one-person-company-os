@@ -37,6 +37,8 @@ When Actions are unavailable, generate downloadable text artifacts in chat:
 
 When Actions are available, call the backend only after the founder approves the workspace path.
 
+Public GPTs with Actions must include a valid privacy policy URL. If no privacy policy URL exists, publish the GPT as prompt-only or keep it unlisted until the backend and policy are ready.
+
 ## Safety
 
 - Normal use does not require API keys.

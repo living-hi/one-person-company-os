@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.3 - 2026-05-06
+
+- completed the mainstream marketplace push list with one canonical status table covering OpenClaw / ClawHub, Claude Skills, OpenAI GPT Store, MCP Registry, Smithery, Glama, PulseMCP, Hermes Agent / agentskills.io, Dify Marketplace, GitHub Copilot Extensions, Microsoft Copilot Studio / Commercial Marketplace, Poe Bots, and Gemini Gems
+- added registry-specific submission notes for MCP Registry, Smithery, Glama, and PulseMCP
+- added agentskills.io listing copy and Microsoft Commercial Marketplace publication notes
+- corrected the GitHub Copilot adapter to avoid the retired GitHub App Copilot Extension path and describe the supported Copilot integration route as backend-needed
+- added OpenAI GPT Actions privacy-policy and Microsoft Partner Center / Microsoft 365 Agents Toolkit marketplace requirements to the publishing plan
+- expanded platform validation so missing mainstream platform materials fail release checks
+
 ## v1.0.2 - 2026-04-28
 
 - added multi-platform adapter packages under `platforms/` for Claude Skills, Hermes Agent, MCP, OpenAI GPT Store, Dify, Poe, Gemini Gems, GitHub Copilot Extensions, and Microsoft Copilot Studio

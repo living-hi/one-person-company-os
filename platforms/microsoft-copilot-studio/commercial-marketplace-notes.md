@@ -2,7 +2,7 @@
 
 Product name: One Person Company OS
 
-Version: 1.0.2
+Version: 1.0.3
 
 Marketplace positioning:
 
@@ -15,12 +15,19 @@ Package layers:
 - Backend/action schema recommendation: reuse `platforms/openai-gpt/actions-openapi.yaml`
 - Canonical local package: repository root and `platforms/mcp-server/`
 
+Commercial Marketplace boundary:
+
+- Copilot Studio publication makes a tenant agent available only after the tenant/admin flow is complete.
+- Commercial Marketplace submission must use the supported Microsoft 365 Agents Toolkit / Partner Center package path.
+- Do not describe this adapter as marketplace-ready until the app package, responsible AI checks, support/compliance assets, and Partner Center review are complete.
+
 Tenant requirements:
 
 - Microsoft tenant
 - Copilot Studio license
 - admin approval for connectors and Teams publication
 - Microsoft Partner Center / Commercial Marketplace publisher account
+- Microsoft 365 Agents Toolkit package path for Commercial Marketplace submission
 - privacy, support, compliance, and listing assets required by the marketplace
 
 Safety and compliance notes:

@@ -2,7 +2,7 @@
 
 Package: One Person Company OS
 
-Version: 1.0.2
+Version: 1.0.3
 
 Indexing target:
 
@@ -24,4 +24,4 @@ Glama indexing or submission flow.
 
 Published evidence:
 
-Glama listing URL showing One Person Company OS `1.0.2` or current repository metadata.
+Glama listing URL showing One Person Company OS `1.0.3` or current repository metadata.

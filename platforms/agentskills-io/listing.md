@@ -2,7 +2,7 @@
 
 Name: One Person Company OS
 
-Version: 1.0.2
+Version: 1.0.3
 
 Category: startups, productivity, AI agents, operating system
 
@@ -48,6 +48,6 @@ Local package:
 Publication evidence required:
 
 - agentskills.io listing URL or review record
-- visible version `1.0.2`
+- visible version `1.0.3`
 - package file check
 - rejection or approval note

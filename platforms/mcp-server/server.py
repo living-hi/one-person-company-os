@@ -216,7 +216,7 @@ def handle(message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
                 {
                     "protocolVersion": "2025-06-18",
                     "capabilities": {"tools": {}},
-                    "serverInfo": {"name": "one-person-company-os", "version": "1.0.2"},
+                    "serverInfo": {"name": "one-person-company-os", "version": "1.0.3"},
                 },
             )
         if method == "tools/list":

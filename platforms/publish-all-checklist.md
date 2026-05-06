@@ -1,6 +1,6 @@
 # Publish-All Checklist
 
-Use this checklist to push One Person Company OS `1.0.2` across the mainstream agent markets without overstating publication status.
+Use this checklist to push One Person Company OS `1.0.3` across the mainstream agent markets without overstating publication status.
 
 ## Before Any Publish
 
@@ -13,7 +13,7 @@ Use this checklist to push One Person Company OS `1.0.2` across the mainstream a
 ## OpenClaw / ClawHub
 
 - Publish from the repository root with `clawhub publish`.
-- Verify the ClawHub version API shows `1.0.2`.
+- Verify the ClawHub version API shows `1.0.3`.
 - Download the remote package and check `README.zh-CN.md`, `agents/openai.yaml`, `platforms/PUBLISHING-STATUS.md`, and `platforms/mcp-server/server.py`.
 - Record static and LLM scan verdicts before keeping the status as `published`.
 
@@ -30,6 +30,7 @@ Use this checklist to push One Person Company OS `1.0.2` across the mainstream a
 - Add knowledge from `platforms/openai-gpt/knowledge-files.txt`.
 - For a prompt-only launch, do not claim file-writing actions.
 - For an Actions launch, host an HTTPS API that implements `platforms/openai-gpt/actions-openapi.yaml`.
+- Add a valid privacy policy URL before making a GPT with Actions public.
 - Mark `published` only after the GPT Store page or builder share page is visible.
 
 ## MCP Registry / Smithery / Glama / PulseMCP
@@ -55,16 +56,18 @@ Use this checklist to push One Person Company OS `1.0.2` across the mainstream a
 
 ## GitHub Copilot Extensions
 
-- Treat `platforms/github-copilot-extension/` as a planning package until a hosted backend exists.
-- Create the GitHub App, webhook endpoint, and Marketplace listing after the backend is deployed.
+- Treat `platforms/github-copilot-extension/` as a planning package until a currently supported Copilot extension surface exists.
+- Do not use the retired GitHub App Copilot Extension route as the primary submission path.
+- Rebuild this adapter as a VS Code Copilot Extension or another currently supported GitHub Copilot integration before marketplace submission.
 - Reuse the same action schema as the OpenAI GPT Actions bridge where possible.
-- Keep status as `backend-needed` until Copilot can reach the public endpoint.
+- Keep status as `backend-needed` until the supported Copilot surface can run the operating cockpit workflow.
 
 ## Microsoft Copilot Studio / Commercial Marketplace
 
 - Create the Copilot Studio agent from `platforms/microsoft-copilot-studio/agent-instructions.md`.
 - Use `teams-app-manifest.template.json` only after the tenant-backed agent exists.
 - Use `commercial-marketplace-notes.md` for marketplace positioning and compliance notes.
+- For Commercial Marketplace, package through the supported Microsoft 365 Agents Toolkit / Partner Center route rather than treating the Copilot Studio prompt alone as a marketplace app.
 - Keep status as `tenant-needed` until tenant, admin approval, and marketplace publisher account are in place.
 
 ## Poe Bots

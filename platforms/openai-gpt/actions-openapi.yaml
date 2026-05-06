@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: One Person Company OS API Bridge
-  version: 1.0.2
+  version: 1.0.3
   description: Optional API bridge for Custom GPT Actions. The hosted service should wrap the canonical repository scripts and enforce approved workspace boundaries.
 servers:
   - url: https://YOUR_HOST.example.com

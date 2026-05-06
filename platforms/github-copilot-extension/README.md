@@ -1,18 +1,19 @@
-# GitHub Copilot Extension Draft
+# GitHub Copilot Extension Planning Package
 
-This adapter is a marketplace planning package for a future GitHub Copilot Extension.
+This adapter is a marketplace planning package for a future supported GitHub Copilot integration.
 
-Copilot Extensions require:
+Current publication boundary:
 
-- a GitHub App
-- a public webhook/API backend
-- Marketplace publisher approval
-- an endpoint that converts Copilot chat requests into backend actions
+- GitHub App-based Copilot Extensions are no longer the primary route.
+- VS Code Copilot Extensions remain a supported distribution surface.
+- Marketplace submission still requires publisher approval and a complete, runnable package.
+- Any hosted bridge must convert Copilot chat requests into approved workspace actions.
 
-Recommended backend:
+Recommended implementation:
 
+- build a VS Code Copilot Extension wrapper or another currently supported Copilot surface
 - expose the same operations as `platforms/openai-gpt/actions-openapi.yaml`
 - enforce workspace approval and path boundaries
 - return generated cockpit summaries as Markdown
 
-Do not submit this adapter as a complete extension until a hosted backend exists.
+Do not submit this adapter as a complete extension until the supported Copilot surface exists and has been tested.
